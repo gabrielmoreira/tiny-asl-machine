@@ -1,0 +1,94 @@
+{
+  "name": "tiny-asl-machine",
+  "version": "0.0.1",
+  "description": "Tiny Amazon State Language machine",
+  "author": "Gabriel Moreira",
+  "homepage": "https://github.com/gabrielmoreira/tiny-asl-machine",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabrielmoreira/tiny-asl-machine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gabrielmoreira/tiny-asl-machine/issues"
+  },
+  "license": "MIT",
+  "main": "lib/index.js",
+  "typings": "src/index.d.ts",
+  "files": [
+    "src",
+    "lib",
+    "types",
+    "package.json",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --ci --reporters=default --reporters=jest-junit",
+    "clean": "rimraf ./lib",
+    "lint": "eslint .",
+    "build": "npm run -s clean && swc ./src -d lib && rimraf ./lib/**/*.{spec,d}.js",
+    "prepublish": "npm run build && npm run test"
+  },
+  "devDependencies": {
+    "@swc-node/register": "^1.4.2",
+    "@swc/cli": "^0.1.57",
+    "@swc/core": "^1.2.165",
+    "@swc/jest": "^0.2.20",
+    "@types/jest": "^27.4.1",
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
+    "@typescript-eslint/parser": "^5.19.0",
+    "eslint": "^8.13.0",
+    "jest": "^27.5.1",
+    "jest-junit": "^13.1.0",
+    "rimraf": "^3.0.2"
+  },
+  "dependencies": {
+    "debug": "^4.3.4",
+    "deep-iterator": "^1.1.0",
+    "jsonpath": "^1.1.1",
+    "p-limit": "^3.1.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
+    ]
+  },
+  "eslintIgnore": [
+    "lib/**/*",
+    "node_modules/**/*"
+  ],
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "printWidth": 100
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.(t|j)sx?$": "@swc/jest"
+    },
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.spec.ts",
+      "!src/**/*.d.ts"
+    ],
+    "coverageProvider": "v8",
+    "roots": [
+      "<rootDir>/src/",
+      "<rootDir>/tests/"
+    ]
+  },
+  "jest-junit": {
+    "outputDirectory": "./test-reports"
+  }
+}
