@@ -11,8 +11,14 @@ import {
   EndField,
   WaitState,
   MapState,
-} from '../asl';
-import { ResourceContext, Context, StateData, StateExecutors, BaseContext } from '../runtime';
+} from '../../types/asl';
+import {
+  ResourceContext,
+  Context,
+  StateData,
+  StateExecutors,
+  BaseContext,
+} from '../../types/runtime';
 import { selectPath } from '../utils/selectPath';
 import { ExecutionError } from '../utils/executionError';
 import { processChoices } from '../choices/operators';
@@ -79,7 +85,7 @@ const StateExecutors: StateExecutors = {
       throw new ExecutionError('InvalidStateType', "State Type should be 'Parallel'");
     const inputData = processStateInput(context, state, input);
     const outputData = await Promise.all(
-      state.Branches.map((definition) =>
+      state.Branches.map(definition =>
         runUntilFinished(definition, context, inputData, definition.StartAt)
       )
     );
@@ -102,7 +108,7 @@ const StateExecutors: StateExecutors = {
     const inputData = processStateInput(context, state, input);
     const delay = calculateWaitDelayInMs(context, state, inputData);
     debug('Delay of', delay, 'will be', Date.now() + delay);
-    await new Promise((resolve) => setTimeout(() => resolve(void 0), delay));
+    await new Promise(resolve => setTimeout(() => resolve(void 0), delay));
     debug('After delay');
     const processedOutput = processStateOutput(context, state, input, inputData);
     processNextOrEndState(context, state);
@@ -298,10 +304,13 @@ export function createBaseContext(
     Resources: resourceContext,
     StateMachine: {
       Id: `machine-${Date.now()}`,
+      Name: `machine`,
     },
     Execution: {
       StartTime: new Date().toUTCString(),
       Id: `execution-${Date.now()}`,
+      Name: 'execution',
+      RoleArn: 'machine-role',
       Input: initialInput,
     },
   };

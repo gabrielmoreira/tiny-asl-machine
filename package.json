@@ -1,6 +1,6 @@
 {
   "name": "tiny-asl-machine",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Tiny Amazon State Language machine",
   "author": "Gabriel Moreira",
   "homepage": "https://github.com/gabrielmoreira/tiny-asl-machine",
@@ -13,7 +13,7 @@
   },
   "license": "MIT",
   "main": "lib/index.js",
-  "typings": "src/index.d.ts",
+  "types": "types/index.d.ts",
   "files": [
     "src",
     "lib",
@@ -27,8 +27,10 @@
     "test:ci": "jest --ci --reporters=default --reporters=jest-junit",
     "clean": "rimraf ./lib",
     "lint": "eslint .",
-    "build": "npm run -s clean && swc ./src -d lib && rimraf ./lib/**/*.{spec,d}.js",
-    "prepublish": "npm run build && npm run test"
+    "lint:staged": "lint-staged",
+    "build": "npm run -s clean & swc ./src -d lib --copy-files",
+    "prepublishOnly": "npm run build && npm run test",
+    "prepare": "npx simple-git-hooks"
   },
   "devDependencies": {
     "@swc-node/register": "^1.4.2",
@@ -41,9 +43,16 @@
     "eslint": "^8.13.0",
     "jest": "^27.5.1",
     "jest-junit": "^13.1.0",
-    "rimraf": "^3.0.2"
+    "lint-staged": "^12.3.8",
+    "prettier": "^2.6.2",
+    "rimraf": "^3.0.2",
+    "shx": "^0.3.4",
+    "simple-git-hooks": "^2.7.0",
+    "tsc-files": "^1.1.3",
+    "typescript": "^4.6.3"
   },
   "dependencies": {
+    "@aws-cdk/core": "^1.152.0",
     "debug": "^4.3.4",
     "deep-iterator": "^1.1.0",
     "jsonpath": "^1.1.1",
@@ -70,7 +79,8 @@
     "tabWidth": 2,
     "semi": true,
     "singleQuote": true,
-    "printWidth": 100
+    "printWidth": 100,
+    "arrowParens": "avoid"
   },
   "jest": {
     "transform": {
@@ -90,5 +100,18 @@
   },
   "jest-junit": {
     "outputDirectory": "./test-reports"
-  }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint",
+      "prettier --write"
+    ]
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npm run lint:staged"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "engineStrict": true
 }

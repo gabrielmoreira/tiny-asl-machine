@@ -1,5 +1,5 @@
-import { TopLevelChoiceRule } from '../asl';
-import { ChoiceOperators, Context, StateData } from '../runtime';
+import { TopLevelChoiceRule } from '../../types/asl';
+import { ChoiceOperators, Context, StateData } from '../../types/runtime';
 import { selectPath } from '../utils/selectPath';
 import Debug from 'debug';
 const debug = Debug('tiny-asl-machine:operator');
