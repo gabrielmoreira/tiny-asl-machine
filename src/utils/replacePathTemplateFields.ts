@@ -1,5 +1,5 @@
+import type { Context } from '../../types';
 import deepIterator from 'deep-iterator';
-import { Context } from '../../types';
 import { clone } from './clone';
 import { selectPath } from './selectPath';
 

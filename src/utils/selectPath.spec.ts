@@ -1,4 +1,4 @@
-import { Context } from '../../types';
+import type { Context } from '../../types';
 import { selectPath } from './selectPath';
 
 describe('selectPath', () => {

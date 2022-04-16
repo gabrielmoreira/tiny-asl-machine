@@ -1,6 +1,6 @@
 {
   "name": "tiny-asl-machine",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Tiny Amazon State Language machine",
   "author": "Gabriel Moreira",
   "homepage": "https://github.com/gabrielmoreira/tiny-asl-machine",
@@ -13,11 +13,10 @@
   },
   "license": "MIT",
   "main": "lib/index.js",
-  "types": "types/index.d.ts",
+  "types": "lib/index.d.ts",
   "files": [
     "src",
     "lib",
-    "types",
     "package.json",
     "LICENSE"
   ],
@@ -28,7 +27,7 @@
     "clean": "rimraf ./lib",
     "lint": "eslint .",
     "lint:staged": "lint-staged",
-    "build": "npm run -s clean & swc ./src -d lib --copy-files",
+    "build": "npm run -s clean && tsc",
     "prepublishOnly": "npm run build && npm run test",
     "prepare": "npx simple-git-hooks"
   },
@@ -37,7 +36,9 @@
     "@swc/cli": "^0.1.57",
     "@swc/core": "^1.2.165",
     "@swc/jest": "^0.2.20",
+    "@types/debug": "^4.1.7",
     "@types/jest": "^27.4.1",
+    "@types/jsonpath": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
     "eslint": "^8.13.0",
@@ -84,7 +85,28 @@
   },
   "jest": {
     "transform": {
-      "^.+\\.(t|j)sx?$": "@swc/jest"
+      "^.+\\.(t|j)sx?$": [
+        "@swc/jest",
+        {
+          "jsc": {
+            "target": "es2020",
+            "parser": {
+              "syntax": "typescript",
+              "dynamicImport": true,
+              "decorators": false,
+              "tsx": false
+            },
+            "transform": {
+              "legacyDecorator": false,
+              "decoratorMetadata": false
+            }
+          },
+          "module": {
+            "type": "commonjs"
+          },
+          "sourceMaps": true
+        }
+      ]
     },
     "collectCoverage": true,
     "collectCoverageFrom": [
@@ -104,6 +126,7 @@
   "lint-staged": {
     "*.ts": [
       "eslint",
+      "tsc-files --rootDir . --noEmit",
       "prettier --write"
     ]
   },

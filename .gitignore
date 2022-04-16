@@ -56,3 +56,6 @@ test-reports/
 
 # Build folder
 lib/
+
+# Typescript cache
+*.tsbuildinfo

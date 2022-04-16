@@ -1,4 +1,4 @@
-import { EndOrNextField, Operator, State, StateType, TopLevelChoiceRule } from './asl';
+import type { EndOrNextField, Operator, State, StateType, TopLevelChoiceRule } from './asl';
 
 export type ResourceContext = {
   invoke: (resource: string, payload: unknown) => Promise<unknown>;
@@ -43,9 +43,9 @@ export type MapStateContext = {
 };
 
 export type BaseContext = {
-  Resources: ResourceContext;
   StateMachine: StateMachineContext;
   Execution: ExecutionContext;
+  Resources?: ResourceContext;
   Transition?: EndOrNextField;
 };
 

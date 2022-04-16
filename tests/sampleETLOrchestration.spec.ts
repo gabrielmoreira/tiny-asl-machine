@@ -1,5 +1,5 @@
 import { definition } from './fixtures/sampleETLOrchestration';
-import { run } from '../src/index';
+import { run } from '../src';
 import Debug from 'debug';
 const debug = Debug('tiny-asl-machine:tests');
 
@@ -24,14 +24,14 @@ describe('ETL workflow', () => {
       .mockResolvedValueOnce('available') // first call is to pause cluster
       .mockResolvedValueOnce('paused'); // second call is to check cluster status
     const actionsMock = {};
-    const redshiftDataApiMock = jest.fn().mockImplementation(async (params) => {
+    const redshiftDataApiMock = jest.fn().mockImplementation(async params => {
       const action = params?.input?.action;
       if (!action) throw new Error('Action is required!');
       if (!actionsMock[action]) {
         // there are different actions running in parallel, so we will create a mock for each individual action
         actionsMock[action] = jest
           .fn()
-          .mockImplementationOnce((params) => params) // first call is to start an operation
+          .mockImplementationOnce(params => params) // first call is to start an operation
           .mockResolvedValueOnce('PENDING') // second call is to check status of an operation
           .mockResolvedValueOnce('FINISHED'); // third call is to check status of an operation
       }
@@ -52,7 +52,7 @@ describe('ETL workflow', () => {
       },
     };
     const mockedSetTimeout = jest.mocked(setTimeout);
-    mockedSetTimeout.mockImplementation((fn) => {
+    mockedSetTimeout.mockImplementation(fn => {
       fn();
       type Timeout = ReturnType<typeof setTimeout>;
       return 1 as unknown as Timeout;
@@ -111,7 +111,7 @@ describe('ETL workflow', () => {
     };
 
     // For each action
-    actions.forEach((action) => {
+    actions.forEach(action => {
       debug('Checking action', action);
       expect(actionsMock[action]).toHaveBeenNthCalledWith(1, {
         // execute operation

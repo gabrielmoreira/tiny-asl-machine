@@ -1,10 +1,12 @@
+import type { Context } from '../../types';
+import type { IntrinsicExpression, TopLevelIntrinsic } from './parseIntrinsicFunction';
 import jsonpath from 'jsonpath';
-import { Context } from '../../types/runtime';
 import { ExecutionError } from './executionError';
-import { IntrinsicExpression, IntrinsicParser, TopLevelIntrinsic } from './parseIntrinsicFunction';
+import { IntrinsicParser } from './parseIntrinsicFunction';
 import { StringTemplateParser } from './parseStringTemplate';
 
-export function selectPath(expression: string, input: unknown, context: Context) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function selectPath(expression: string, input: unknown, context: Context): any {
   if (typeof expression !== 'string')
     throw new ExecutionError(
       'InvalidJSONPath',
@@ -18,13 +20,14 @@ function evaluateAst(
   ast: TopLevelIntrinsic | IntrinsicExpression,
   input: unknown,
   context: Context
-) {
+): unknown {
   if (ast.type === 'path') {
     return evaluatePath(ast.path, input, context);
   } else if (ast.type === 'string-literal') {
     return ast.literal;
   } else if (ast.type === 'fncall') {
-    const fn = intrinsicFunctions[ast.functionName];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fn: any = intrinsicFunctions[ast.functionName as keyof typeof intrinsicFunctions];
     if (!fn)
       throw new ExecutionError(
         'InvalidIntrinsicFunction',
@@ -42,10 +45,10 @@ function evaluatePath(expression: string, input: unknown, context: Context) {
 }
 
 const intrinsicFunctions = {
-  'States.StringToJson': string => JSON.parse(string),
-  'States.JsonToString': obj => JSON.stringify(obj),
-  'States.Array': (...args) => [...args],
-  'States.Format': (template, ...args) => {
+  'States.StringToJson': (string: string) => JSON.parse(string),
+  'States.JsonToString': (obj: unknown) => JSON.stringify(obj),
+  'States.Array': (...args: unknown[]) => [...args],
+  'States.Format': (template: string, ...args: unknown[]) => {
     return new StringTemplateParser(template.trim())
       .parseTemplate()
       .map(p => {

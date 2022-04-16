@@ -1,4 +1,4 @@
-import { StateDefinition } from '../../src/asl';
+import type { StateDefinition } from '../../types';
 
 export const definition: StateDefinition = {
   Comment:
