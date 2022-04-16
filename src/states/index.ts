@@ -19,6 +19,7 @@ import {
   StateData,
   StateExecutors,
   BaseContext,
+  ExecutionContext,
 } from '../../types/runtime';
 import { selectPath } from '../utils/selectPath';
 import { ExecutionError } from '../utils/executionError';
@@ -34,10 +35,15 @@ export async function run(
   {
     definition,
     resourceContext,
-  }: { definition: StateDefinition; resourceContext?: ResourceContext },
+    executionContext,
+  }: {
+    definition: StateDefinition;
+    resourceContext?: ResourceContext;
+    executionContext?: ExecutionContext;
+  },
   input: StateData
 ) {
-  const baseContext = createBaseContext({ definition, resourceContext }, input);
+  const baseContext = createBaseContext({ definition, resourceContext, executionContext }, input);
   return runUntilFinished(definition, baseContext, input, definition.StartAt);
 }
 
@@ -347,9 +353,11 @@ function calculateWaitDelayInMs(context: Context, state: WaitState, input: State
 export function createBaseContext(
   {
     resourceContext,
+    executionContext,
   }: {
     definition: StateDefinition;
     resourceContext?: ResourceContext;
+    executionContext?: ExecutionContext;
   },
   initialInput: StateData
 ) {
@@ -360,11 +368,12 @@ export function createBaseContext(
       Name: `machine`,
     },
     Execution: {
-      StartTime: new Date().toUTCString(),
+      StartTime: new Date().toISOString(),
       Id: `execution-${Date.now()}`,
       Name: 'execution',
       RoleArn: 'machine-role',
       Input: initialInput,
+      ...(executionContext || {}),
     },
   };
   return baseContext;
@@ -383,7 +392,7 @@ export function createMapContext(context: Context, itemIndex: number, itemValue:
 }
 
 export function createContext(baseContext: BaseContext, state: State, stateName: string): Context {
-  const enteredTime = new Date().toUTCString();
+  const enteredTime = new Date().toISOString();
   const taskContext =
     state.Type === 'Task'
       ? {
