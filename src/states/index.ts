@@ -11,6 +11,7 @@ import {
   EndField,
   WaitState,
   MapState,
+  ParallelState,
 } from '../../types/asl';
 import {
   ResourceContext,
@@ -58,7 +59,9 @@ async function runUntilFinished(
 }
 
 export async function runState(context: Context, state: State, input: StateData) {
-  return StateExecutors[state.Type](context, state, input);
+  return await retryCatch(context, state, input, () =>
+    StateExecutors[state.Type](context, state, input)
+  );
 }
 
 const StateExecutors: StateExecutors = {
@@ -77,7 +80,7 @@ const StateExecutors: StateExecutors = {
     const inputData = processStateInput(context, state, input);
     const output = await invokeTaskResource(context, state, inputData);
     const processedOutput = processStateOutput(context, state, input, output);
-    processNextOrEndState(context, state);
+    if (!context.Transition) processNextOrEndState(context, state);
     return processedOutput;
   },
   Parallel: async (context, state, input) => {
@@ -146,6 +149,51 @@ const StateExecutors: StateExecutors = {
     );
   },
 };
+
+async function retryCatch(
+  context: Context,
+  state: State,
+  input: StateData,
+  fn: () => Promise<StateData>
+) {
+  context.Transition = undefined;
+  context.ExecutionError = undefined;
+  try {
+    return await fn();
+  } catch (e) {
+    if ('Catch' in state && state.Catch) {
+      const catcher = state.Catch.find(p => {
+        if (
+          p.ErrorEquals.includes(e.name) ||
+          p.ErrorEquals.includes('States.ALL') ||
+          // https://docs.aws.amazon.com/step-functions/latest/dg/bp-lambda-serviceexception.html
+          // https://docs.aws.amazon.com/step-functions/latest/dg/tutorial-handling-error-conditions.html
+          // https://docs.aws.amazon.com/lambda/latest/dg/API_Invoke.html#API_Invoke_Errors
+          // TODO this is not correct...
+          (state.Type === 'Task' && p.ErrorEquals.includes('States.TaskFailed')) ||
+          (state.Type === 'Task' && p.ErrorEquals.includes('Lambda.Unknown')) ||
+          (state.Type === 'Task' && p.ErrorEquals.includes('States.DataLimitExceeded')) ||
+          (state.Type === 'Task' && p.ErrorEquals.includes('Lambda.TooManyRequestsException')) ||
+          (state.Type === 'Task' && p.ErrorEquals.includes('Lambda.ServiceException')) ||
+          (state.Type === 'Task' && p.ErrorEquals.includes('Lambda.AWSLambdaException')) ||
+          (state.Type === 'Task' && p.ErrorEquals.includes('Lambda.SdkClientException')) ||
+          (state.Type === 'Parallel' && p.ErrorEquals.includes('States.BranchFailed'))
+        )
+          return true;
+      });
+      console.log('Catcher', catcher);
+      if (catcher) {
+        context.ExecutionError = { Error: e.name, Cause: e.message };
+        context.Transition = { Next: catcher.Next };
+        if (catcher.ResultPath) {
+          return applyResultPath(catcher.ResultPath, input, context.ExecutionError);
+        }
+        return context.ExecutionError;
+      }
+    }
+    throw e;
+  }
+}
 
 async function invokeTaskResource(context: Context, state: TaskState, payload: unknown) {
   // TODO implement catch & retry logic
@@ -232,15 +280,20 @@ function hasResultSelector(state: unknown): state is ResultSelectorField {
 
 function buildResultPath(state: State, input: StateData, output: StateData) {
   if (hasResultPath(state)) {
-    if (state.ResultPath === null) return input;
-    if (state.ResultPath === '$') return output;
-    if (typeof state.ResultPath === 'string') {
-      const inputData = clone(input);
-      updatePath(inputData, state.ResultPath, output);
-      return inputData;
-    }
+    return applyResultPath(state.ResultPath, input, output);
   }
   return output;
+}
+
+function applyResultPath(resultPath: string | null, input: StateData, output: StateData) {
+  if (resultPath === null) return input;
+  if (resultPath === '$') return output;
+  if (typeof resultPath === 'string') {
+    const inputData = clone(input);
+    updatePath(inputData, resultPath, output);
+    // TODO Implement States.ResultPathMatchFailure - https://states-language.net/#errors
+    return inputData;
+  }
 }
 
 function hasResultPath(state: unknown): state is ResultPathField {

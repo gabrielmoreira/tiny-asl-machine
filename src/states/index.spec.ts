@@ -1,8 +1,10 @@
-import { State } from '../../types/asl';
+import { run } from '..';
+import { State, StateDefinition } from '../../types/asl';
 import { Context } from '../../types/runtime';
+import { ExecutionError } from '../utils/executionError';
 import { runState } from './index';
 
-describe('state', () => {
+describe('runState', () => {
   afterEach(() => {
     jest.useRealTimers();
     jest.clearAllMocks();
@@ -538,5 +540,106 @@ describe('state', () => {
     // Then
     expect(error?.name).toStrictEqual('SomeError');
     expect(error?.message).toStrictEqual('Some error message');
+  });
+
+  it('runs a Task state (Catch scenario)', async () => {
+    // Given
+    const state: State = {
+      Type: 'Task',
+      Resource: 'arn:aws:lambda:us-east-1:123456789012:function:Echo',
+      ResultPath: '$.result',
+      Catch: [
+        { ErrorEquals: ['Error1'], Next: 'GoToError1' },
+        { ErrorEquals: ['Error2'], Next: 'GoToError2' },
+        { ErrorEquals: ['SomeError'], Next: 'HandleSomeError', ResultPath: '$.error' },
+        { ErrorEquals: ['Error3'], Next: 'GoToError3' },
+      ],
+      End: true,
+    };
+    const context = (<Context>{
+      Resources: {
+        invoke: async (resource: string, payload: unknown): Promise<unknown> => {
+          throw new ExecutionError('SomeError', 'Some error msg');
+        },
+      },
+    }) as unknown as Context;
+    // When
+    const result = await runState(context, state, { a: [1, 2, 3, 4] });
+    // Then
+    expect(result).toStrictEqual({
+      a: [1, 2, 3, 4],
+      error: {
+        Error: 'SomeError',
+        Cause: 'Some error msg',
+      },
+    });
+    expect(context.Transition).toStrictEqual({ Next: 'HandleSomeError' });
+  });
+});
+
+describe('run', () => {
+  const awsErrorStateMachine: StateDefinition = {
+    Comment: 'A Catch example of the Amazon States Language using an AWS Lambda function',
+    StartAt: 'CreateAccount',
+    States: {
+      CreateAccount: {
+        Type: 'Task',
+        Resource: 'arn:aws:lambda:us-east-1:123456789012:function:FailFunction',
+        Catch: [
+          {
+            ErrorEquals: ['CustomError'],
+            Next: 'CustomErrorFallback',
+          },
+          {
+            ErrorEquals: ['States.TaskFailed'],
+            Next: 'ReservedTypeFallback',
+          },
+          {
+            ErrorEquals: ['States.ALL'],
+            Next: 'CatchAllFallback',
+          },
+        ],
+        End: true,
+      },
+      CustomErrorFallback: {
+        Type: 'Pass',
+        Result: 'This is a fallback from a custom Lambda function exception',
+        End: true,
+      },
+      ReservedTypeFallback: {
+        Type: 'Pass',
+        Result: 'This is a fallback from a reserved error code',
+        End: true,
+      },
+      CatchAllFallback: {
+        Type: 'Pass',
+        Result: 'This is a fallback from any error code',
+        End: true,
+      },
+    },
+  };
+  it('intercepts errors', async () => {
+    // Given
+    const options = {
+      definition: awsErrorStateMachine,
+      resourceContext: {
+        invoke: (_resource, params) => {
+          throw new ExecutionError(params.error.code, params.error.message);
+        },
+      },
+    };
+    // When
+    const customError = await run(options, {
+      error: { code: 'CustomError', message: 'Custom error' },
+    });
+    // Then
+    expect(customError).toBe('This is a fallback from a custom Lambda function exception');
+
+    // When
+    const otherError = await run(options, {
+      error: { code: 'OtherError', message: 'Some other error' },
+    });
+    // Then
+    expect(otherError).toBe('This is a fallback from a reserved error code');
   });
 });
