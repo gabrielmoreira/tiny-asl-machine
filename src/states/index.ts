@@ -190,7 +190,7 @@ async function catchErrors(
         )
           return true;
       });
-      console.log('Catcher', catcher);
+      // console.log('Catcher', catcher);
       if (catcher) {
         context.ExecutionError = { Error: e.name, Cause: e.message };
         context.Transition = { Next: catcher.Next };
