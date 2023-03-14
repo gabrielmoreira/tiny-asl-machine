@@ -5,6 +5,7 @@ export type TopLevelIntrinsic = PathExpression | FnCallExpression;
 export interface StringLiteralExpression {
   readonly type: 'string-literal';
   readonly literal: string;
+  readonly quoted: string;
 }
 
 export interface PathExpression {
@@ -166,8 +167,8 @@ export class IntrinsicParser {
    * cursor will be after the closing quote.
    */
   private parseStringLiteral(): StringLiteralExpression {
-    const { quoted } = this.consumeQuotedString();
-    return { type: 'string-literal', literal: quoted };
+    const { quoted, unquoted } = this.consumeQuotedString();
+    return { type: 'string-literal', literal: unquoted, quoted: quoted };
   }
 
   /**
@@ -206,6 +207,7 @@ export class IntrinsicParser {
     while (this.char() !== "'") {
       if (this.char() === '\\') {
         // Advance and add next character literally, whatever it is
+        unquoted.push(this.char());
         quoted.push(this.consume());
       }
       quoted.push(this.char());
