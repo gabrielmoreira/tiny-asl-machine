@@ -77,9 +77,31 @@ describe('selectPath', () => {
     // Then
     expect(result).toStrictEqual(true);
   });
+  it('support intrinsic function States.ArrayContains (strings)', () => {
+    // Given
+    const expression = "States.ArrayContains($.inputArray, 'C')";
+    const input = {
+      inputArray: ['A', 'B', 'C'],
+    };
+    // When
+    const result = selectPath(expression, input, <Context>{});
+    // Then
+    expect(result).toStrictEqual(true);
+  });
+  it('support intrinsic function States.ArrayContains (strings) returning false', () => {
+    // Given
+    const expression = "States.ArrayContains($.inputArray, 'D')";
+    const input = {
+      inputArray: ['A', 'B', 'C'],
+    };
+    // When
+    const result = selectPath(expression, input, <Context>{});
+    // Then
+    expect(result).toStrictEqual(false);
+  });
   it('support intrinsic function States.Format', () => {
     // Given
-    const expression = "States.Format('Name: \\'{}\\', Surname: \"{}\"', $.name, $.surname)";
+    const expression = `States.Format('Name: \\'{}\\', Surname: "{}"', $.name, $.surname)`;
     const input = {
       name: 'Gabriel',
       surname: 'Moreira',

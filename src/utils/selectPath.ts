@@ -50,7 +50,7 @@ const intrinsicFunctions = {
   'States.JsonToString': (obj: unknown) => JSON.stringify(obj),
   'States.Array': (...args: unknown[]) => [...args],
   'States.Format': (template: string, ...args: unknown[]) => {
-    return new StringTemplateParser(template.trim())
+    return new StringTemplateParser("'" + template.trim() + "'")
       .parseTemplate()
       .map(p => {
         if (p.type === 'placeholder') {
