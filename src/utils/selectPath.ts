@@ -45,6 +45,7 @@ function evaluatePath(expression: string, input: unknown, context: Context) {
 }
 
 const intrinsicFunctions = {
+  'States.ArrayContains': (array: unknown[], lookingFor: unknown) => array.includes(lookingFor),
   'States.StringToJson': (string: string) => JSON.parse(string),
   'States.JsonToString': (obj: unknown) => JSON.stringify(obj),
   'States.Array': (...args: unknown[]) => [...args],
