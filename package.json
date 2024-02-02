@@ -21,7 +21,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "vitest",
+    "test": "vitest --no-watch",
     "test:watch": "vitest --watch",
     "test:ci": "vitest run",
     "clean": "rimraf ./lib",
