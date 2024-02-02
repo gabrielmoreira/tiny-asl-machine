@@ -1,20 +1,22 @@
 import { definition } from './fixtures/sampleETLOrchestration';
 import { run } from '../src';
 import Debug from 'debug';
+import { describe, it, beforeEach, afterEach, expect, vitest } from 'vitest';
+
 const debug = Debug('tiny-asl-machine:tests');
 
 describe('ETL workflow', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
-    jest.spyOn(global, 'setTimeout');
+    vitest.useFakeTimers();
+    vitest.spyOn(globalThis, 'setTimeout');
   });
   afterEach(() => {
-    jest.useRealTimers();
-    jest.clearAllMocks();
+    vitest.useRealTimers();
+    vitest.clearAllMocks();
   });
   it('should execute a complex ETL workflow', async () => {
     // Given
-    const redshiftOperationsMock = jest
+    const redshiftOperationsMock = vitest
       .fn()
       // start cluster flow
       .mockResolvedValueOnce('paused') // first call is to check cluster status
@@ -24,12 +26,12 @@ describe('ETL workflow', () => {
       .mockResolvedValueOnce('available') // first call is to pause cluster
       .mockResolvedValueOnce('paused'); // second call is to check cluster status
     const actionsMock = {};
-    const redshiftDataApiMock = jest.fn().mockImplementation(async params => {
+    const redshiftDataApiMock = vitest.fn().mockImplementation(async params => {
       const action = params?.input?.action;
       if (!action) throw new Error('Action is required!');
       if (!actionsMock[action]) {
         // there are different actions running in parallel, so we will create a mock for each individual action
-        actionsMock[action] = jest
+        actionsMock[action] = vitest
           .fn()
           .mockImplementationOnce(params => params) // first call is to start an operation
           .mockResolvedValueOnce('PENDING') // second call is to check status of an operation
@@ -51,7 +53,7 @@ describe('ETL workflow', () => {
         invoke: (resourceName, payload) => mockResources[resourceName](payload),
       },
     };
-    const mockedSetTimeout = jest.mocked(setTimeout);
+    const mockedSetTimeout = vitest.mocked(setTimeout);
     mockedSetTimeout.mockImplementation(fn => {
       fn();
       type Timeout = ReturnType<typeof setTimeout>;

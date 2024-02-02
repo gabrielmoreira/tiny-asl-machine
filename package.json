@@ -21,39 +21,31 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:ci": "jest --ci --reporters=default --reporters=jest-junit",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ci": "vitest run",
     "clean": "rimraf ./lib",
+    "format": "prettier --write .",
     "lint": "eslint .",
     "lint:staged": "lint-staged",
-    "build": "npm run -s clean && tsc",
-    "prepublishOnly": "npm run build && npm run test",
-    "prepare": "npx simple-git-hooks"
+    "build": "pnpm run -s clean && tsc",
+    "prepublishOnly": "pnpm run build && pnpm run test",
+    "prepare": "pnpx simple-git-hooks"
   },
   "devDependencies": {
-    "@swc-node/register": "^1.4.2",
-    "@swc/cli": "^0.1.57",
-    "@swc/core": "^1.2.165",
-    "@swc/jest": "^0.2.20",
-    "@types/debug": "^4.1.7",
-    "@types/jest": "^27.4.1",
-    "@types/jsonpath": "^0.2.0",
-    "@typescript-eslint/eslint-plugin": "^5.19.0",
-    "@typescript-eslint/parser": "^5.19.0",
-    "eslint": "^8.13.0",
-    "jest": "^27.5.1",
-    "jest-junit": "^13.1.0",
-    "lint-staged": "^12.3.8",
-    "prettier": "^2.6.2",
-    "rimraf": "^3.0.2",
-    "shx": "^0.3.4",
-    "simple-git-hooks": "^2.7.0",
-    "tsc-files": "^1.1.3",
-    "typescript": "^4.6.3"
+    "@types/debug": "^4.1.12",
+    "@types/jsonpath": "^0.2.4",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
+    "eslint": "^8.56.0",
+    "lint-staged": "^15.2.1",
+    "prettier": "^3.2.4",
+    "rimraf": "^5.0.5",
+    "simple-git-hooks": "^2.9.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
   },
   "dependencies": {
-    "@aws-cdk/core": "^1.152.0",
     "debug": "^4.3.4",
     "deep-iterator": "^1.1.0",
     "jsonpath": "^1.1.1",
@@ -83,46 +75,6 @@
     "printWidth": 100,
     "arrowParens": "avoid"
   },
-  "jest": {
-    "transform": {
-      "^.+\\.(t|j)sx?$": [
-        "@swc/jest",
-        {
-          "jsc": {
-            "target": "es2020",
-            "parser": {
-              "syntax": "typescript",
-              "dynamicImport": true,
-              "decorators": false,
-              "tsx": false
-            },
-            "transform": {
-              "legacyDecorator": false,
-              "decoratorMetadata": false
-            }
-          },
-          "module": {
-            "type": "commonjs"
-          },
-          "sourceMaps": true
-        }
-      ]
-    },
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "src/**/*.ts",
-      "!src/**/*.spec.ts",
-      "!src/**/*.d.ts"
-    ],
-    "coverageProvider": "v8",
-    "roots": [
-      "<rootDir>/src/",
-      "<rootDir>/tests/"
-    ]
-  },
-  "jest-junit": {
-    "outputDirectory": "./test-reports"
-  },
   "lint-staged": {
     "*.ts": [
       "eslint",
@@ -131,10 +83,11 @@
     ]
   },
   "simple-git-hooks": {
-    "pre-commit": "npm run lint:staged"
+    "pre-commit": "pnpm run lint:staged"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0",
+    "pnpm": ">=3"
   },
   "engineStrict": true
 }

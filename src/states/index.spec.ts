@@ -2,11 +2,12 @@
 import type { Context, State, StateDefinition } from '../../types';
 import { run, runState } from './index';
 import { ExecutionError } from '../utils/executionError';
+import { describe, it, afterEach, expect, vitest } from 'vitest';
 
 describe('runState', () => {
   afterEach(() => {
-    jest.useRealTimers();
-    jest.clearAllMocks();
+    vitest.useRealTimers();
+    vitest.clearAllMocks();
   });
 
   it('runs a Task state', async () => {
@@ -519,15 +520,15 @@ describe('runState', () => {
       expirydate: '2022-04-14T01:01:10.000Z',
     };
     const context = (<Context>{}) as unknown as Context;
-    jest.useFakeTimers('modern');
-    jest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
+    vitest.useFakeTimers();
+    vitest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
     // When
     const promise = runState(context, state, input);
-    expect(jest.getTimerCount()).toBe(1);
-    jest.advanceTimersByTime(9999);
-    expect(jest.getTimerCount()).toBe(1);
-    jest.advanceTimersByTime(1);
-    expect(jest.getTimerCount()).toBe(0);
+    expect(vitest.getTimerCount()).toBe(1);
+    vitest.advanceTimersByTime(9999);
+    expect(vitest.getTimerCount()).toBe(1);
+    vitest.advanceTimersByTime(1);
+    expect(vitest.getTimerCount()).toBe(0);
     await promise;
   });
   it('runs a Wait state (SecondsPath)', async () => {
@@ -541,15 +542,15 @@ describe('runState', () => {
       waitSeconds: 10,
     };
     const context = (<Context>{}) as unknown as Context;
-    jest.useFakeTimers('modern');
-    jest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
+    vitest.useFakeTimers();
+    vitest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
     // When
     const promise = runState(context, state, input);
-    expect(jest.getTimerCount()).toBe(1);
-    jest.advanceTimersByTime(9999);
-    expect(jest.getTimerCount()).toBe(1);
-    jest.advanceTimersByTime(1);
-    expect(jest.getTimerCount()).toBe(0);
+    expect(vitest.getTimerCount()).toBe(1);
+    vitest.advanceTimersByTime(9999);
+    expect(vitest.getTimerCount()).toBe(1);
+    vitest.advanceTimersByTime(1);
+    expect(vitest.getTimerCount()).toBe(0);
     await promise;
   });
   it('runs a Wait state (Seconds)', async () => {
@@ -561,15 +562,15 @@ describe('runState', () => {
     };
     const input = {};
     const context = (<Context>{}) as unknown as Context;
-    jest.useFakeTimers('modern');
-    jest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
+    vitest.useFakeTimers();
+    vitest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
     // When
     const promise = runState(context, state, input);
-    expect(jest.getTimerCount()).toBe(1);
-    jest.advanceTimersByTime(9999);
-    expect(jest.getTimerCount()).toBe(1);
-    jest.advanceTimersByTime(1);
-    expect(jest.getTimerCount()).toBe(0);
+    expect(vitest.getTimerCount()).toBe(1);
+    vitest.advanceTimersByTime(9999);
+    expect(vitest.getTimerCount()).toBe(1);
+    vitest.advanceTimersByTime(1);
+    expect(vitest.getTimerCount()).toBe(0);
     await promise;
   });
   it('runs a Wait state (Timestamp)', async () => {
@@ -581,15 +582,15 @@ describe('runState', () => {
     };
     const input = {};
     const context = (<Context>{}) as unknown as Context;
-    jest.useFakeTimers('modern');
-    jest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
+    vitest.useFakeTimers();
+    vitest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
     // When
     const promise = runState(context, state, input);
-    expect(jest.getTimerCount()).toBe(1);
-    jest.advanceTimersByTime(9999);
-    expect(jest.getTimerCount()).toBe(1);
-    jest.advanceTimersByTime(1);
-    expect(jest.getTimerCount()).toBe(0);
+    expect(vitest.getTimerCount()).toBe(1);
+    vitest.advanceTimersByTime(9999);
+    expect(vitest.getTimerCount()).toBe(1);
+    vitest.advanceTimersByTime(1);
+    expect(vitest.getTimerCount()).toBe(0);
     await promise;
   });
   it('runs a Succeed state', async () => {

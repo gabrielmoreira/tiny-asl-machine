@@ -1,5 +1,6 @@
 import type { Context, TopLevelChoiceRule } from '../../types';
 import { Operators } from './operators';
+import { describe, it, expect } from 'vitest';
 
 const context = {} as unknown as Context;
 

@@ -60,6 +60,7 @@ export type MapState = CommentField &
 export type PassState = CommentField &
   InputPathField &
   ParametersField &
+  ResultSelectorField &
   ResultPathField &
   OutputPathField &
   EndOrNextField & {

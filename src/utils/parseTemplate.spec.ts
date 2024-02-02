@@ -1,4 +1,5 @@
 import { StringTemplateParser } from './parseStringTemplate';
+import { describe, it, expect } from 'vitest';
 
 describe('xx', () => {
   it('xx', () => {

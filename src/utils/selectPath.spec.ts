@@ -1,5 +1,6 @@
 import type { Context } from '../../types';
 import { selectPath } from './selectPath';
+import { describe, it, expect } from 'vitest';
 
 describe('selectPath', () => {
   it('support jsonpath expressions on input', () => {
