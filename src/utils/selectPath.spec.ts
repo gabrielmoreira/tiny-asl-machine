@@ -1,12 +1,10 @@
 import { Context } from '../../types';
 import { selectPath } from './selectPath';
-import { IntrinsicParser } from './parseIntrinsicFunction';
 
 describe('selectPath', () => {
   it('support jsonpath expressions on input', () => {
     // Given
     const expression = '$.foo';
-    console.log(new IntrinsicParser(expression).parseTopLevelIntrinsic());
     const input = {
       foo: 'bar',
     };
@@ -18,7 +16,6 @@ describe('selectPath', () => {
   it('support jsonpath expressions on context', () => {
     // Given
     const expression = '$$.Execution.Id';
-    console.log(new IntrinsicParser(expression).parseTopLevelIntrinsic());
     const input = {
       foo: 'bar',
     };
@@ -34,7 +31,6 @@ describe('selectPath', () => {
   it('support intrinsic function States.StringToJson', () => {
     // Given
     const expression = 'States.StringToJson($.escapedJsonString)';
-    console.log(new IntrinsicParser(expression).parseTopLevelIntrinsic());
     const input = {
       escapedJsonString: '{"foo": "bar"}',
     };
