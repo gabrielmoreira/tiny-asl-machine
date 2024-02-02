@@ -53,6 +53,7 @@ export type Context = BaseContext & {
   State: StateExecutionContext;
   Task?: TaskStateContext;
   Map?: MapStateContext;
+  ExecutionError?: ExecutionErrorContext;
 };
 
 export type StateData = unknown;
@@ -66,3 +67,8 @@ export type ChoiceOperator = (
   input: StateData,
   choice: TopLevelChoiceRule
 ) => unknown;
+
+export type ExecutionErrorContext = {
+  Error: string;
+  Cause: string;
+};
