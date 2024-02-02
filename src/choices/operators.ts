@@ -43,7 +43,7 @@ export const Operators: ChoiceOperators = {
     if ('Or' in choice && typeof choice.Or !== 'undefined') {
       const choices = choice.Or;
       for (const nestedChoice of choices) {
-        if (!processChoices(context, [{ Next: choice.Next, ...nestedChoice }], input)) {
+        if (processChoices(context, [{ Next: choice.Next, ...nestedChoice }], input)) {
           return choice.Next;
         }
       }

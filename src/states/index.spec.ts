@@ -171,6 +171,91 @@ describe('runState', () => {
     });
     expect(context4.Transition).toStrictEqual({ Next: 'DefaultState' });
   });
+  it('runs a Choice state', async () => {
+    // Given
+    const state: State = {
+      Type: 'Choice',
+      Choices: [
+        {
+          Or: [
+            {
+              Variable: '$.value',
+              StringMatches: 'A',
+            },
+            {
+              Variable: '$.value',
+              StringMatches: 'B',
+            },
+            {
+              Variable: '$.value',
+              StringMatches: 'C',
+            },
+          ],
+          Next: 'It is A, B or C',
+        },
+        {
+          And: [
+            {
+              Variable: '$.value',
+              StringMatches: 'D',
+            },
+            {
+              Not: {
+                Variable: '$.somethingElse',
+                NumericEquals: 1,
+              },
+            },
+          ],
+          Next: 'Its D',
+        },
+      ],
+      Default: 'Unknown Value',
+    };
+    const context1 = (<Context>{}) as unknown as Context;
+    const context2 = (<Context>{}) as unknown as Context;
+    const context3 = (<Context>{}) as unknown as Context;
+    const context4 = (<Context>{}) as unknown as Context;
+    const context5 = (<Context>{}) as unknown as Context;
+    // When
+    const result1 = await runState(context1, state, {
+      value: 'A',
+    });
+    const result2 = await runState(context2, state, {
+      value: 'B',
+    });
+    const result3 = await runState(context3, state, {
+      value: 'C',
+    });
+    const result4 = await runState(context4, state, {
+      value: 'D',
+      somethingElse: 2,
+    });
+    const result5 = await runState(context5, state, {
+      value: 'E',
+    });
+    // Then
+    expect(result1).toStrictEqual({
+      value: 'A',
+    });
+    expect(context1.Transition).toStrictEqual({ Next: 'It is A, B or C' });
+    expect(result2).toStrictEqual({
+      value: 'B',
+    });
+    expect(context2.Transition).toStrictEqual({ Next: 'It is A, B or C' });
+    expect(result3).toStrictEqual({
+      value: 'C',
+    });
+    expect(context3.Transition).toStrictEqual({ Next: 'It is A, B or C' });
+    expect(result4).toStrictEqual({
+      value: 'D',
+      somethingElse: 2,
+    });
+    expect(context4.Transition).toStrictEqual({ Next: 'Its D' });
+    expect(result5).toStrictEqual({
+      value: 'E',
+    });
+    expect(context5.Transition).toStrictEqual({ Next: 'Unknown Value' });
+  });
   it('runs a Choice state (without Default)', async () => {
     // Given
     const state: State = {
