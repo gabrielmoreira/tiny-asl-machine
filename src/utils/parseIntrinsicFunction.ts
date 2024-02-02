@@ -70,7 +70,7 @@ export class IntrinsicParser {
       return this.parseStringLiteral();
     }
 
-    this.raiseError('expected $, function or single-quoted string');
+    return this.raiseError('expected $, function or single-quoted string');
   }
 
   /**

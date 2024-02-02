@@ -1,8 +1,7 @@
-import { run } from '..';
-import { State, StateDefinition } from '../../types/asl';
-import { Context } from '../../types/runtime';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Context, State, StateDefinition } from '../../types';
+import { run, runState } from './index';
 import { ExecutionError } from '../utils/executionError';
-import { runState } from './index';
 
 describe('runState', () => {
   afterEach(() => {
@@ -206,7 +205,7 @@ describe('runState', () => {
     };
     const context = (<Context>{}) as unknown as Context;
     // When
-    let error;
+    let error: any;
     try {
       await runState(context, state, {
         type: 'Private',
@@ -248,7 +247,7 @@ describe('runState', () => {
     };
     const context = (<Context>{
       Resources: {
-        invoke: (resource, payload) => {
+        invoke: (resource, payload: any) => {
           if (resource.endsWith(':Add')) {
             return payload[0] + payload[1];
           } else {
@@ -531,7 +530,7 @@ describe('runState', () => {
     };
     const context = (<Context>{}) as unknown as Context;
     // When
-    let error;
+    let error: any;
     try {
       await runState(context, state, { a: { something: [1, 2, 3, 4] }, b: 3 });
     } catch (e) {
@@ -558,7 +557,8 @@ describe('runState', () => {
     };
     const context = (<Context>{
       Resources: {
-        invoke: async (resource: string, payload: unknown): Promise<unknown> => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        invoke: async (_resource: string, _payload: unknown): Promise<unknown> => {
           throw new ExecutionError('SomeError', 'Some error msg');
         },
       },
@@ -623,7 +623,7 @@ describe('run', () => {
     const options = {
       definition: awsErrorStateMachine,
       resourceContext: {
-        invoke: (_resource, params) => {
+        invoke: (_resource: string, params: any) => {
           throw new ExecutionError(params.error.code, params.error.message);
         },
       },

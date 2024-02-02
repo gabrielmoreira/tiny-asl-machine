@@ -1,34 +1,31 @@
-import {
-  State,
+import type {
+  BaseContext,
+  Context,
+  EndField,
+  ExecutionContext,
   InputPathField,
+  MapState,
+  NextField,
   OutputPathField,
   ParametersField,
-  ResultSelectorField,
-  ResultPathField,
-  TaskState,
-  StateDefinition,
-  NextField,
-  EndField,
-  WaitState,
-  MapState,
-  ParallelState,
-} from '../../types/asl';
-import {
   ResourceContext,
-  Context,
+  ResultPathField,
+  ResultSelectorField,
+  State,
   StateData,
+  StateDefinition,
   StateExecutors,
-  BaseContext,
-  ExecutionContext,
-} from '../../types/runtime';
-import { selectPath } from '../utils/selectPath';
-import { ExecutionError } from '../utils/executionError';
+  TaskState,
+  WaitState,
+} from '../../types';
+import Debug from 'debug';
+import pLimit from 'p-limit';
 import { processChoices } from '../choices/operators';
 import { clone } from '../utils/clone';
+import { ExecutionError } from '../utils/executionError';
 import { replacePathTemplateFields } from '../utils/replacePathTemplateFields';
+import { selectPath } from '../utils/selectPath';
 import { updatePath } from '../utils/updatePath';
-import pLimit from 'p-limit';
-import Debug from 'debug';
 const debug = Debug('tiny-asl-machine:state');
 
 export async function run(
@@ -42,7 +39,7 @@ export async function run(
     executionContext?: ExecutionContext;
   },
   input: StateData
-) {
+): Promise<StateData> {
   const baseContext = createBaseContext({ definition, resourceContext, executionContext }, input);
   return runUntilFinished(definition, baseContext, input, definition.StartAt);
 }
@@ -52,7 +49,7 @@ async function runUntilFinished(
   context: Context | BaseContext,
   input: StateData,
   nextState: string
-) {
+): Promise<StateData> {
   debug('===== Transitioning to state', nextState, '=====');
   const state = definition.States[nextState];
   if (!state) throw new ExecutionError('StateNotFound', `State '${nextState} not found`);
@@ -64,13 +61,18 @@ async function runUntilFinished(
   return output;
 }
 
-export async function runState(context: Context, state: State, input: StateData) {
-  return await retryCatch(context, state, input, () =>
-    StateExecutors[state.Type](context, state, input)
+export async function runState(
+  context: Context,
+  state: State,
+  input: StateData
+): Promise<StateData> {
+  // TODO implement retry logic
+  return await catchErrors(context, state, input, () =>
+    Executors[state.Type](context, state, input)
   );
 }
 
-const StateExecutors: StateExecutors = {
+const Executors: StateExecutors = {
   Pass: async (context, state, input) => {
     if (state.Type !== 'Pass')
       throw new ExecutionError('InvalidStateType', "State Type should be 'Pass'");
@@ -156,7 +158,7 @@ const StateExecutors: StateExecutors = {
   },
 };
 
-async function retryCatch(
+async function catchErrors(
   context: Context,
   state: State,
   input: StateData,
@@ -166,7 +168,8 @@ async function retryCatch(
   context.ExecutionError = undefined;
   try {
     return await fn();
-  } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
     if ('Catch' in state && state.Catch) {
       const catcher = state.Catch.find(p => {
         if (
@@ -202,13 +205,12 @@ async function retryCatch(
 }
 
 async function invokeTaskResource(context: Context, state: TaskState, payload: unknown) {
-  // TODO implement catch & retry logic
-  return await context.Resources.invoke(state.Resource, payload);
+  return await context.Resources?.invoke(state.Resource, payload);
 }
 async function processMapState(context: Context, state: MapState, input: StateData) {
   let items = input;
   debug('[processMapState] input', input);
-  if ('ItemsPath' in state) {
+  if ('ItemsPath' in state && typeof state.ItemsPath !== 'undefined') {
     items = selectPath(state.ItemsPath, input, context);
     debug('[processMapState] items after ItemsPath', items);
   }
@@ -261,8 +263,8 @@ function selectInputPath(state: State, input: StateData, context: Context): Stat
   return input;
 }
 
-function hasInputPath(state: unknown): state is InputPathField {
-  return typeof state === 'object' && state !== null && typeof state['InputPath'] === 'string';
+function hasInputPath(state: State): state is State & Required<InputPathField> {
+  return 'InputPath' in state && typeof state.InputPath === 'string';
 }
 
 function buildParameters(state: State, input: StateData, context: Context) {
@@ -270,8 +272,8 @@ function buildParameters(state: State, input: StateData, context: Context) {
   return input;
 }
 
-function hasParameters(state: unknown): state is ParametersField {
-  return typeof state === 'object' && state !== null && typeof state['Parameters'] === 'object';
+function hasParameters(state: State): state is State & Required<ParametersField> {
+  return 'Parameters' in state && typeof state.Parameters === 'object';
 }
 
 function buildResultSelector(state: State, data: StateData, context: Context) {
@@ -280,8 +282,8 @@ function buildResultSelector(state: State, data: StateData, context: Context) {
   return data;
 }
 
-function hasResultSelector(state: unknown): state is ResultSelectorField {
-  return typeof state === 'object' && state !== null && typeof state['ResultSelector'] === 'object';
+function hasResultSelector(state: State): state is State & Required<ResultSelectorField> {
+  return 'ResultSelector' in state && typeof state.ResultSelector === 'object';
 }
 
 function buildResultPath(state: State, input: StateData, output: StateData) {
@@ -302,8 +304,8 @@ function applyResultPath(resultPath: string | null, input: StateData, output: St
   }
 }
 
-function hasResultPath(state: unknown): state is ResultPathField {
-  return typeof state === 'object' && state !== null && 'ResultPath' in state;
+function hasResultPath(state: State): state is State & Required<ResultPathField> {
+  return 'ResultPath' in state && typeof state.ResultPath !== 'undefined';
 }
 
 function buildOutputPath(state: State, output: StateData, context: Context) {
@@ -314,8 +316,8 @@ function buildOutputPath(state: State, output: StateData, context: Context) {
   return output;
 }
 
-function hasOutputPath(state: unknown): state is OutputPathField {
-  return typeof state === 'object' && state !== null && typeof state['OutputPath'] === 'string';
+function hasOutputPath(state: State): state is State & Required<OutputPathField> {
+  return 'OutputPath' in state && typeof state.OutputPath !== 'undefined';
 }
 
 function processNextOrEndState(context: Context, state: State) {
@@ -326,11 +328,12 @@ function processNextOrEndState(context: Context, state: State) {
   }
 }
 
-function hasNextField(state: unknown): state is NextField {
-  return typeof state === 'object' && state !== null && 'Next' in state;
+function hasNextField(state: State): state is State & Required<NextField> {
+  return 'Next' in state && typeof state.Next !== 'undefined';
 }
-function hasEndField(state: unknown): state is EndField {
-  return typeof state === 'object' && state !== null && state['End'] === true;
+
+function hasEndField(state: State): state is State & Required<EndField> {
+  return 'End' in state && state.End === true;
 }
 
 function calculateWaitDelayInMs(context: Context, state: WaitState, input: StateData): number {

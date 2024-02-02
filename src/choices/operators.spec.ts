@@ -1,5 +1,4 @@
-import { TopLevelChoiceRule } from '../../types/asl';
-import { Context } from '../../types/runtime';
+import type { Context, TopLevelChoiceRule } from '../../types';
 import { Operators } from './operators';
 
 const context = {} as unknown as Context;
