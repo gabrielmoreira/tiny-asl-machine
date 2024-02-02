@@ -14,12 +14,15 @@ export type StateExecutor = (
 
 export type StateMachineContext = {
   Id: string;
+  Name: string;
 };
 
 export type ExecutionContext = {
   Id: string;
   Input: unknown;
   StartTime: string;
+  Name: string;
+  RoleArn: string;
 };
 
 export type StateExecutionContext = {

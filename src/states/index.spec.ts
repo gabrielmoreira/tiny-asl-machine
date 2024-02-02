@@ -1,5 +1,5 @@
-import { State } from '../asl';
-import { Context } from '../runtime';
+import { State } from '../../types/asl';
+import { Context } from '../../types/runtime';
 import { runState } from './index';
 
 describe('state', () => {
