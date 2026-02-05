@@ -30,7 +30,7 @@
     "lint:staged": "lint-staged",
     "build": "pnpm run -s clean && tsc",
     "prepublishOnly": "pnpm run build && pnpm run test",
-    "prepare": "pnpx simple-git-hooks"
+    "prepare": "pnpm simple-git-hooks"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",
@@ -86,8 +86,8 @@
     "pre-commit": "pnpm run lint:staged"
   },
   "engines": {
-    "node": ">=16.0.0",
-    "pnpm": ">=3"
+    "node": ">=20.0.0",
+    "pnpm": ">=10.0.0"
   },
   "engineStrict": true
 }
