@@ -12,14 +12,34 @@
     "url": "https://github.com/gabrielmoreira/tiny-asl-machine/issues"
   },
   "license": "MIT",
+  "keywords": [
+    "aws",
+    "step-functions",
+    "state-machine",
+    "asl",
+    "amazon-states-language",
+    "workflow",
+    "orchestration",
+    "serverless"
+  ],
   "main": "lib/index.js",
+  "module": "lib/index.js",
   "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "import": "./lib/index.js"
+    }
+  },
+  "sideEffects": false,
   "files": [
-    "src",
     "lib",
-    "package.json",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "vitest --no-watch",
     "test:watch": "vitest --watch",
@@ -78,7 +98,6 @@
   "lint-staged": {
     "*.ts": [
       "eslint",
-      "tsc-files --rootDir . --noEmit",
       "prettier --write"
     ]
   },
