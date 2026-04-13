@@ -303,4 +303,73 @@ describe('selectPath', () => {
     );
     expect(result).toBe(true);
   });
+
+  // --- Code review learnings: spec-compliance edge cases ---
+
+  it('States.MathRandom end bound is exclusive (per ASL spec)', () => {
+    // Given — run 1000 times to ensure max is never reached
+    const results = new Set<number>();
+    for (let i = 0; i < 1000; i++) {
+      const result = selectPath('States.MathRandom(1, 5)', {}, <Context>{}) as number;
+      results.add(result);
+    }
+    // Then — values should be 1,2,3,4 but never 5 (end-exclusive)
+    expect(results.has(5)).toBe(false);
+    expect(results.has(1)).toBe(true); // start is inclusive
+  });
+
+  it('States.MathAdd rounds non-integer arguments (per ASL spec)', () => {
+    // Given — spec says non-integers are rounded before adding
+    // Math.round(1.6) = 2, Math.round(2.7) = 3, so result = 5 (not 4.3)
+    const result = selectPath('States.MathAdd($.a, $.b)', { a: 1.6, b: 2.7 }, <Context>{});
+    // Then
+    expect(result).toBe(5);
+  });
+
+  it('States.MathAdd returns integer even with decimal inputs', () => {
+    // Given — 0.1 + 0.2 = 0.3 in float, but spec rounds first
+    // Math.round(0.1) = 0, Math.round(0.2) = 0, so result = 0
+    const result = selectPath('States.MathAdd($.a, $.b)', { a: 0.1, b: 0.2 }, <Context>{});
+    // Then
+    expect(result).toBe(0);
+    expect(Number.isInteger(result)).toBe(true);
+  });
+
+  it('States.StringSplit splits on each delimiter character individually', () => {
+    // Given — per ASL spec, splitter is a set of delimiter characters
+    const result = selectPath(
+      "States.StringSplit($.str, $.delim)",
+      { str: '1+2,3.4', delim: '.+,' },
+      <Context>{}
+    );
+    // Then — splits on '.', '+', AND ',' individually
+    expect(result).toStrictEqual(['1', '2', '3', '4']);
+  });
+
+  it('States.StringSplit with single char delimiter works normally', () => {
+    const result = selectPath(
+      "States.StringSplit($.str, ',')",
+      { str: 'a,b,c' },
+      <Context>{}
+    );
+    expect(result).toStrictEqual(['a', 'b', 'c']);
+  });
+
+  it('States.ArrayGetItem rejects out-of-range index', () => {
+    expect(() =>
+      selectPath('States.ArrayGetItem($.arr, 5)', { arr: [10, 20, 30] }, <Context>{})
+    ).toThrow();
+  });
+
+  it('States.ArrayGetItem rejects negative index', () => {
+    expect(() =>
+      selectPath('States.ArrayGetItem($.arr, -1)', { arr: [10, 20, 30] }, <Context>{})
+    ).toThrow();
+  });
+
+  it('States.MathRandom rejects start > end', () => {
+    expect(() =>
+      selectPath('States.MathRandom(10, 5)', {}, <Context>{})
+    ).toThrow();
+  });
 });
