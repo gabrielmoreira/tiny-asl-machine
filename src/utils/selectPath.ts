@@ -227,7 +227,13 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       return { ...obj1, ...obj2 };
     },
     'States.JsonToString': (obj: unknown) => JSON.stringify(obj),
-    'States.MathAdd': (a: unknown, b: unknown) => {
+    'States.MathAdd': (...args: unknown[]) => {
+      if (args.length !== 2)
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          `States.MathAdd expected exactly 2 arguments, got ${args.length}`
+        );
+      const [a, b] = args;
       assertNumber(a, 'States.MathAdd');
       assertNumber(b, 'States.MathAdd');
       const x = Math.round(a);

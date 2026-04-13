@@ -436,6 +436,11 @@ describe('selectPath', () => {
     expect(() => selectPath("States.MathAdd(1, 'b')", {}, <Context>{})).toThrow();
   });
 
+  it('States.MathAdd rejects extra arguments', () => {
+    // Given / When / Then
+    expect(() => selectPath('States.MathAdd(1, 2, 999)', {}, <Context>{})).toThrow();
+  });
+
   it('States.MathRandom rejects non-number start argument', () => {
     expect(() => selectPath("States.MathRandom('a', 10)", {}, <Context>{})).toThrow();
   });

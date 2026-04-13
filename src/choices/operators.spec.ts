@@ -681,6 +681,15 @@ describe('processChoices', () => {
           )
         ).toBeUndefined();
       });
+
+      it('returns undefined for impossible timestamp values', () => {
+        expect(
+          evaluateChoice(
+            { Variable: '$.value', IsTimestamp: true, Next: 'Matched' },
+            { value: '2024-99-99T25:61:61Z' }
+          )
+        ).toBeUndefined();
+      });
     });
   });
 
