@@ -220,7 +220,8 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
         );
       if (seed !== undefined) {
         const seedNum = typeof seed === 'number' ? seed : 0;
-        const hash = ((seedNum * 9301 + 49297) % 233280) / 233280;
+        const mod = ((seedNum * 9301 + 49297) % 233280 + 233280) % 233280;
+        const hash = mod / 233280;
         return Math.floor(hash * (e - s)) + s;
       }
       return rt.random(s, e);

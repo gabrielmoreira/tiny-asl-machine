@@ -474,4 +474,12 @@ describe('selectPath', () => {
     // Then
     expect(r1).not.toBe(r2);
   });
+
+  it('States.MathRandom with negative seed stays within requested range', () => {
+    // Given
+    const result = selectPath('States.MathRandom(1, 10, -10)', {}, <Context>{}) as number;
+    // Then
+    expect(result).toBeGreaterThanOrEqual(1);
+    expect(result).toBeLessThan(10);
+  });
 });
