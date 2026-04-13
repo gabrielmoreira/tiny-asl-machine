@@ -66,16 +66,28 @@ const jsonValueEquals = (a: any, b: any): boolean => stableStringify(a) === stab
 
 const DANGEROUS_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 
-function deepMerge(obj1: Record<string, unknown>, obj2: Record<string, unknown>, depth = 0): Record<string, unknown> {
-  if (depth > 50) return { ...obj1, ...obj2 };
+function deepMerge(
+  obj1: Record<string, unknown>,
+  obj2: Record<string, unknown>,
+  depth = 0
+): Record<string, unknown> {
   const result: Record<string, unknown> = { ...obj1 };
   for (const [key, val] of Object.entries(obj2)) {
     if (DANGEROUS_KEYS.has(key)) continue;
     if (
-      val && typeof val === 'object' && !Array.isArray(val) &&
-      result[key] && typeof result[key] === 'object' && !Array.isArray(result[key])
+      val &&
+      typeof val === 'object' &&
+      !Array.isArray(val) &&
+      result[key] &&
+      typeof result[key] === 'object' &&
+      !Array.isArray(result[key]) &&
+      depth < 50
     ) {
-      result[key] = deepMerge(result[key] as Record<string, unknown>, val as Record<string, unknown>, depth + 1);
+      result[key] = deepMerge(
+        result[key] as Record<string, unknown>,
+        val as Record<string, unknown>,
+        depth + 1
+      );
     } else {
       result[key] = val;
     }
@@ -85,12 +97,26 @@ function deepMerge(obj1: Record<string, unknown>, obj2: Record<string, unknown>,
 
 function assertArray(value: unknown, fnName: string): asserts value is unknown[] {
   if (!Array.isArray(value))
-    throw new ExecutionError('States.IntrinsicFailure', `${fnName} expected an array, got ${typeof value}`);
+    throw new ExecutionError(
+      'States.IntrinsicFailure',
+      `${fnName} expected an array, got ${typeof value}`
+    );
 }
 
 function assertString(value: unknown, fnName: string): asserts value is string {
   if (typeof value !== 'string')
-    throw new ExecutionError('States.IntrinsicFailure', `${fnName} expected a string, got ${typeof value}`);
+    throw new ExecutionError(
+      'States.IntrinsicFailure',
+      `${fnName} expected a string, got ${typeof value}`
+    );
+}
+
+function assertNumber(value: unknown, fnName: string): asserts value is number {
+  if (typeof value !== 'number' || !isFinite(value))
+    throw new ExecutionError(
+      'States.IntrinsicFailure',
+      `${fnName} expected a number, got ${typeof value}`
+    );
 }
 
 function getIntrinsicFunctions(context: Context): Record<string, (...args: unknown[]) => unknown> {
@@ -103,8 +129,16 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
     },
     'States.ArrayGetItem': (array: unknown, index: unknown) => {
       assertArray(array, 'States.ArrayGetItem');
-      if (typeof index !== 'number' || !Number.isInteger(index) || index < 0 || index >= array.length)
-        throw new ExecutionError('States.IntrinsicFailure', `ArrayGetItem index ${index} out of bounds for array of length ${array.length}`);
+      if (
+        typeof index !== 'number' ||
+        !Number.isInteger(index) ||
+        index < 0 ||
+        index >= array.length
+      )
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          `ArrayGetItem index ${index} out of bounds for array of length ${array.length}`
+        );
       return array[index];
     },
     'States.ArrayLength': (array: unknown) => {
@@ -114,21 +148,30 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
     'States.ArrayPartition': (array: unknown, chunkSize: unknown) => {
       assertArray(array, 'States.ArrayPartition');
       if (typeof chunkSize !== 'number' || !Number.isInteger(chunkSize) || chunkSize < 1)
-        throw new ExecutionError('States.IntrinsicFailure', 'ArrayPartition chunk size must be a positive integer');
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          'ArrayPartition chunk size must be a positive integer'
+        );
       const result: unknown[][] = [];
       for (let i = 0; i < array.length; i += chunkSize) {
         result.push(array.slice(i, i + chunkSize));
       }
       return result;
     },
-    'States.ArrayRange': (start: number, end: number, step: number) => {
+    'States.ArrayRange': (start: unknown, end: unknown, step: unknown) => {
+      assertNumber(start, 'States.ArrayRange');
+      assertNumber(end, 'States.ArrayRange');
+      assertNumber(step, 'States.ArrayRange');
       if (step === 0)
         throw new ExecutionError('States.IntrinsicFailure', 'ArrayRange step must not be zero');
       const result: number[] = [];
       for (let i = start; step > 0 ? i <= end : i >= end; i += step) {
         result.push(i);
         if (result.length > 1000)
-          throw new ExecutionError('States.IntrinsicFailure', 'ArrayRange result must not exceed 1000 items');
+          throw new ExecutionError(
+            'States.IntrinsicFailure',
+            'ArrayRange result must not exceed 1000 items'
+          );
       }
       return result;
     },
@@ -140,8 +183,14 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       }
       return seen;
     },
-    'States.Base64Encode': (str: unknown) => { assertString(str, 'States.Base64Encode'); return rt.base64Encode(str); },
-    'States.Base64Decode': (str: unknown) => { assertString(str, 'States.Base64Decode'); return rt.base64Decode(str); },
+    'States.Base64Encode': (str: unknown) => {
+      assertString(str, 'States.Base64Encode');
+      return rt.base64Encode(str);
+    },
+    'States.Base64Decode': (str: unknown) => {
+      assertString(str, 'States.Base64Decode');
+      return rt.base64Decode(str);
+    },
     'States.Format': (template: string, ...args: unknown[]) => {
       return new StringTemplateParser("'" + template.trim() + "'")
         .parseTemplate()
@@ -151,26 +200,49 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
     'States.Hash': (data: unknown, algorithm: unknown) => {
       assertString(data, 'States.Hash');
       assertString(algorithm, 'States.Hash');
-      return rt.hash(data, algorithm);
+      try {
+        return rt.hash(data, algorithm);
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        throw new ExecutionError('States.IntrinsicFailure', msg);
+      }
     },
     'States.JsonMerge': (obj1: unknown, obj2: unknown, isDeep: unknown) => {
       if (!obj1 || typeof obj1 !== 'object' || Array.isArray(obj1))
-        throw new ExecutionError('States.IntrinsicFailure', 'JsonMerge expected a JSON object as first argument');
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          'JsonMerge expected a JSON object as first argument'
+        );
       if (!obj2 || typeof obj2 !== 'object' || Array.isArray(obj2))
-        throw new ExecutionError('States.IntrinsicFailure', 'JsonMerge expected a JSON object as second argument');
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          'JsonMerge expected a JSON object as second argument'
+        );
       if (typeof isDeep !== 'boolean')
-        throw new ExecutionError('States.IntrinsicFailure', 'JsonMerge expected a boolean as third argument');
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          'JsonMerge expected a boolean as third argument'
+        );
       return isDeep
         ? deepMerge(obj1 as Record<string, unknown>, obj2 as Record<string, unknown>)
         : { ...obj1, ...obj2 };
     },
     'States.JsonToString': (obj: unknown) => JSON.stringify(obj),
-    'States.MathAdd': (a: number, b: number) => Math.round(a) + Math.round(b),
-    'States.MathRandom': (start: number, end: number) => {
+    'States.MathAdd': (a: unknown, b: unknown) => {
+      assertNumber(a, 'States.MathAdd');
+      assertNumber(b, 'States.MathAdd');
+      return Math.round(a) + Math.round(b);
+    },
+    'States.MathRandom': (start: unknown, end: unknown) => {
+      assertNumber(start, 'States.MathRandom');
+      assertNumber(end, 'States.MathRandom');
       const s = Math.round(start);
       const e = Math.round(end);
       if (s >= e)
-        throw new ExecutionError('States.IntrinsicFailure', 'MathRandom start must be less than end');
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          'MathRandom start must be less than end'
+        );
       return rt.random(s, e);
     },
     'States.StringSplit': (str: unknown, delimiter: unknown) => {

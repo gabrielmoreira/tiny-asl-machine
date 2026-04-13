@@ -157,11 +157,7 @@ describe('selectPath', () => {
   });
 
   it('supports numeric literals in nested intrinsic calls', () => {
-    const result = selectPath(
-      'States.Array(1, States.Array(2, 3))',
-      {},
-      <Context>{}
-    );
+    const result = selectPath('States.Array(1, States.Array(2, 3))', {}, <Context>{});
     expect(result).toStrictEqual([1, [2, 3]]);
   });
 
@@ -195,7 +191,11 @@ describe('selectPath', () => {
   });
 
   it('States.ArrayGetItem returns item at index', () => {
-    const result = selectPath('States.ArrayGetItem($.arr, 2)', { arr: [10, 20, 30, 40] }, <Context>{});
+    const result = selectPath(
+      'States.ArrayGetItem($.arr, 2)',
+      { arr: [10, 20, 30, 40] },
+      <Context>{}
+    );
     expect(result).toBe(30);
   });
 
@@ -205,7 +205,11 @@ describe('selectPath', () => {
   });
 
   it('States.ArrayUnique removes duplicates', () => {
-    const result = selectPath('States.ArrayUnique($.arr)', { arr: [1, 2, 3, 3, 3, 3, 4] }, <Context>{});
+    const result = selectPath(
+      'States.ArrayUnique($.arr)',
+      { arr: [1, 2, 3, 3, 3, 3, 4] },
+      <Context>{}
+    );
     expect(result).toStrictEqual([1, 2, 3, 4]);
   });
 
@@ -220,11 +224,7 @@ describe('selectPath', () => {
   });
 
   it('States.StringSplit splits string by delimiter', () => {
-    const result = selectPath(
-      "States.StringSplit($.str, ',')",
-      { str: '1,2,3,4,5' },
-      <Context>{}
-    );
+    const result = selectPath("States.StringSplit($.str, ',')", { str: '1,2,3,4,5' }, <Context>{});
     expect(result).toStrictEqual(['1', '2', '3', '4', '5']);
   });
 
@@ -256,7 +256,11 @@ describe('selectPath', () => {
 
   // Array/JSON manipulation
   it('States.ArrayPartition chunks array', () => {
-    const result = selectPath('States.ArrayPartition($.arr, 4)', { arr: [1, 2, 3, 4, 5, 6, 7, 8, 9] }, <Context>{});
+    const result = selectPath(
+      'States.ArrayPartition($.arr, 4)',
+      { arr: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
+      <Context>{}
+    );
     expect(result).toStrictEqual([[1, 2, 3, 4], [5, 6, 7, 8], [9]]);
   });
 
@@ -291,7 +295,7 @@ describe('selectPath', () => {
   it('States.MathRandom returns number in range', () => {
     const result = selectPath('States.MathRandom(1, 999)', {}, <Context>{}) as number;
     expect(result).toBeGreaterThanOrEqual(1);
-    expect(result).toBeLessThanOrEqual(999);
+    expect(result).toBeLessThan(999); // end-exclusive per ASL spec
     expect(Number.isInteger(result)).toBe(true);
   });
 
@@ -338,7 +342,7 @@ describe('selectPath', () => {
   it('States.StringSplit splits on each delimiter character individually', () => {
     // Given — per ASL spec, splitter is a set of delimiter characters
     const result = selectPath(
-      "States.StringSplit($.str, $.delim)",
+      'States.StringSplit($.str, $.delim)',
       { str: '1+2,3.4', delim: '.+,' },
       <Context>{}
     );
@@ -347,11 +351,7 @@ describe('selectPath', () => {
   });
 
   it('States.StringSplit with single char delimiter works normally', () => {
-    const result = selectPath(
-      "States.StringSplit($.str, ',')",
-      { str: 'a,b,c' },
-      <Context>{}
-    );
+    const result = selectPath("States.StringSplit($.str, ',')", { str: 'a,b,c' }, <Context>{});
     expect(result).toStrictEqual(['a', 'b', 'c']);
   });
 
@@ -368,9 +368,7 @@ describe('selectPath', () => {
   });
 
   it('States.MathRandom rejects start > end', () => {
-    expect(() =>
-      selectPath('States.MathRandom(10, 5)', {}, <Context>{})
-    ).toThrow();
+    expect(() => selectPath('States.MathRandom(10, 5)', {}, <Context>{})).toThrow();
   });
 
   // --- Type validation (Claude review: functions must reject wrong input types) ---
@@ -380,15 +378,11 @@ describe('selectPath', () => {
   });
 
   it('States.ArrayContains rejects non-array first argument', () => {
-    expect(() =>
-      selectPath("States.ArrayContains('not-array', 'x')", {}, <Context>{})
-    ).toThrow();
+    expect(() => selectPath("States.ArrayContains('not-array', 'x')", {}, <Context>{})).toThrow();
   });
 
   it('States.ArrayPartition rejects non-array first argument', () => {
-    expect(() =>
-      selectPath("States.ArrayPartition('not-array', 2)", {}, <Context>{})
-    ).toThrow();
+    expect(() => selectPath("States.ArrayPartition('not-array', 2)", {}, <Context>{})).toThrow();
   });
 
   it('States.ArrayUnique rejects non-array input', () => {
@@ -399,8 +393,32 @@ describe('selectPath', () => {
     expect(() => selectPath("States.Hash('data', 'UNSUPPORTED')", {}, <Context>{})).toThrow();
   });
 
+  it('States.Hash unsupported algorithm throws States.IntrinsicFailure', () => {
+    expect(() => selectPath("States.Hash('data', 'UNSUPPORTED')", {}, <Context>{})).toThrowError(
+      expect.objectContaining({ name: 'States.IntrinsicFailure' })
+    );
+  });
+
+  it('States.MathAdd rejects non-number first argument', () => {
+    expect(() => selectPath("States.MathAdd('a', 1)", {}, <Context>{})).toThrow();
+  });
+
+  it('States.MathAdd rejects non-number second argument', () => {
+    expect(() => selectPath("States.MathAdd(1, 'b')", {}, <Context>{})).toThrow();
+  });
+
+  it('States.MathRandom rejects non-number start argument', () => {
+    expect(() => selectPath("States.MathRandom('a', 10)", {}, <Context>{})).toThrow();
+  });
+
+  it('States.ArrayRange rejects non-number start argument', () => {
+    expect(() => selectPath("States.ArrayRange('a', 5, 1)", {}, <Context>{})).toThrow();
+  });
+
   it('States.StringSplit rejects non-string first argument', () => {
-    expect(() => selectPath('States.StringSplit($.val, $.d)', { val: 123, d: ',' }, <Context>{})).toThrow();
+    expect(() =>
+      selectPath('States.StringSplit($.val, $.d)', { val: 123, d: ',' }, <Context>{})
+    ).toThrow();
   });
 
   it('States.Base64Decode rejects invalid base64 gracefully', () => {
