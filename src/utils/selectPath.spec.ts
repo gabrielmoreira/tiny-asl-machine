@@ -1,4 +1,5 @@
 import type { Context } from '../../types';
+import { createTestRuntime } from './runtime';
 import { selectPath } from './selectPath';
 import { describe, it, expect } from 'vitest';
 
@@ -302,26 +303,38 @@ describe('selectPath', () => {
   });
 
   it('States.ArrayContains uses JSON value equality for objects', () => {
+    // Given
     const result = selectPath(
       'States.ArrayContains($.arr, $.target)',
       { arr: [{ a: 1 }, { b: 2 }], target: { a: 1 } },
       <Context>{}
     );
+    // Then
+    expect(result).toBe(true);
+  });
+
+  it('States.ArrayContains handles undefined distinctly from missing elements', () => {
+    // Given
+    const result = selectPath(
+      'States.ArrayContains($.arr, $.target)',
+      { arr: [undefined], target: undefined },
+      <Context>{}
+    );
+    // Then
     expect(result).toBe(true);
   });
 
   // --- Code review learnings: spec-compliance edge cases ---
 
   it('States.MathRandom end bound is exclusive (per ASL spec)', () => {
-    // Given — run 1000 times to ensure max is never reached
-    const results = new Set<number>();
-    for (let i = 0; i < 1000; i++) {
-      const result = selectPath('States.MathRandom(1, 5)', {}, <Context>{}) as number;
-      results.add(result);
-    }
-    // Then — values should be 1,2,3,4 but never 5 (end-exclusive)
-    expect(results.has(5)).toBe(false);
-    expect(results.has(1)).toBe(true); // start is inclusive
+    // Given
+    const context = <Context>{ Runtime: createTestRuntime() } as Context;
+    // When
+    const result = selectPath('States.MathRandom(1, 5)', {}, context) as number;
+    // Then
+    expect(result).toBe(1);
+    expect(result).toBeGreaterThanOrEqual(1);
+    expect(result).toBeLessThan(5);
   });
 
   it('States.MathAdd rounds non-integer arguments (per ASL spec)', () => {

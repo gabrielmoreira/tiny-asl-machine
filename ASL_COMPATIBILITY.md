@@ -46,7 +46,7 @@
 - `States.Base64Encode(data)` - Base64 encode
 - `States.Base64Decode(data)` - Base64 decode
 - `States.Hash(data, algorithm)` - Hash (MD5, SHA-1, SHA-256, SHA-384, SHA-512)
-- `States.JsonMerge(obj1, obj2, isDeep)` - Shallow or deep merge
+- `States.JsonMerge(obj1, obj2, isDeep)` - Shallow merge only (`isDeep === false`)
 - `States.MathAdd(a, b)` - Integer addition
 - `States.MathRandom(start, end)` - Random integer in range
 - `States.StringSplit(string, delimiter)` - Split string into array

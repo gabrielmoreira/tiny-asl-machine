@@ -668,7 +668,7 @@ describe('processChoices', () => {
         expect(
           evaluateChoice(
             { Variable: '$.value', IsTimestamp: true, Next: 'Matched' },
-            { value: '2025-01-01T00%3A00%3A00Z' }
+            { value: '2025-01-01T00:00:00Z' }
           )
         ).toBe('Matched');
       });

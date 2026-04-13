@@ -134,8 +134,8 @@ export const Operators: ChoiceOperators = {
       const value = choice.IsTimestamp;
       const variable = selectPath(choice.Variable, input, context);
       const rfc3339Pattern =
-        /^\d{4}-\d{2}-\d{2}T\d{2}%3A\d{2}%3A\d{2}(?:%2E\d+)?[A-Z]?(?:[.-](?:08%3A\d{2}|\d{2}[A-Z]))?$/gm;
-      const result = rfc3339Pattern.test(variable);
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
+      const result = typeof variable === 'string' && rfc3339Pattern.test(variable);
       return value ? result : !result;
     }
   },
