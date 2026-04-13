@@ -11,6 +11,7 @@ import type {
   ResourceContext,
   ResultPathField,
   ResultSelectorField,
+  RuntimeAdapter,
   State,
   StateData,
   StateDefinition,
@@ -24,23 +25,30 @@ import { processChoices } from '../choices/operators';
 import { clone } from '../utils/clone';
 import { ExecutionError } from '../utils/executionError';
 import { replacePathTemplateFields } from '../utils/replacePathTemplateFields';
+import { createDefaultRuntime } from '../utils/runtime';
 import { selectPath } from '../utils/selectPath';
 import { updatePath } from '../utils/updatePath';
 const debug = Debug('tiny-asl-machine:state');
+
+function getRuntime(context: Context | BaseContext) {
+  return context.Runtime ?? createDefaultRuntime();
+}
 
 export async function run(
   {
     definition,
     resourceContext,
     executionContext,
+    runtime,
   }: {
     definition: StateDefinition;
     resourceContext?: ResourceContext;
     executionContext?: ExecutionContext;
+    runtime?: RuntimeAdapter;
   },
   input: StateData
 ): Promise<StateData> {
-  const baseContext = createBaseContext({ definition, resourceContext, executionContext }, input);
+  const baseContext = createBaseContext({ definition, resourceContext, executionContext, runtime }, input);
   return runUntilFinished(definition, baseContext, input, definition.StartAt);
 }
 
@@ -118,8 +126,8 @@ const Executors: StateExecutors = {
       throw new ExecutionError('InvalidStateType', "State Type should be 'Wait'");
     const inputData = processStateInput(context, state, input);
     const delay = calculateWaitDelayInMs(context, state, inputData);
-    debug('Delay of', delay, 'will be', Date.now() + delay);
-    await new Promise(resolve => setTimeout(() => resolve(void 0), delay));
+    debug('Delay of', delay, 'ms');
+    await getRuntime(context).sleep(delay);
     debug('After delay');
     const processedOutput = processStateOutput(context, state, input, inputData);
     processNextOrEndState(context, state);
@@ -357,21 +365,25 @@ export function createBaseContext(
   {
     resourceContext,
     executionContext,
+    runtime: runtimeOverride,
   }: {
     definition: StateDefinition;
     resourceContext?: ResourceContext;
     executionContext?: ExecutionContext;
+    runtime?: RuntimeAdapter;
   },
   initialInput: StateData
 ) {
+  const runtime = runtimeOverride ?? createDefaultRuntime();
   const baseContext: BaseContext = {
     Resources: resourceContext,
+    Runtime: runtime,
     StateMachine: {
       Id: `machine-${Date.now()}`,
       Name: `machine`,
     },
     Execution: {
-      StartTime: new Date().toISOString(),
+      StartTime: runtime.now(),
       Id: `execution-${Date.now()}`,
       Name: 'execution',
       RoleArn: 'machine-role',
@@ -395,7 +407,7 @@ export function createMapContext(context: Context, itemIndex: number, itemValue:
 }
 
 export function createContext(baseContext: BaseContext, state: State, stateName: string): Context {
-  const enteredTime = new Date().toISOString();
+  const enteredTime = getRuntime(baseContext).now();
   const taskContext =
     state.Type === 'Task'
       ? {

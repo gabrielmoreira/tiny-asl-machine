@@ -1,4 +1,5 @@
 export { run, runState } from './states';
+export { createDefaultRuntime, createTestRuntime } from './utils/runtime';
 export type {
   BaseContext,
   BooleanExpression,
@@ -40,6 +41,7 @@ export type {
   ResultSelectorField,
   Retrier,
   RetryField,
+  RuntimeAdapter,
   State,
   StateData,
   StateDefinition,
