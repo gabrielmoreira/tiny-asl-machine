@@ -108,5 +108,12 @@
     "node": ">=20.0.0",
     "pnpm": ">=10.0.0"
   },
-  "engineStrict": true
+  "engineStrict": true,
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "core-js",
+      "esbuild",
+      "simple-git-hooks"
+    ]
+  }
 }
