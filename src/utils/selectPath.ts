@@ -54,7 +54,9 @@ function evaluatePath(expression: string, input: unknown, context: Context) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function stableStringify(obj: any): string {
+  if (obj === undefined) return 'undefined';
   if (obj === null || typeof obj !== 'object') return JSON.stringify(obj);
   if (Array.isArray(obj)) return '[' + obj.map(stableStringify).join(',') + ']';
   const keys = Object.keys(obj).sort();
