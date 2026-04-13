@@ -50,7 +50,7 @@ export type RuntimeAdapter = {
   sleep: (ms: number) => Promise<void>;
   /** Generates a v4 UUID */
   randomUUID: () => string;
-  /** Returns a random integer between min and max (inclusive) */
+  /** Returns a random integer in [min, max) — end-exclusive per ASL States.MathRandom spec */
   random: (min: number, max: number) => number;
   /** Computes a hash of the data using the given algorithm (MD5, SHA-1, SHA-256, SHA-384, SHA-512) */
   hash: (data: string, algorithm: string) => string;

@@ -140,17 +140,30 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       }
       return seen;
     },
-    'States.Base64Encode': (str: string) => rt.base64Encode(str),
-    'States.Base64Decode': (str: string) => rt.base64Decode(str),
+    'States.Base64Encode': (str: unknown) => { assertString(str, 'States.Base64Encode'); return rt.base64Encode(str); },
+    'States.Base64Decode': (str: unknown) => { assertString(str, 'States.Base64Decode'); return rt.base64Decode(str); },
     'States.Format': (template: string, ...args: unknown[]) => {
       return new StringTemplateParser("'" + template.trim() + "'")
         .parseTemplate()
         .map(p => (p.type === 'placeholder' ? args[p.index] : p.literal))
         .join('');
     },
-    'States.Hash': (data: string, algorithm: string) => rt.hash(data, algorithm),
-    'States.JsonMerge': (obj1: Record<string, unknown>, obj2: Record<string, unknown>, isDeep: boolean) =>
-      isDeep ? deepMerge(obj1, obj2) : { ...obj1, ...obj2 },
+    'States.Hash': (data: unknown, algorithm: unknown) => {
+      assertString(data, 'States.Hash');
+      assertString(algorithm, 'States.Hash');
+      return rt.hash(data, algorithm);
+    },
+    'States.JsonMerge': (obj1: unknown, obj2: unknown, isDeep: unknown) => {
+      if (!obj1 || typeof obj1 !== 'object' || Array.isArray(obj1))
+        throw new ExecutionError('States.IntrinsicFailure', 'JsonMerge expected a JSON object as first argument');
+      if (!obj2 || typeof obj2 !== 'object' || Array.isArray(obj2))
+        throw new ExecutionError('States.IntrinsicFailure', 'JsonMerge expected a JSON object as second argument');
+      if (typeof isDeep !== 'boolean')
+        throw new ExecutionError('States.IntrinsicFailure', 'JsonMerge expected a boolean as third argument');
+      return isDeep
+        ? deepMerge(obj1 as Record<string, unknown>, obj2 as Record<string, unknown>)
+        : { ...obj1, ...obj2 };
+    },
     'States.JsonToString': (obj: unknown) => JSON.stringify(obj),
     'States.MathAdd': (a: number, b: number) => Math.round(a) + Math.round(b),
     'States.MathRandom': (start: number, end: number) => {
@@ -160,7 +173,9 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
         throw new ExecutionError('States.IntrinsicFailure', 'MathRandom start must be less than end');
       return rt.random(s, e);
     },
-    'States.StringSplit': (str: string, delimiter: string) => {
+    'States.StringSplit': (str: unknown, delimiter: unknown) => {
+      assertString(str, 'States.StringSplit');
+      assertString(delimiter, 'States.StringSplit');
       if (delimiter.length === 0) return [str];
       if (delimiter.length === 1) return str.split(delimiter);
       // Multi-char delimiter: split on each character individually
