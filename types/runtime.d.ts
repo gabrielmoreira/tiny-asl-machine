@@ -64,7 +64,7 @@ export type BaseContext = {
   StateMachine: StateMachineContext;
   Execution: ExecutionContext;
   Resources?: ResourceContext;
-  Runtime: RuntimeAdapter;
+  Runtime?: RuntimeAdapter;
   Transition?: EndOrNextField;
 };
 
