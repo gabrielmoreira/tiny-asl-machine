@@ -261,7 +261,7 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       if (delimiter.length === 0) return [str];
       if (delimiter.length === 1) return str.split(delimiter);
       const escaped = delimiter.replace(/[-.*+?^${}()|[\]\\]/g, '\\$&');
-      return str.split(new RegExp(`[${escaped}]`)).filter(s => s.length > 0);
+      return str.split(new RegExp(`[${escaped}]`));
     },
     'States.StringToJson': (str: string) => JSON.parse(str),
     'States.UUID': () => rt.randomUUID(),

@@ -472,6 +472,18 @@ describe('selectPath', () => {
     expect(result).toStrictEqual([1, 3, 5]);
   });
 
+  it('States.StringSplit preserves empty fields in multi-delimiter mode', () => {
+    // Given
+    const result = selectPath(
+      "States.StringSplit($.str, $.delim)",
+      { str: 'a,,b', delim: ',;' },
+      <Context>{}
+    );
+    // Then
+    expect(result).toStrictEqual(['a', '', 'b']);
+  });
+
+
   it('States.MathRandom with seed is deterministic', () => {
     // Given — same seed should produce same result
     const r1 = selectPath('States.MathRandom(1, 100, 42)', {}, <Context>{});
