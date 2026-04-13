@@ -482,4 +482,15 @@ describe('selectPath', () => {
     expect(result).toBeGreaterThanOrEqual(1);
     expect(result).toBeLessThan(10);
   });
+
+  it('States.MathAdd rejects inputs outside 32-bit integer range', () => {
+    // Given / When / Then — Step Functions integer intrinsics use 32-bit signed bounds
+    expect(() => selectPath('States.MathAdd(3000000000, 1)', {}, <Context>{})).toThrow();
+    expect(() => selectPath('States.MathAdd(-3000000000, 1)', {}, <Context>{})).toThrow();
+  });
+
+  it('States.MathRandom rejects non-numeric seed values', () => {
+    // Given / When / Then
+    expect(() => selectPath("States.MathRandom(1, 10, 'seed')", {}, <Context>{})).toThrow();
+  });
 });

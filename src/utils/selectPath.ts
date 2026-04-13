@@ -88,6 +88,13 @@ function assertNumber(value: unknown, fnName: string): asserts value is number {
     );
 }
 
+function assertInt32(value: number, fnName: string): void {
+  if (value < -2147483648 || value > 2147483647)
+    throw new ExecutionError(
+      'States.IntrinsicFailure',
+      `${fnName} expected a 32-bit signed integer, got ${value}`
+    );
+}
 function getIntrinsicFunctions(context: Context): Record<string, (...args: unknown[]) => unknown> {
   const rt = context.Runtime ?? createDefaultRuntime();
   return {
@@ -206,7 +213,13 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
     'States.MathAdd': (a: unknown, b: unknown) => {
       assertNumber(a, 'States.MathAdd');
       assertNumber(b, 'States.MathAdd');
-      return Math.round(a) + Math.round(b);
+      const x = Math.round(a);
+      const y = Math.round(b);
+      assertInt32(x, 'States.MathAdd');
+      assertInt32(y, 'States.MathAdd');
+      const result = x + y;
+      assertInt32(result, 'States.MathAdd');
+      return result;
     },
     'States.MathRandom': (start: unknown, end: unknown, seed?: unknown) => {
       assertNumber(start, 'States.MathRandom');
@@ -219,7 +232,8 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
           'MathRandom start must be less than end'
         );
       if (seed !== undefined) {
-        const seedNum = typeof seed === 'number' ? seed : 0;
+        assertNumber(seed, 'States.MathRandom');
+        const seedNum = Math.round(seed);
         const mod = ((seedNum * 9301 + 49297) % 233280 + 233280) % 233280;
         const hash = mod / 233280;
         return Math.floor(hash * (e - s)) + s;
