@@ -52,11 +52,22 @@ function evaluatePath(expression: string, input: unknown, context: Context) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const jsonValueEquals = (a: any, b: any): boolean => JSON.stringify(a) === JSON.stringify(b);
+function stableStringify(obj: any): string {
+  if (obj === null || typeof obj !== 'object') return JSON.stringify(obj);
+  if (Array.isArray(obj)) return '[' + obj.map(stableStringify).join(',') + ']';
+  const keys = Object.keys(obj).sort();
+  return '{' + keys.map(k => JSON.stringify(k) + ':' + stableStringify(obj[k])).join(',') + '}';
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const jsonValueEquals = (a: any, b: any): boolean => stableStringify(a) === stableStringify(b);
+
+const DANGEROUS_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 
 function deepMerge(obj1: Record<string, unknown>, obj2: Record<string, unknown>): Record<string, unknown> {
   const result: Record<string, unknown> = { ...obj1 };
   for (const [key, val] of Object.entries(obj2)) {
+    if (DANGEROUS_KEYS.has(key)) continue;
     if (
       val && typeof val === 'object' && !Array.isArray(val) &&
       result[key] && typeof result[key] === 'object' && !Array.isArray(result[key])
@@ -78,6 +89,8 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
     'States.ArrayGetItem': (array: unknown[], index: number) => array[index],
     'States.ArrayLength': (array: unknown[]) => array.length,
     'States.ArrayPartition': (array: unknown[], chunkSize: number) => {
+      if (!Number.isInteger(chunkSize) || chunkSize < 1)
+        throw new ExecutionError('States.IntrinsicFailure', 'ArrayPartition chunk size must be a positive integer');
       const result: unknown[][] = [];
       for (let i = 0; i < array.length; i += chunkSize) {
         result.push(array.slice(i, i + chunkSize));
@@ -85,9 +98,13 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       return result;
     },
     'States.ArrayRange': (start: number, end: number, step: number) => {
+      if (step === 0)
+        throw new ExecutionError('States.IntrinsicFailure', 'ArrayRange step must not be zero');
       const result: number[] = [];
       for (let i = start; step > 0 ? i <= end : i >= end; i += step) {
         result.push(i);
+        if (result.length > 1000)
+          throw new ExecutionError('States.IntrinsicFailure', 'ArrayRange result must not exceed 1000 items');
       }
       return result;
     },

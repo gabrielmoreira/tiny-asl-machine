@@ -1,5 +1,8 @@
 import type { RuntimeAdapter } from '../../types';
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const nodeCrypto = typeof crypto !== 'undefined' ? crypto : require('crypto');
+
 /**
  * Default runtime adapter using real Node.js APIs.
  * Used when no custom adapter is provided to `run()`.
@@ -8,11 +11,10 @@ export function createDefaultRuntime(): RuntimeAdapter {
   return {
     now: () => new Date().toISOString(),
     sleep: (ms: number) => new Promise(resolve => setTimeout(() => resolve(void 0), ms)),
-    randomUUID: () => crypto.randomUUID(),
+    randomUUID: () => nodeCrypto.randomUUID(),
     random: (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min,
     hash: (data: string, algorithm: string) => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { createHash } = require('crypto');
+      const { createHash } = require('crypto') as typeof import('crypto');
       const algoMap: Record<string, string> = {
         'MD5': 'md5',
         'SHA-1': 'sha1',
@@ -49,6 +51,7 @@ export function createDefaultRuntime(): RuntimeAdapter {
  * ```
  */
 export function createTestRuntime(overrides?: Partial<RuntimeAdapter>): RuntimeAdapter {
+  const defaults = createDefaultRuntime();
   let clock = new Date('2025-01-01T00:00:00.000Z').getTime();
   return {
     now: () => new Date(clock).toISOString(),
@@ -57,9 +60,9 @@ export function createTestRuntime(overrides?: Partial<RuntimeAdapter>): RuntimeA
     },
     randomUUID: () => '00000000-0000-4000-8000-000000000000',
     random: (min: number) => min,
-    hash: createDefaultRuntime().hash,
-    base64Encode: createDefaultRuntime().base64Encode,
-    base64Decode: createDefaultRuntime().base64Decode,
+    hash: defaults.hash,
+    base64Encode: defaults.base64Encode,
+    base64Decode: defaults.base64Decode,
     ...overrides,
   };
 }

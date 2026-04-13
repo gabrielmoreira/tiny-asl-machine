@@ -345,17 +345,18 @@ function hasEndField(state: State): state is State & Required<EndField> {
 }
 
 function calculateWaitDelayInMs(context: Context, state: WaitState, input: StateData): number {
+  const now = () => Date.parse(getRuntime(context).now());
   if ('Seconds' in state) {
     return state.Seconds * 1000;
   } else if ('SecondsPath' in state) {
     return (selectPath(state.SecondsPath, input, context) as number) * 1000;
   } else if ('Timestamp' in state) {
     const date = Date.parse(state.Timestamp);
-    return Math.max(date - Date.now(), 0);
+    return Math.max(date - now(), 0);
   } else if ('TimestampPath' in state) {
     const timestamp = selectPath(state.TimestampPath, input, context) as string;
     const date = Date.parse(timestamp);
-    return Math.max(date - Date.now(), 0);
+    return Math.max(date - now(), 0);
   } else {
     return 0;
   }
@@ -379,12 +380,12 @@ export function createBaseContext(
     Resources: resourceContext,
     Runtime: runtime,
     StateMachine: {
-      Id: `machine-${Date.now()}`,
+      Id: `machine-${runtime.randomUUID()}`,
       Name: `machine`,
     },
     Execution: {
       StartTime: runtime.now(),
-      Id: `execution-${Date.now()}`,
+      Id: `execution-${runtime.randomUUID()}`,
       Name: 'execution',
       RoleArn: 'machine-role',
       Input: initialInput,
@@ -411,7 +412,7 @@ export function createContext(baseContext: BaseContext, state: State, stateName:
   const taskContext =
     state.Type === 'Task'
       ? {
-          Token: `TaskToken-${Date.now()}`,
+          Token: `TaskToken-${getRuntime(baseContext).randomUUID()}`,
         }
       : undefined;
   return {
