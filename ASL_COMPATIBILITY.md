@@ -120,8 +120,7 @@ Retry: [
 
 ### 3. **Advanced Map State Features**
 **Missing**:
-- **ItemsPath filtering** - ✅ Supported
-- **ResultSelector** - ❌ Not supported (transforms Map output)
+- **ResultSelector** - ✅ Supported (applied via processStateOutput)
 - **Dynamic MaxConcurrency** - Can't use path expressions
 - **Iterator parameters** - Limited context passing to items
 - **Map Run Records** - No execution tracking per item
@@ -193,10 +192,10 @@ States.Base64.Decode(str)
 - `States.Permissions` ❌
 - `States.DataLimitExceeded` - Only partial
 
-### 10. **InputPathField for Wait/Choice States**
-- Wait states don't support InputPath (per spec)
-- Choice states don't transform input (expected behavior)
-- ✅ This is correct per spec
+### 10. **InputPath for Wait/Choice States**
+- Wait states DO support InputPath (the library applies `processStateInput` before Wait execution)
+- Choice states process input through InputPath but don't transform output
+- ✅ Both behave correctly per the library's implementation
 
 ---
 

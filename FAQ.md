@@ -41,13 +41,13 @@ yarn add tiny-asl-machine
 ```
 
 ### Q: What are the dependencies?
-**A:** Very few! Only `jsonpath` for JSONPath queries. No heavy AWS SDKs needed.
+**A:** Very few lightweight runtime dependencies (`jsonpath`, `debug`, `deep-iterator`, `p-limit`). No heavy AWS SDKs needed.
 
 ### Q: Do I need AWS credentials?
 **A:** No! That's the whole point. You mock resources locally.
 
 ### Q: What Node.js versions are supported?
-**A:** Node.js 14+ (TypeScript 5+). Check package.json for exact versions.
+**A:** Node.js 20+ (TypeScript 5+). Check package.json for exact versions.
 
 ---
 
@@ -328,7 +328,7 @@ expect(result.custom).toBe('User: Bob');
 - ⏳ Execution snapshots
 
 ### Q: Is Retry logic supported?
-**A:** The structure is defined but logic not yet implemented. It's on the [roadmap](ROADMAP.md) for v0.1.0. You can already define Retry blocks, but they won't execute yet.
+**A:** The structure is defined but logic not yet implemented. You can already define Retry blocks, but they won't execute yet.
 
 ### Q: What intrinsic functions are available?
 **A:**
@@ -342,7 +342,6 @@ Coming soon:
 - ⏳ `States.UUID()`
 - ⏳ `States.Now()`
 
-See [ROADMAP.md](ROADMAP.md) for timeline.
 
 ### Q: Can I use heartbeat/timeout?
 **A:** TimeoutSeconds and HeartbeatSeconds fields are parsed but not enforced at runtime. They won't interrupt execution. For testing, use fake timers.
@@ -566,7 +565,7 @@ Catch: [
 - Documentation improvements
 
 ### Q: Is there a roadmap?
-**A:** Yes! Check [ROADMAP.md](ROADMAP.md) for priorities and timeline.
+**A:** Check the GitHub issues for current priorities.
 
 ### Q: How do I report bugs?
 **A:** Create a GitHub issue with:
@@ -584,12 +583,11 @@ Catch: [
 - 🔍 [ASL_COMPATIBILITY.md](ASL_COMPATIBILITY.md) - Technical details
 - 🤝 [CONTRIBUTING.md](CONTRIBUTING.md) - Development guide
 - 📚 [EXAMPLES.md](EXAMPLES.md) - Code examples
-- 🗺️ [ROADMAP.md](ROADMAP.md) - Future plans
 - 💬 [GitHub Discussions](https://github.com/gabrielmoreira/tiny-asl-machine/discussions)
 - 🐛 [GitHub Issues](https://github.com/gabrielmoreira/tiny-asl-machine/issues)
 
 ---
 
-**Last Updated**: February 2025
+**Last Updated**: February 2026
 
 Can't find your answer? [Open an issue](https://github.com/gabrielmoreira/tiny-asl-machine/issues) or [start a discussion](https://github.com/gabrielmoreira/tiny-asl-machine/discussions)!

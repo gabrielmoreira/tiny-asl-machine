@@ -4,6 +4,12 @@ We welcome contributions! This project is simple and designed to be easy to exte
 
 ## Getting Started
 
+### Prerequisites
+
+- **Node.js** >= 20.0.0
+- **pnpm** >= 10.0.0
+
+
 ### Development Setup
 
 ```bash
