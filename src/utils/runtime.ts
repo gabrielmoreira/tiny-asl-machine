@@ -1,7 +1,5 @@
 import type { RuntimeAdapter } from '../../types';
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const nodeCrypto = typeof crypto !== 'undefined' ? crypto : require('crypto');
+import * as nodeCrypto from 'crypto';
 
 /**
  * Default runtime adapter using real Node.js APIs.
@@ -14,9 +12,8 @@ export function createDefaultRuntime(): RuntimeAdapter {
     randomUUID: () => nodeCrypto.randomUUID(),
     random: (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min,
     hash: (data: string, algorithm: string) => {
-      const { createHash } = require('crypto') as typeof import('crypto');
       const algoMap: Record<string, string> = {
-        'MD5': 'md5',
+        MD5: 'md5',
         'SHA-1': 'sha1',
         'SHA-256': 'sha256',
         'SHA-384': 'sha384',
@@ -24,7 +21,7 @@ export function createDefaultRuntime(): RuntimeAdapter {
       };
       const algo = algoMap[algorithm];
       if (!algo) throw new Error(`Unsupported hash algorithm: ${algorithm}`);
-      return createHash(algo).update(data).digest('hex');
+      return nodeCrypto.createHash(algo).update(data).digest('hex');
     },
     base64Encode: (data: string) => Buffer.from(data).toString('base64'),
     base64Decode: (data: string) => Buffer.from(data, 'base64').toString('utf-8'),

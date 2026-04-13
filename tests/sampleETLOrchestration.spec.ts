@@ -1,9 +1,6 @@
 import { definition } from './fixtures/sampleETLOrchestration';
 import { run } from '../src';
-import Debug from 'debug';
 import { describe, it, beforeEach, afterEach, expect, vitest } from 'vitest';
-
-const debug = Debug('tiny-asl-machine:tests');
 
 describe('ETL workflow', () => {
   beforeEach(() => {
