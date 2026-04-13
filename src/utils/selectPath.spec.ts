@@ -158,6 +158,24 @@ describe('selectPath', () => {
     expect(result).toStrictEqual([1, [2, 3]]);
   });
 
+  // --- Numeric literal parser strictness (JSON number grammar) ---
+
+  it('rejects trailing decimal point (e.g. "1.")', () => {
+    expect(() => selectPath('States.Array(1.)', {}, <Context>{})).toThrow();
+  });
+
+  it('rejects leading decimal point without minus (e.g. ".5")', () => {
+    expect(() => selectPath('States.Array(.5)', {}, <Context>{})).toThrow();
+  });
+
+  it('rejects leading decimal point with minus (e.g. "-.5")', () => {
+    expect(() => selectPath('States.Array(-.5)', {}, <Context>{})).toThrow();
+  });
+
+  it('rejects multiple decimal points (e.g. "1.2.3")', () => {
+    expect(() => selectPath('States.Array(1.2.3)', {}, <Context>{})).toThrow();
+  });
+
   // --- Phase 2: Missing intrinsic functions ---
 
   // Simple value functions
