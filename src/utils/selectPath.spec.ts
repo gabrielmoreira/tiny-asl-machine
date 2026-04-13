@@ -157,4 +157,127 @@ describe('selectPath', () => {
     );
     expect(result).toStrictEqual([1, [2, 3]]);
   });
+
+  // --- Phase 2: Missing intrinsic functions ---
+
+  // Simple value functions
+  it('States.ArrayLength returns array length', () => {
+    const result = selectPath('States.ArrayLength($.arr)', { arr: [1, 2, 3, 4, 5] }, <Context>{});
+    expect(result).toBe(5);
+  });
+
+  it('States.ArrayLength returns 0 for empty array', () => {
+    const result = selectPath('States.ArrayLength($.arr)', { arr: [] }, <Context>{});
+    expect(result).toBe(0);
+  });
+
+  it('States.ArrayGetItem returns item at index', () => {
+    const result = selectPath('States.ArrayGetItem($.arr, 2)', { arr: [10, 20, 30, 40] }, <Context>{});
+    expect(result).toBe(30);
+  });
+
+  it('States.ArrayGetItem returns first item at index 0', () => {
+    const result = selectPath('States.ArrayGetItem($.arr, 0)', { arr: ['a', 'b'] }, <Context>{});
+    expect(result).toBe('a');
+  });
+
+  it('States.ArrayUnique removes duplicates', () => {
+    const result = selectPath('States.ArrayUnique($.arr)', { arr: [1, 2, 3, 3, 3, 3, 4] }, <Context>{});
+    expect(result).toStrictEqual([1, 2, 3, 4]);
+  });
+
+  it('States.MathAdd adds two integers', () => {
+    const result = selectPath('States.MathAdd($.val, -1)', { val: 111 }, <Context>{});
+    expect(result).toBe(110);
+  });
+
+  it('States.MathAdd adds with literal arguments', () => {
+    const result = selectPath('States.MathAdd(5, 3)', {}, <Context>{});
+    expect(result).toBe(8);
+  });
+
+  it('States.StringSplit splits string by delimiter', () => {
+    const result = selectPath(
+      "States.StringSplit($.str, ',')",
+      { str: '1,2,3,4,5' },
+      <Context>{}
+    );
+    expect(result).toStrictEqual(['1', '2', '3', '4', '5']);
+  });
+
+  it('States.UUID returns a valid v4 UUID', () => {
+    const result = selectPath('States.UUID()', {}, <Context>{});
+    expect(result).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  });
+
+  // Encoding and hashing
+  it('States.Base64Encode encodes a string', () => {
+    const result = selectPath("States.Base64Encode('Data to encode')", {}, <Context>{});
+    expect(result).toBe('RGF0YSB0byBlbmNvZGU=');
+  });
+
+  it('States.Base64Decode decodes a string', () => {
+    const result = selectPath("States.Base64Decode('RGF0YSB0byBlbmNvZGU=')", {}, <Context>{});
+    expect(result).toBe('Data to encode');
+  });
+
+  it('States.Hash computes SHA-256 hash', () => {
+    const result = selectPath("States.Hash('input data', 'SHA-256')", {}, <Context>{});
+    expect(result).toMatch(/^[0-9a-f]{64}$/);
+  });
+
+  it('States.Hash computes MD5 hash', () => {
+    const result = selectPath("States.Hash('input data', 'MD5')", {}, <Context>{});
+    expect(result).toMatch(/^[0-9a-f]{32}$/);
+  });
+
+  // Array/JSON manipulation
+  it('States.ArrayPartition chunks array', () => {
+    const result = selectPath('States.ArrayPartition($.arr, 4)', { arr: [1, 2, 3, 4, 5, 6, 7, 8, 9] }, <Context>{});
+    expect(result).toStrictEqual([[1, 2, 3, 4], [5, 6, 7, 8], [9]]);
+  });
+
+  it('States.ArrayRange generates range', () => {
+    const result = selectPath('States.ArrayRange(1, 9, 2)', {}, <Context>{});
+    expect(result).toStrictEqual([1, 3, 5, 7, 9]);
+  });
+
+  it('States.ArrayRange generates single-step range', () => {
+    const result = selectPath('States.ArrayRange(1, 5, 1)', {}, <Context>{});
+    expect(result).toStrictEqual([1, 2, 3, 4, 5]);
+  });
+
+  it('States.JsonMerge merges two objects (shallow)', () => {
+    const result = selectPath(
+      'States.JsonMerge($.a, $.b, false)',
+      { a: { x: 1, y: 2 }, b: { y: 3, z: 4 } },
+      <Context>{}
+    );
+    expect(result).toStrictEqual({ x: 1, y: 3, z: 4 });
+  });
+
+  it('States.JsonMerge merges two objects (deep)', () => {
+    const result = selectPath(
+      'States.JsonMerge($.a, $.b, true)',
+      { a: { nested: { a1: 1, a2: 2 } }, b: { nested: { a3: 3 } } },
+      <Context>{}
+    );
+    expect(result).toStrictEqual({ nested: { a1: 1, a2: 2, a3: 3 } });
+  });
+
+  it('States.MathRandom returns number in range', () => {
+    const result = selectPath('States.MathRandom(1, 999)', {}, <Context>{}) as number;
+    expect(result).toBeGreaterThanOrEqual(1);
+    expect(result).toBeLessThanOrEqual(999);
+    expect(Number.isInteger(result)).toBe(true);
+  });
+
+  it('States.ArrayContains uses JSON value equality for objects', () => {
+    const result = selectPath(
+      'States.ArrayContains($.arr, $.target)',
+      { arr: [{ a: 1 }, { b: 2 }], target: { a: 1 } },
+      <Context>{}
+    );
+    expect(result).toBe(true);
+  });
 });
