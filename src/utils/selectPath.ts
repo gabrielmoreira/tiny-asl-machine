@@ -66,7 +66,8 @@ const jsonValueEquals = (a: any, b: any): boolean => stableStringify(a) === stab
 
 const DANGEROUS_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 
-function deepMerge(obj1: Record<string, unknown>, obj2: Record<string, unknown>): Record<string, unknown> {
+function deepMerge(obj1: Record<string, unknown>, obj2: Record<string, unknown>, depth = 0): Record<string, unknown> {
+  if (depth > 50) return { ...obj1, ...obj2 };
   const result: Record<string, unknown> = { ...obj1 };
   for (const [key, val] of Object.entries(obj2)) {
     if (DANGEROUS_KEYS.has(key)) continue;
@@ -74,7 +75,7 @@ function deepMerge(obj1: Record<string, unknown>, obj2: Record<string, unknown>)
       val && typeof val === 'object' && !Array.isArray(val) &&
       result[key] && typeof result[key] === 'object' && !Array.isArray(result[key])
     ) {
-      result[key] = deepMerge(result[key] as Record<string, unknown>, val as Record<string, unknown>);
+      result[key] = deepMerge(result[key] as Record<string, unknown>, val as Record<string, unknown>, depth + 1);
     } else {
       result[key] = val;
     }
@@ -82,20 +83,37 @@ function deepMerge(obj1: Record<string, unknown>, obj2: Record<string, unknown>)
   return result;
 }
 
+function assertArray(value: unknown, fnName: string): asserts value is unknown[] {
+  if (!Array.isArray(value))
+    throw new ExecutionError('States.IntrinsicFailure', `${fnName} expected an array, got ${typeof value}`);
+}
+
+function assertString(value: unknown, fnName: string): asserts value is string {
+  if (typeof value !== 'string')
+    throw new ExecutionError('States.IntrinsicFailure', `${fnName} expected a string, got ${typeof value}`);
+}
+
 function getIntrinsicFunctions(context: Context): Record<string, (...args: unknown[]) => unknown> {
   const rt = context.Runtime ?? createDefaultRuntime();
   return {
     'States.Array': (...args: unknown[]) => [...args],
-    'States.ArrayContains': (array: unknown[], lookingFor: unknown) =>
-      array.some(item => jsonValueEquals(item, lookingFor)),
-    'States.ArrayGetItem': (array: unknown[], index: number) => {
-      if (!Number.isInteger(index) || index < 0 || index >= array.length)
+    'States.ArrayContains': (array: unknown, lookingFor: unknown) => {
+      assertArray(array, 'States.ArrayContains');
+      return array.some(item => jsonValueEquals(item, lookingFor));
+    },
+    'States.ArrayGetItem': (array: unknown, index: unknown) => {
+      assertArray(array, 'States.ArrayGetItem');
+      if (typeof index !== 'number' || !Number.isInteger(index) || index < 0 || index >= array.length)
         throw new ExecutionError('States.IntrinsicFailure', `ArrayGetItem index ${index} out of bounds for array of length ${array.length}`);
       return array[index];
     },
-    'States.ArrayLength': (array: unknown[]) => array.length,
-    'States.ArrayPartition': (array: unknown[], chunkSize: number) => {
-      if (!Number.isInteger(chunkSize) || chunkSize < 1)
+    'States.ArrayLength': (array: unknown) => {
+      assertArray(array, 'States.ArrayLength');
+      return array.length;
+    },
+    'States.ArrayPartition': (array: unknown, chunkSize: unknown) => {
+      assertArray(array, 'States.ArrayPartition');
+      if (typeof chunkSize !== 'number' || !Number.isInteger(chunkSize) || chunkSize < 1)
         throw new ExecutionError('States.IntrinsicFailure', 'ArrayPartition chunk size must be a positive integer');
       const result: unknown[][] = [];
       for (let i = 0; i < array.length; i += chunkSize) {
@@ -114,7 +132,8 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       }
       return result;
     },
-    'States.ArrayUnique': (array: unknown[]) => {
+    'States.ArrayUnique': (array: unknown) => {
+      assertArray(array, 'States.ArrayUnique');
       const seen: unknown[] = [];
       for (const item of array) {
         if (!seen.some(s => jsonValueEquals(s, item))) seen.push(item);
