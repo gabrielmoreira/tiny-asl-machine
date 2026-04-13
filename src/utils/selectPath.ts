@@ -14,13 +14,15 @@ export function selectPath(expression: string, input: unknown, context: Context)
       'JSON Path should be a string! Value: ' + JSON.stringify(expression)
     );
   const ast = new IntrinsicParser(expression).parseTopLevelIntrinsic();
-  return evaluateAst(ast, input, context);
+  const intrinsics = getIntrinsicFunctions(context);
+  return evaluateAst(ast, input, context, intrinsics);
 }
 
 function evaluateAst(
   ast: TopLevelIntrinsic | IntrinsicExpression,
   input: unknown,
-  context: Context
+  context: Context,
+  intrinsics: Record<string, (...args: unknown[]) => unknown>
 ): unknown {
   if (ast.type === 'path') {
     return evaluatePath(ast.path, input, context);
@@ -34,13 +36,13 @@ function evaluateAst(
     return null;
   } else if (ast.type === 'fncall') {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fn: any = getIntrinsicFunctions(context)[ast.functionName as string];
+    const fn: any = intrinsics[ast.functionName as string];
     if (!fn)
       throw new ExecutionError(
         'InvalidIntrinsicFunction',
         `Function '${ast.functionName}' is not supported`
       );
-    return fn(...ast.arguments.map(arg => evaluateAst(arg, input, context)));
+    return fn(...ast.arguments.map(arg => evaluateAst(arg, input, context, intrinsics)));
   }
 }
 
@@ -81,7 +83,7 @@ function deepMerge(obj1: Record<string, unknown>, obj2: Record<string, unknown>)
 }
 
 function getIntrinsicFunctions(context: Context): Record<string, (...args: unknown[]) => unknown> {
-  const runtime = () => context.Runtime ?? createDefaultRuntime();
+  const rt = context.Runtime ?? createDefaultRuntime();
   return {
     'States.Array': (...args: unknown[]) => [...args],
     'States.ArrayContains': (array: unknown[], lookingFor: unknown) =>
@@ -119,32 +121,34 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       }
       return seen;
     },
-    'States.Base64Encode': (str: string) => runtime().base64Encode(str),
-    'States.Base64Decode': (str: string) => runtime().base64Decode(str),
+    'States.Base64Encode': (str: string) => rt.base64Encode(str),
+    'States.Base64Decode': (str: string) => rt.base64Decode(str),
     'States.Format': (template: string, ...args: unknown[]) => {
       return new StringTemplateParser("'" + template.trim() + "'")
         .parseTemplate()
         .map(p => (p.type === 'placeholder' ? args[p.index] : p.literal))
         .join('');
     },
-    'States.Hash': (data: string, algorithm: string) => runtime().hash(data, algorithm),
+    'States.Hash': (data: string, algorithm: string) => rt.hash(data, algorithm),
     'States.JsonMerge': (obj1: Record<string, unknown>, obj2: Record<string, unknown>, isDeep: boolean) =>
       isDeep ? deepMerge(obj1, obj2) : { ...obj1, ...obj2 },
     'States.JsonToString': (obj: unknown) => JSON.stringify(obj),
     'States.MathAdd': (a: number, b: number) => Math.round(a) + Math.round(b),
     'States.MathRandom': (start: number, end: number) => {
-      if (start >= end)
+      const s = Math.round(start);
+      const e = Math.round(end);
+      if (s >= e)
         throw new ExecutionError('States.IntrinsicFailure', 'MathRandom start must be less than end');
-      return runtime().random(start, end);
+      return rt.random(s, e);
     },
     'States.StringSplit': (str: string, delimiter: string) => {
       if (delimiter.length === 0) return [str];
       if (delimiter.length === 1) return str.split(delimiter);
       // Multi-char delimiter: split on each character individually
-      const escaped = delimiter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const escaped = delimiter.replace(/[-.*+?^${}()|[\]\\]/g, '\\$&');
       return str.split(new RegExp(`[${escaped}]`)).filter(s => s.length > 0);
     },
     'States.StringToJson': (str: string) => JSON.parse(str),
-    'States.UUID': () => runtime().randomUUID(),
+    'States.UUID': () => rt.randomUUID(),
   };
 }

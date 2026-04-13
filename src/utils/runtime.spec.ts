@@ -30,16 +30,16 @@ describe('runtime adapters', () => {
       expect(uuid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
     });
 
-    it('random(1, 100) returns an integer between 1 and 100', () => {
+    it('random(1, 100) returns an integer in [1, 100) (end-exclusive)', () => {
       // Given
       const runtime = createDefaultRuntime();
       // When
-      const results = Array.from({ length: 200 }, () => runtime.random(1, 100));
-      // Then
+      const results = Array.from({ length: 500 }, () => runtime.random(1, 100));
+      // Then — end-exclusive per ASL States.MathRandom spec
       for (const result of results) {
         expect(Number.isInteger(result)).toBe(true);
         expect(result).toBeGreaterThanOrEqual(1);
-        expect(result).toBeLessThanOrEqual(100);
+        expect(result).toBeLessThan(100);
       }
     });
 
