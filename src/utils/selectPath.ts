@@ -25,6 +25,12 @@ function evaluateAst(
     return evaluatePath(ast.path, input, context);
   } else if (ast.type === 'string-literal') {
     return ast.literal;
+  } else if (ast.type === 'numeric-literal') {
+    return ast.value;
+  } else if (ast.type === 'boolean-literal') {
+    return ast.value;
+  } else if (ast.type === 'null-literal') {
+    return null;
   } else if (ast.type === 'fncall') {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fn: any = intrinsicFunctions[ast.functionName as keyof typeof intrinsicFunctions];

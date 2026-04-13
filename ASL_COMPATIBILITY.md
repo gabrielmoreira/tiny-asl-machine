@@ -37,7 +37,9 @@
 - `States.JsonToString(value)` - JSON object to string
 - `States.StringToJson(value)` - JSON string to object
 - `States.Array(value1, value2, ...)` - Array construction
+- `States.ArrayContains(array, value)` - Array membership test
 
+**Intrinsic function arguments:** Paths (`$.x`), context paths (`$$.x`), single-quoted strings (`'hello'`), numeric literals (`42`, `-3.14`), booleans (`true`, `false`), `null`, and nested function calls are all supported.
 #### Error Handling
 - **Catch** - Complete implementation
   - ErrorEquals matching with wildcard support
