@@ -14,6 +14,7 @@ describe('selectPath', () => {
     // Then
     expect(result).toStrictEqual('bar');
   });
+
   it('support jsonpath expressions on context', () => {
     // Given
     const expression = '$$.Execution.Id';
@@ -29,6 +30,7 @@ describe('selectPath', () => {
     // Then
     expect(result).toStrictEqual('some-id');
   });
+
   it('support intrinsic function States.StringToJson', () => {
     // Given
     const expression = 'States.StringToJson($.escapedJsonString)';
@@ -40,6 +42,7 @@ describe('selectPath', () => {
     // Then
     expect(result).toStrictEqual({ foo: 'bar' });
   });
+
   it('support intrinsic function States.JsonToString', () => {
     // Given
     const expression = 'States.JsonToString($.unescapedJson)';
@@ -53,6 +56,7 @@ describe('selectPath', () => {
     // Then
     expect(result).toStrictEqual('{"foo":"bar"}');
   });
+
   it('support intrinsic function States.Array', () => {
     // Given
     const expression = 'States.Array($.a, $.b, $.c)';
@@ -66,6 +70,7 @@ describe('selectPath', () => {
     // Then
     expect(result).toStrictEqual([1, '2', true]);
   });
+
   it('support intrinsic function States.ArrayContains', () => {
     // Given
     const expression = 'States.ArrayContains($.inputArray, $.lookingFor)';
@@ -78,6 +83,7 @@ describe('selectPath', () => {
     // Then
     expect(result).toStrictEqual(true);
   });
+
   it('support intrinsic function States.ArrayContains (strings)', () => {
     // Given
     const expression = "States.ArrayContains($.inputArray, 'C')";
@@ -89,6 +95,7 @@ describe('selectPath', () => {
     // Then
     expect(result).toStrictEqual(true);
   });
+
   it('support intrinsic function States.ArrayContains (strings) returning false', () => {
     // Given
     const expression = "States.ArrayContains($.inputArray, 'D')";
@@ -100,6 +107,7 @@ describe('selectPath', () => {
     // Then
     expect(result).toStrictEqual(false);
   });
+
   it('support intrinsic function States.Format', () => {
     // Given
     const expression = `States.Format('Name: \\'{}\\', Surname: "{}"', $.name, $.surname)`;
@@ -114,7 +122,6 @@ describe('selectPath', () => {
   });
 
   // --- Intrinsic parser: literal argument support ---
-
   it('supports numeric literal arguments in intrinsic functions', () => {
     const result = selectPath('States.Array($.a, 1, 2, 3)', { a: 0 }, <Context>{});
     expect(result).toStrictEqual([0, 1, 2, 3]);
@@ -159,7 +166,6 @@ describe('selectPath', () => {
   });
 
   // --- Numeric literal parser strictness (JSON number grammar) ---
-
   it('rejects trailing decimal point (e.g. "1.")', () => {
     expect(() => selectPath('States.Array(1.)', {}, <Context>{})).toThrow();
   });
@@ -177,7 +183,6 @@ describe('selectPath', () => {
   });
 
   // --- Phase 2: Missing intrinsic functions ---
-
   // Simple value functions
   it('States.ArrayLength returns array length', () => {
     const result = selectPath('States.ArrayLength($.arr)', { arr: [1, 2, 3, 4, 5] }, <Context>{});

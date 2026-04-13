@@ -94,7 +94,6 @@ describe('ETL workflow', () => {
     expect(actionsMock['load_item']).toBeCalledTimes(4);
     expect(actionsMock['load_sales_fact']).toBeCalledTimes(3);
     expect(actionsMock['validate_sales_metric']).toBeCalledTimes(3);
-
     const baseApiOperation = {
       redshift_cluster_id: 'cfn36-redshiftcluster-AKIAI44QH8DHBEXAMPLE',
       redshift_database: 'dev',
@@ -102,7 +101,6 @@ describe('ETL workflow', () => {
       redshift_user: 'awsuser',
       sql_statement: expect.any(Array),
     };
-
     const customApiOperationParams = {
       load_sales_fact: {
         snapshot_date: '2003-01-02',
@@ -111,10 +109,8 @@ describe('ETL workflow', () => {
         snapshot_date: '2003-01-02',
       },
     };
-
     // For each action
     actions.forEach(action => {
-      debug('Checking action', action);
       expect(actionsMock[action]).toHaveBeenNthCalledWith(1, {
         // execute operation
         input: {
