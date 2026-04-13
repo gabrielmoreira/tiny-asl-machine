@@ -12,7 +12,7 @@ export function createDefaultRuntime(): RuntimeAdapter {
     now: () => new Date().toISOString(),
     sleep: (ms: number) => new Promise(resolve => setTimeout(() => resolve(void 0), ms)),
     randomUUID: () => nodeCrypto.randomUUID(),
-    random: (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min,
+    random: (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min,
     hash: (data: string, algorithm: string) => {
       const { createHash } = require('crypto') as typeof import('crypto');
       const algoMap: Record<string, string> = {

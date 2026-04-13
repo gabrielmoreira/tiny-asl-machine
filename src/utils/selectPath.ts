@@ -86,7 +86,11 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
     'States.Array': (...args: unknown[]) => [...args],
     'States.ArrayContains': (array: unknown[], lookingFor: unknown) =>
       array.some(item => jsonValueEquals(item, lookingFor)),
-    'States.ArrayGetItem': (array: unknown[], index: number) => array[index],
+    'States.ArrayGetItem': (array: unknown[], index: number) => {
+      if (!Number.isInteger(index) || index < 0 || index >= array.length)
+        throw new ExecutionError('States.IntrinsicFailure', `ArrayGetItem index ${index} out of bounds for array of length ${array.length}`);
+      return array[index];
+    },
     'States.ArrayLength': (array: unknown[]) => array.length,
     'States.ArrayPartition': (array: unknown[], chunkSize: number) => {
       if (!Number.isInteger(chunkSize) || chunkSize < 1)
@@ -127,9 +131,19 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
     'States.JsonMerge': (obj1: Record<string, unknown>, obj2: Record<string, unknown>, isDeep: boolean) =>
       isDeep ? deepMerge(obj1, obj2) : { ...obj1, ...obj2 },
     'States.JsonToString': (obj: unknown) => JSON.stringify(obj),
-    'States.MathAdd': (a: number, b: number) => a + b,
-    'States.MathRandom': (start: number, end: number) => runtime().random(start, end),
-    'States.StringSplit': (str: string, delimiter: string) => str.split(delimiter),
+    'States.MathAdd': (a: number, b: number) => Math.round(a) + Math.round(b),
+    'States.MathRandom': (start: number, end: number) => {
+      if (start >= end)
+        throw new ExecutionError('States.IntrinsicFailure', 'MathRandom start must be less than end');
+      return runtime().random(start, end);
+    },
+    'States.StringSplit': (str: string, delimiter: string) => {
+      if (delimiter.length === 0) return [str];
+      if (delimiter.length === 1) return str.split(delimiter);
+      // Multi-char delimiter: split on each character individually
+      const escaped = delimiter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return str.split(new RegExp(`[${escaped}]`)).filter(s => s.length > 0);
+    },
     'States.StringToJson': (str: string) => JSON.parse(str),
     'States.UUID': () => runtime().randomUUID(),
   };
