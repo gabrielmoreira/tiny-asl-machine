@@ -1,13 +1,8 @@
-# Examples Directory
+# Examples
 
-This directory contains practical examples of how to use Tiny ASL Machine for testing Step Functions state machines.
+This file contains practical examples of how to use Tiny ASL Machine for testing Step Functions state machines.
 
-## File Organization
-
-- **simple-examples/** - Basic usage patterns
-- **real-world-examples/** - Complex production-like scenarios
-- **testing-patterns/** - Common testing approaches
-- **advanced-features/** - Less common but powerful patterns
+See also: [tests/](tests/) for runnable test examples.
 
 ## Quick Start Examples
 
@@ -170,8 +165,8 @@ const result1 = await run(
   {}
 );
 
-expect(result1.error.Error).toBe('Error');
-expect(result1.error.Cause).toBe('Database connection failed');
+expect(result1.original.Error).toBe('Error');
+expect(result1.original.Cause).toBe('Database connection failed');
 ```
 
 ### 5. Map State for Batch Processing
@@ -293,8 +288,8 @@ const result = await run(
 expect(mockBranchA).toHaveBeenCalled();
 expect(mockBranchB).toHaveBeenCalled();
 expect(result).toEqual([
-  [{ branch: 'A', result: 'Success' }],
-  [{ branch: 'B', result: 'Success' }],
+  { branch: 'A', result: 'Success' },
+  { branch: 'B', result: 'Success' },
 ]);
 ```
 
