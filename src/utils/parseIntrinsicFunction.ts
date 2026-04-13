@@ -1,11 +1,31 @@
 // From https://github.com/aws/aws-cdk/blob/678eeded5d5631dbacff43ead697ecbd3bd4b27d/packages/%40aws-cdk/aws-stepfunctions/lib/private/intrinstics.ts
-export type IntrinsicExpression = StringLiteralExpression | PathExpression | FnCallExpression;
+export type IntrinsicExpression =
+  | StringLiteralExpression
+  | NumericLiteralExpression
+  | BooleanLiteralExpression
+  | NullLiteralExpression
+  | PathExpression
+  | FnCallExpression;
 export type TopLevelIntrinsic = PathExpression | FnCallExpression;
 
 export interface StringLiteralExpression {
   readonly type: 'string-literal';
   readonly literal: string;
   readonly quoted: string;
+}
+
+export interface NumericLiteralExpression {
+  readonly type: 'numeric-literal';
+  readonly value: number;
+}
+
+export interface BooleanLiteralExpression {
+  readonly type: 'boolean-literal';
+  readonly value: boolean;
+}
+
+export interface NullLiteralExpression {
+  readonly type: 'null-literal';
 }
 
 export interface PathExpression {
@@ -63,15 +83,54 @@ export class IntrinsicParser {
       return this.parsePath();
     }
 
-    if (isAlphaNum(this.char())) {
-      return this.parseFnCall();
-    }
-
     if (this.char() === "'") {
       return this.parseStringLiteral();
     }
 
-    return this.raiseError('expected $, function or single-quoted string');
+    // Numeric literals: digits or negative sign
+    if (this.char() === '-' || isDigit(this.char())) {
+      return this.parseNumericLiteral();
+    }
+
+    // Keywords: true, false, null, or function calls
+    if (isAlphaNum(this.char())) {
+      return this.parseKeywordOrFnCall();
+    }
+
+    return this.raiseError('expected $, function, string, number, boolean, or null');
+  }
+
+  private parseNumericLiteral(): NumericLiteralExpression {
+    const numStr: string[] = [];
+    if (this.char() === '-') {
+      numStr.push(this.consume());
+    }
+    while (!this.eof && (isDigit(this.char()) || this.char() === '.')) {
+      numStr.push(this.consume());
+    }
+    const value = Number(numStr.join(''));
+    if (isNaN(value)) {
+      this.raiseError('invalid numeric literal: ' + numStr.join(''));
+    }
+    return { type: 'numeric-literal', value };
+  }
+
+  private parseKeywordOrFnCall(): IntrinsicExpression {
+    // Peek ahead to see if this is a keyword (true/false/null) or a function call
+    const remaining = this.expression.slice(this.i);
+    if (remaining.startsWith('true') && !isAlphaNum(remaining[4] ?? '')) {
+      this.i += 4;
+      return { type: 'boolean-literal', value: true };
+    }
+    if (remaining.startsWith('false') && !isAlphaNum(remaining[5] ?? '')) {
+      this.i += 5;
+      return { type: 'boolean-literal', value: false };
+    }
+    if (remaining.startsWith('null') && !isAlphaNum(remaining[4] ?? '')) {
+      this.i += 4;
+      return { type: 'null-literal' };
+    }
+    return this.parseFnCall();
   }
 
   /**
@@ -262,4 +321,9 @@ export class IntrinsicParser {
 
 function isAlphaNum(x: string) {
   return x.match(/^[a-zA-Z0-9]$/);
+}
+
+
+function isDigit(x: string) {
+  return x >= '0' && x <= '9';
 }
