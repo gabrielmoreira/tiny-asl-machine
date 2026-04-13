@@ -258,7 +258,7 @@ it('should process approved payment', async () => {
 | **InputPath/OutputPath** | ✅ | JSONPath filtering |
 | **ResultPath** | ✅ | Result merging |
 | **Parameters** | ✅ | Dynamic field mapping, Intrinsic Functions |
-| **Intrinsic Functions** | 🚧 | 4 of 10 implemented (Format, StringToJson, JsonToString, Array) |
+| **Intrinsic Functions** | ✅ | All 18 supported (Format, Array, Hash, UUID, MathAdd, StringSplit, etc.) |
 | **Task Tokens** | 🚧 | Not yet implemented |
 | **State Persistence** | ❌ | Not supported |
 
