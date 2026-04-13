@@ -112,4 +112,49 @@ describe('selectPath', () => {
     // Then
     expect(result).toStrictEqual(`Name: 'Gabriel', Surname: "Moreira"`);
   });
+
+  // --- Intrinsic parser: literal argument support ---
+
+  it('supports numeric literal arguments in intrinsic functions', () => {
+    const result = selectPath('States.Array($.a, 1, 2, 3)', { a: 0 }, <Context>{});
+    expect(result).toStrictEqual([0, 1, 2, 3]);
+  });
+
+  it('supports negative numeric literals in intrinsic functions', () => {
+    const result = selectPath('States.Array(-5, -3.14, 0)', {}, <Context>{});
+    expect(result).toStrictEqual([-5, -3.14, 0]);
+  });
+
+  it('supports decimal numeric literals in intrinsic functions', () => {
+    const result = selectPath('States.Array(3.14, 0.5, 100)', {}, <Context>{});
+    expect(result).toStrictEqual([3.14, 0.5, 100]);
+  });
+
+  it('supports boolean literal arguments in intrinsic functions', () => {
+    const result = selectPath('States.Array(true, false)', {}, <Context>{});
+    expect(result).toStrictEqual([true, false]);
+  });
+
+  it('supports null literal argument in intrinsic functions', () => {
+    const result = selectPath('States.Array(null, $.a, null)', { a: 1 }, <Context>{});
+    expect(result).toStrictEqual([null, 1, null]);
+  });
+
+  it('supports mixed literal types in intrinsic functions', () => {
+    const result = selectPath(
+      "States.Array(42, true, null, 'hello', $.x)",
+      { x: 'world' },
+      <Context>{}
+    );
+    expect(result).toStrictEqual([42, true, null, 'hello', 'world']);
+  });
+
+  it('supports numeric literals in nested intrinsic calls', () => {
+    const result = selectPath(
+      'States.Array(1, States.Array(2, 3))',
+      {},
+      <Context>{}
+    );
+    expect(result).toStrictEqual([1, [2, 3]]);
+  });
 });
