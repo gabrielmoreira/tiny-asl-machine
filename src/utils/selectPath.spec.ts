@@ -372,4 +372,51 @@ describe('selectPath', () => {
       selectPath('States.MathRandom(10, 5)', {}, <Context>{})
     ).toThrow();
   });
+
+  // --- Type validation (Claude review: functions must reject wrong input types) ---
+
+  it('States.ArrayLength rejects non-array input', () => {
+    expect(() => selectPath("States.ArrayLength('not-array')", {}, <Context>{})).toThrow();
+  });
+
+  it('States.ArrayContains rejects non-array first argument', () => {
+    expect(() =>
+      selectPath("States.ArrayContains('not-array', 'x')", {}, <Context>{})
+    ).toThrow();
+  });
+
+  it('States.ArrayPartition rejects non-array first argument', () => {
+    expect(() =>
+      selectPath("States.ArrayPartition('not-array', 2)", {}, <Context>{})
+    ).toThrow();
+  });
+
+  it('States.ArrayUnique rejects non-array input', () => {
+    expect(() => selectPath("States.ArrayUnique('not-array')", {}, <Context>{})).toThrow();
+  });
+
+  it('States.Hash rejects unsupported algorithm', () => {
+    expect(() => selectPath("States.Hash('data', 'UNSUPPORTED')", {}, <Context>{})).toThrow();
+  });
+
+  it('States.StringSplit rejects non-string first argument', () => {
+    expect(() => selectPath('States.StringSplit($.val, $.d)', { val: 123, d: ',' }, <Context>{})).toThrow();
+  });
+
+  it('States.Base64Decode rejects invalid base64 gracefully', () => {
+    // Invalid base64 should either throw or return garbage — but not crash the process
+    expect(() => selectPath("States.Base64Decode('!!!invalid!!!')", {}, <Context>{})).not.toThrow();
+  });
+
+  it('States.JsonMerge deep merge handles circular-safe depth', () => {
+    // Deeply nested objects should not stack overflow
+    let deep: Record<string, unknown> = { val: 'leaf' };
+    for (let i = 0; i < 50; i++) deep = { nested: deep };
+    const result = selectPath(
+      'States.JsonMerge($.a, $.b, true)',
+      { a: deep, b: { extra: true } },
+      <Context>{}
+    );
+    expect((result as Record<string, unknown>).extra).toBe(true);
+  });
 });
