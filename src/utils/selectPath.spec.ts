@@ -401,6 +401,20 @@ describe('selectPath', () => {
     );
   });
 
+  it('States.Base64Encode rejects input longer than 10000 characters', () => {
+    // Given
+    const longString = 'a'.repeat(10001);
+    // When / Then
+    expect(() => selectPath('States.Base64Encode($.s)', { s: longString }, <Context>{})).toThrow();
+  });
+
+  it('States.Hash rejects input data longer than 10000 characters', () => {
+    // Given
+    const longString = 'a'.repeat(10001);
+    // When / Then
+    expect(() => selectPath("States.Hash($.s, 'SHA-256')", { s: longString }, <Context>{})).toThrow();
+  });
+
   it('States.MathAdd rejects non-number first argument', () => {
     expect(() => selectPath("States.MathAdd('a', 1)", {}, <Context>{})).toThrow();
   });

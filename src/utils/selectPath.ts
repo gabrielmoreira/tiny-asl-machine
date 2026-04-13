@@ -164,10 +164,20 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
     },
     'States.Base64Encode': (str: unknown) => {
       assertString(str, 'States.Base64Encode');
+      if (str.length > 10000)
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          'States.Base64Encode input must be 10000 characters or less'
+        );
       return rt.base64Encode(str);
     },
     'States.Base64Decode': (str: unknown) => {
       assertString(str, 'States.Base64Decode');
+      if (str.length > 10000)
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          'States.Base64Decode input must be 10000 characters or less'
+        );
       return rt.base64Decode(str);
     },
     'States.Format': (template: string, ...args: unknown[]) => {
@@ -178,6 +188,11 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
     },
     'States.Hash': (data: unknown, algorithm: unknown) => {
       assertString(data, 'States.Hash');
+      if (data.length > 10000)
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          'States.Hash input must be 10000 characters or less'
+        );
       assertString(algorithm, 'States.Hash');
       try {
         return rt.hash(data, algorithm);
