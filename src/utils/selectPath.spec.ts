@@ -283,13 +283,15 @@ describe('selectPath', () => {
     expect(result).toStrictEqual({ x: 1, y: 3, z: 4 });
   });
 
-  it('States.JsonMerge merges two objects (deep)', () => {
-    const result = selectPath(
-      'States.JsonMerge($.a, $.b, true)',
-      { a: { nested: { a1: 1, a2: 2 } }, b: { nested: { a3: 3 } } },
-      <Context>{}
-    );
-    expect(result).toStrictEqual({ nested: { a1: 1, a2: 2, a3: 3 } });
+  it('States.JsonMerge rejects unsupported deep mode', () => {
+    // Given / When / Then — AWS currently supports only shallow merge (third arg must be false)
+    expect(() =>
+      selectPath(
+        'States.JsonMerge($.a, $.b, true)',
+        { a: { nested: { a1: 1, a2: 2 } }, b: { nested: { a3: 3 } } },
+        <Context>{}
+      )
+    ).toThrow();
   });
 
   it('States.MathRandom returns number in range', () => {
@@ -426,15 +428,50 @@ describe('selectPath', () => {
     expect(() => selectPath("States.Base64Decode('!!!invalid!!!')", {}, <Context>{})).not.toThrow();
   });
 
-  it('States.JsonMerge deep merge handles circular-safe depth', () => {
-    // Deeply nested objects should not stack overflow
+  it('States.JsonMerge rejects deep mode even for deeply nested objects', () => {
+    // Given
     let deep: Record<string, unknown> = { val: 'leaf' };
     for (let i = 0; i < 50; i++) deep = { nested: deep };
-    const result = selectPath(
-      'States.JsonMerge($.a, $.b, true)',
-      { a: deep, b: { extra: true } },
-      <Context>{}
-    );
-    expect((result as Record<string, unknown>).extra).toBe(true);
+    // When / Then
+    expect(() =>
+      selectPath(
+        'States.JsonMerge($.a, $.b, true)',
+        { a: deep, b: { extra: true } },
+        <Context>{}
+      )
+    ).toThrow();
+  });
+
+  // --- Round 5: rounding + seeded MathRandom ---
+
+  it('States.ArrayPartition rounds non-integer chunk size', () => {
+    // Given — chunk size 2.6 rounds to 3
+    const result = selectPath('States.ArrayPartition($.arr, 2.6)', { arr: [1, 2, 3, 4, 5] }, <Context>{});
+    // Then
+    expect(result).toStrictEqual([[1, 2, 3], [4, 5]]);
+  });
+
+  it('States.ArrayRange rounds non-integer inputs', () => {
+    // Given — 1.4 rounds to 1, 5.6 rounds to 6, 2.2 rounds to 2
+    const result = selectPath('States.ArrayRange(1.4, 5.6, 2.2)', {}, <Context>{});
+    // Then — range(1, 6, 2) = [1, 3, 5]
+    expect(result).toStrictEqual([1, 3, 5]);
+  });
+
+  it('States.MathRandom with seed is deterministic', () => {
+    // Given — same seed should produce same result
+    const r1 = selectPath('States.MathRandom(1, 100, 42)', {}, <Context>{});
+    const r2 = selectPath('States.MathRandom(1, 100, 42)', {}, <Context>{});
+    // Then
+    expect(r1).toBe(r2);
+    expect(typeof r1).toBe('number');
+  });
+
+  it('States.MathRandom with different seeds produces different results', () => {
+    // Given
+    const r1 = selectPath('States.MathRandom(1, 1000, 1)', {}, <Context>{});
+    const r2 = selectPath('States.MathRandom(1, 1000, 2)', {}, <Context>{});
+    // Then
+    expect(r1).not.toBe(r2);
   });
 });

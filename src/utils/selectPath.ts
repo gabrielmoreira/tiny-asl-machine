@@ -64,37 +64,6 @@ function stableStringify(obj: any): string {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const jsonValueEquals = (a: any, b: any): boolean => stableStringify(a) === stableStringify(b);
 
-const DANGEROUS_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
-
-function deepMerge(
-  obj1: Record<string, unknown>,
-  obj2: Record<string, unknown>,
-  depth = 0
-): Record<string, unknown> {
-  const result: Record<string, unknown> = { ...obj1 };
-  for (const [key, val] of Object.entries(obj2)) {
-    if (DANGEROUS_KEYS.has(key)) continue;
-    if (
-      val &&
-      typeof val === 'object' &&
-      !Array.isArray(val) &&
-      result[key] &&
-      typeof result[key] === 'object' &&
-      !Array.isArray(result[key]) &&
-      depth < 50
-    ) {
-      result[key] = deepMerge(
-        result[key] as Record<string, unknown>,
-        val as Record<string, unknown>,
-        depth + 1
-      );
-    } else {
-      result[key] = val;
-    }
-  }
-  return result;
-}
-
 function assertArray(value: unknown, fnName: string): asserts value is unknown[] {
   if (!Array.isArray(value))
     throw new ExecutionError(
@@ -112,7 +81,7 @@ function assertString(value: unknown, fnName: string): asserts value is string {
 }
 
 function assertNumber(value: unknown, fnName: string): asserts value is number {
-  if (typeof value !== 'number' || !isFinite(value))
+  if (typeof value !== 'number' || !Number.isFinite(value))
     throw new ExecutionError(
       'States.IntrinsicFailure',
       `${fnName} expected a number, got ${typeof value}`
@@ -129,12 +98,7 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
     },
     'States.ArrayGetItem': (array: unknown, index: unknown) => {
       assertArray(array, 'States.ArrayGetItem');
-      if (
-        typeof index !== 'number' ||
-        !Number.isInteger(index) ||
-        index < 0 ||
-        index >= array.length
-      )
+      if (typeof index !== 'number' || !Number.isInteger(index) || index < 0 || index >= array.length)
         throw new ExecutionError(
           'States.IntrinsicFailure',
           `ArrayGetItem index ${index} out of bounds for array of length ${array.length}`
@@ -147,14 +111,16 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
     },
     'States.ArrayPartition': (array: unknown, chunkSize: unknown) => {
       assertArray(array, 'States.ArrayPartition');
-      if (typeof chunkSize !== 'number' || !Number.isInteger(chunkSize) || chunkSize < 1)
+      assertNumber(chunkSize, 'States.ArrayPartition');
+      const size = Math.round(chunkSize);
+      if (size < 1)
         throw new ExecutionError(
           'States.IntrinsicFailure',
           'ArrayPartition chunk size must be a positive integer'
         );
       const result: unknown[][] = [];
-      for (let i = 0; i < array.length; i += chunkSize) {
-        result.push(array.slice(i, i + chunkSize));
+      for (let i = 0; i < array.length; i += size) {
+        result.push(array.slice(i, i + size));
       }
       return result;
     },
@@ -162,10 +128,16 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       assertNumber(start, 'States.ArrayRange');
       assertNumber(end, 'States.ArrayRange');
       assertNumber(step, 'States.ArrayRange');
-      if (step === 0)
-        throw new ExecutionError('States.IntrinsicFailure', 'ArrayRange step must not be zero');
+      const s = Math.round(start);
+      const e = Math.round(end);
+      const st = Math.round(step);
+      if (st === 0)
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          'ArrayRange step must not be zero'
+        );
       const result: number[] = [];
-      for (let i = start; step > 0 ? i <= end : i >= end; i += step) {
+      for (let i = s; st > 0 ? i <= e : i >= e; i += st) {
         result.push(i);
         if (result.length > 1000)
           throw new ExecutionError(
@@ -223,9 +195,12 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
           'States.IntrinsicFailure',
           'JsonMerge expected a boolean as third argument'
         );
-      return isDeep
-        ? deepMerge(obj1 as Record<string, unknown>, obj2 as Record<string, unknown>)
-        : { ...obj1, ...obj2 };
+      if (isDeep)
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          'JsonMerge deep mode is not supported'
+        );
+      return { ...obj1, ...obj2 };
     },
     'States.JsonToString': (obj: unknown) => JSON.stringify(obj),
     'States.MathAdd': (a: unknown, b: unknown) => {
@@ -233,7 +208,7 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       assertNumber(b, 'States.MathAdd');
       return Math.round(a) + Math.round(b);
     },
-    'States.MathRandom': (start: unknown, end: unknown) => {
+    'States.MathRandom': (start: unknown, end: unknown, seed?: unknown) => {
       assertNumber(start, 'States.MathRandom');
       assertNumber(end, 'States.MathRandom');
       const s = Math.round(start);
@@ -243,6 +218,11 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
           'States.IntrinsicFailure',
           'MathRandom start must be less than end'
         );
+      if (seed !== undefined) {
+        const seedNum = typeof seed === 'number' ? seed : 0;
+        const hash = ((seedNum * 9301 + 49297) % 233280) / 233280;
+        return Math.floor(hash * (e - s)) + s;
+      }
       return rt.random(s, e);
     },
     'States.StringSplit': (str: unknown, delimiter: unknown) => {
@@ -250,7 +230,6 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       assertString(delimiter, 'States.StringSplit');
       if (delimiter.length === 0) return [str];
       if (delimiter.length === 1) return str.split(delimiter);
-      // Multi-char delimiter: split on each character individually
       const escaped = delimiter.replace(/[-.*+?^${}()|[\]\\]/g, '\\$&');
       return str.split(new RegExp(`[${escaped}]`)).filter(s => s.length > 0);
     },
