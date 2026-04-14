@@ -102,17 +102,33 @@ export class IntrinsicParser {
 
   private parseNumericLiteral(): NumericLiteralExpression {
     const numStr: string[] = [];
+
+    // Optional leading minus
     if (this.char() === '-') {
       numStr.push(this.consume());
     }
-    while (!this.eof && (isDigit(this.char()) || this.char() === '.')) {
+
+    // Integer part: at least one digit required
+    if (this.eof || !isDigit(this.char())) {
+      this.raiseError('expected digit after minus sign');
+    }
+    while (!this.eof && isDigit(this.char())) {
       numStr.push(this.consume());
     }
-    const value = Number(numStr.join(''));
-    if (isNaN(value)) {
-      this.raiseError('invalid numeric literal: ' + numStr.join(''));
+
+    // Optional fractional part
+    if (!this.eof && this.char() === '.') {
+      numStr.push(this.consume()); // consume '.'
+      // At least one digit required after decimal point
+      if (this.eof || !isDigit(this.char())) {
+        this.raiseError('expected digit after decimal point');
+      }
+      while (!this.eof && isDigit(this.char())) {
+        numStr.push(this.consume());
+      }
     }
-    return { type: 'numeric-literal', value };
+
+    return { type: 'numeric-literal', value: Number(numStr.join('')) };
   }
 
   private parseKeywordOrFnCall(): IntrinsicExpression {

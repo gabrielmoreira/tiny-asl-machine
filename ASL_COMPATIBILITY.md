@@ -32,12 +32,25 @@
 - Type Tests: IsNull, IsPresent, IsNumeric, IsString, IsBoolean, IsTimestamp
 - Logical: And, Or, Not (with full nesting)
 
-#### Intrinsic Functions
+#### Intrinsic Functions (All 18 Supported)
 - `States.Format(template, value1, value2, ...)` - String formatting
-- `States.JsonToString(value)` - JSON object to string
 - `States.StringToJson(value)` - JSON string to object
+- `States.JsonToString(value)` - JSON object to string
 - `States.Array(value1, value2, ...)` - Array construction
-- `States.ArrayContains(array, value)` - Array membership test
+- `States.ArrayContains(array, value)` - Array membership test (JSON value equality)
+- `States.ArrayGetItem(array, index)` - Get item at index
+- `States.ArrayLength(array)` - Get array length
+- `States.ArrayPartition(array, chunkSize)` - Chunk array into sub-arrays
+- `States.ArrayRange(start, end, step)` - Generate numeric range
+- `States.ArrayUnique(array)` - Remove duplicate values
+- `States.Base64Encode(data)` - Base64 encode
+- `States.Base64Decode(data)` - Base64 decode
+- `States.Hash(data, algorithm)` - Hash (MD5, SHA-1, SHA-256, SHA-384, SHA-512)
+- `States.JsonMerge(obj1, obj2, isDeep)` - Shallow merge only (`isDeep === false`)
+- `States.MathAdd(a, b)` - Integer addition
+- `States.MathRandom(start, end)` - Random integer in range
+- `States.StringSplit(string, delimiter)` - Split string into array
+- `States.UUID()` - Generate v4 UUID
 
 **Intrinsic function arguments:** Paths (`$.x`), context paths (`$$.x`), single-quoted strings (`'hello'`), numeric literals (`42`, `-3.14`), booleans (`true`, `false`), `null`, and nested function calls are all supported.
 #### Error Handling
@@ -207,7 +220,7 @@ States.Base64.Decode(str)
 |----------|----------|-------|
 | **State Types** | 100% (8/8) | All core types implemented |
 | **Choice Operators** | 100% (31/31) | All comparison & logic operators |
-| **Intrinsic Functions** | 40% (4/10) | Missing hash, UUID, date functions |
+| **Intrinsic Functions** | 100% (18/18) | All intrinsic functions implemented |
 | **Error Handling** | 50% | Catch ✅, Retry ❌ |
 | **Data Flow** | 95% | All paths + params, minor edge cases |
 | **Task Features** | 80% | Missing task tokens, limited heartbeat |

@@ -9,6 +9,36 @@ import { selectPath } from '../utils/selectPath';
 import Debug from 'debug';
 const debug = Debug('tiny-asl-machine:operator');
 
+function isLeapYear(year: number): boolean {
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+}
+
+function daysInMonth(year: number, month: number): number {
+  return [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
+}
+
+function isValidRfc3339TimestampString(value: unknown): boolean {
+  if (typeof value !== 'string') return false;
+  const match = value.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:\.([0-9]+))?(Z|[+-]([0-9]{2}):([0-9]{2}))$/);
+  if (!match) return false;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const hour = Number(match[4]);
+  const minute = Number(match[5]);
+  const second = Number(match[6]);
+  const offsetHour = match[9] === undefined ? undefined : Number(match[9]);
+  const offsetMinute = match[10] === undefined ? undefined : Number(match[10]);
+  if (month < 1 || month > 12) return false;
+  if (day < 1 || day > daysInMonth(year, month)) return false;
+  if (hour < 0 || hour > 23) return false;
+  if (minute < 0 || minute > 59) return false;
+  if (second < 0 || second > 59) return false;
+  if (offsetHour !== undefined && (offsetHour < 0 || offsetHour > 23)) return false;
+  if (offsetMinute !== undefined && (offsetMinute < 0 || offsetMinute > 59)) return false;
+  return true;
+}
+
 export function processChoices(context: Context, choices: TopLevelChoiceRule[], input: StateData) {
   const operatorKeys = Object.keys(Operators) as Operator[];
   for (const choice of choices) {
@@ -133,9 +163,7 @@ export const Operators: ChoiceOperators = {
     if ('IsTimestamp' in choice && typeof choice.IsTimestamp !== 'undefined') {
       const value = choice.IsTimestamp;
       const variable = selectPath(choice.Variable, input, context);
-      const rfc3339Pattern =
-        /^\d{4}-\d{2}-\d{2}T\d{2}%3A\d{2}%3A\d{2}(?:%2E\d+)?[A-Z]?(?:[.-](?:08%3A\d{2}|\d{2}[A-Z]))?$/gm;
-      const result = rfc3339Pattern.test(variable);
+      const result = isValidRfc3339TimestampString(variable);
       return value ? result : !result;
     }
   },
