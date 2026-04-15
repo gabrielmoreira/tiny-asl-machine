@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "003-preserve-escaped-quotes-around-placeholders",
+  "title": "preserves escaped quotes around placeholders",
+  "group": "States.Format",
+  "hash": "6a55e7824ff986df73bf61e67977427878dc89d4a2b261b227d8198cac453c82",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('Name: \\'{}\\', Surname: \"{}\"', $.name, $.surname)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "name": "Gabriel",
+    "surname": "Moreira"
+  },
+  "result": {
+    "output": {
+      "value": "Name: 'Gabriel', Surname: \"Moreira\""
+    }
+  }
+}

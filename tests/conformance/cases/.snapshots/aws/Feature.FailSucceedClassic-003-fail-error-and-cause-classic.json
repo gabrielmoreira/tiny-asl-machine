@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "003-fail-error-and-cause-classic",
+  "title": "allows a classic Fail state with both Error and Cause",
+  "group": "Feature.FailSucceedClassic",
+  "hash": "875f126ce7c312687b260ebc315cb54b3537f2ca8ed26ed8236ea1080d1e64ac",
+  "definition": {
+    "StartAt": "FailState",
+    "States": {
+      "FailState": {
+        "Type": "Fail",
+        "Error": "ClassicStaticError",
+        "Cause": "classic static fail cause"
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-fail-error-cause",
+    "ignored": true
+  },
+  "result": {
+    "error": "ClassicStaticError",
+    "cause": "classic static fail cause"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "runner": "aws",
+  "id": "007-identical-objects",
+  "title": "Deduplicate identical objects with the same key order",
+  "group": "States.ArrayUnique",
+  "hash": "79fd03788ab145e1750dd281f335d74c111d88f310f0f0f38ee44e511104a456",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      {
+        "a": 1
+      },
+      {
+        "a": 1
+      }
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        {
+          "a": 1
+        }
+      ]
+    }
+  }
+}

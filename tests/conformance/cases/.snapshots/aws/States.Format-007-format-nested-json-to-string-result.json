@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "007-format-nested-json-to-string-result",
+  "title": "formats a nested JsonToString result",
+  "group": "States.Format",
+  "hash": "b686e141cdcbf53f2e0416e68db450247ea936380ed7e0705921250a2a9cae4f",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('arn:{}:{}', $.svc, States.JsonToString($.obj))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "svc": "lambda",
+    "obj": {
+      "k": 1
+    }
+  },
+  "result": {
+    "output": {
+      "value": "arn:lambda:{\"k\":1}"
+    }
+  }
+}

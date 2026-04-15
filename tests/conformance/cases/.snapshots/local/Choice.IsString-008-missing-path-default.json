@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "008-missing-path-default",
+  "title": "routes to Default when the variable path is missing",
+  "group": "Choice.IsString",
+  "hash": "22c01ee80bb8c74d284574d0ab7470c8686c287d1f301b7bc409fa3ffa851b9f",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.missing",
+            "IsString": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "present but ignored"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

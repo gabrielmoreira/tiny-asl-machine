@@ -1,0 +1,42 @@
+{
+  "runner": "local",
+  "id": "003-shapes-before-resultpath",
+  "title": "ResultSelector shapes data before ResultPath writes it into the parent input",
+  "group": "Feature.ResultSelector",
+  "hash": "89e6c7295c538db28c2c8846ce0c093df83b1906cdd0d2ded1f6b193e082e414",
+  "definition": {
+    "StartAt": "NormalizeTaskResult",
+    "States": {
+      "NormalizeTaskResult": {
+        "Type": "Task",
+        "Resource": "arn:local:result-selector:normalize-task-result",
+        "ResultSelector": {
+          "summary": {
+            "id.$": "$.rawId",
+            "pages.$": "$.stats.pages"
+          },
+          "kind": "normalized"
+        },
+        "ResultPath": "$.task",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-9",
+    "original": true
+  },
+  "result": {
+    "output": {
+      "requestId": "req-9",
+      "original": true,
+      "task": {
+        "summary": {
+          "id": "report-9",
+          "pages": 4
+        },
+        "kind": "normalized"
+      }
+    }
+  }
+}

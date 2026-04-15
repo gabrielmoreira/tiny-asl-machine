@@ -1,0 +1,35 @@
+{
+  "runner": "aws",
+  "id": "001-null-preserves-input",
+  "title": "ResultPath null preserves the original input and discards the state result",
+  "group": "Feature.ResultPath",
+  "hash": "f430cee0d1c58e8a06a643b784f0acf2ea646750a12da7498e4506075e827638",
+  "definition": {
+    "StartAt": "DiscardResult",
+    "States": {
+      "DiscardResult": {
+        "Type": "Pass",
+        "Result": {
+          "computed": true,
+          "score": 99
+        },
+        "ResultPath": null,
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-11",
+    "original": {
+      "keep": true
+    }
+  },
+  "result": {
+    "output": {
+      "requestId": "req-11",
+      "original": {
+        "keep": true
+      }
+    }
+  }
+}

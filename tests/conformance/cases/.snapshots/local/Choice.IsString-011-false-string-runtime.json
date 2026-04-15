@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "011-false-string-runtime",
+  "title": "fails when IsString is false but the runtime value is a string",
+  "group": "Choice.IsString",
+  "hash": "5c7dd2764caad8a19b3af331ade9be288a707dcdeb0d1b6da43fea86bc5305b4",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsString": false,
+            "Next": "Matched0"
+          }
+        ]
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "still a string"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

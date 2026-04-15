@@ -1,0 +1,78 @@
+{
+  "runner": "aws",
+  "id": "004-resultpath-outputpath-after-aggregate-output",
+  "title": "ResultPath and OutputPath can select the aggregate branch output",
+  "group": "Feature.ParallelErrors",
+  "hash": "88fd3503b197c241f449d228263a113fd2312a6b1a8dbd28b52ba60629d6446b",
+  "definition": {
+    "StartAt": "FanOut",
+    "States": {
+      "FanOut": {
+        "Type": "Parallel",
+        "ResultPath": "$.envelope.parallelResults",
+        "OutputPath": "$.envelope.parallelResults",
+        "Branches": [
+          {
+            "StartAt": "NumbersBranch",
+            "States": {
+              "NumbersBranch": {
+                "Type": "Pass",
+                "Result": {
+                  "branch": "numbers",
+                  "values": [
+                    2,
+                    4,
+                    6
+                  ]
+                },
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "MetadataBranch",
+            "States": {
+              "MetadataBranch": {
+                "Type": "Pass",
+                "Result": {
+                  "branch": "metadata",
+                  "summary": {
+                    "ok": true,
+                    "source": "parallel"
+                  }
+                },
+                "End": true
+              }
+            }
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "parallel-error-4",
+    "envelope": {
+      "existing": true
+    }
+  },
+  "result": {
+    "output": [
+      {
+        "branch": "numbers",
+        "values": [
+          2,
+          4,
+          6
+        ]
+      },
+      {
+        "branch": "metadata",
+        "summary": {
+          "ok": true,
+          "source": "parallel"
+        }
+      }
+    ]
+  }
+}

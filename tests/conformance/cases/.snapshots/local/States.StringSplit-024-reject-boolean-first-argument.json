@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "024-reject-boolean-first-argument",
+  "title": "rejects a boolean first argument",
+  "group": "States.StringSplit",
+  "hash": "9e1c23d42b05a057632a86d2a0ce6d8318a0c8f70cbe33fbf0b3e36eb224c8fa",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, ',')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": false
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.StringSplit($.str, ','). Invalid arguments in States.StringSplit, caused by: States.StringSplit expected a string, got boolean"
+  }
+}

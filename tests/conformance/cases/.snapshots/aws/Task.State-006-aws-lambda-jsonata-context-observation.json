@@ -1,0 +1,126 @@
+{
+  "runner": "aws",
+  "id": "006-aws-lambda-jsonata-context-observation",
+  "title": "observes JSONata $states.input and $states.context through Lambda callback",
+  "group": "Task.State",
+  "hash": "8f06f16b09c11716441bdeedde6686a91e970811255601d0330857bd770eee40",
+  "definition": {
+    "Comment": "Observe JSONata Step Functions runtime state through Lambda callback",
+    "QueryLanguage": "JSONata",
+    "StartAt": "Probe",
+    "States": {
+      "Probe": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+        "Arguments": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "const sfn = new aws.sfn.SFNClient({}); await sfn.send(new aws.sfn.SendTaskSuccessCommand({ taskToken, output: JSON.stringify({ payload, event, taskTokenVar: taskToken, contextRequestId: context.awsRequestId }) })); return { callbackSent: true };"
+            },
+            "payload": {
+              "input": "{% $states.input %}",
+              "context": "{% $states.context %}",
+              "inputString": "{% $string($states.input) %}",
+              "contextString": "{% $string($states.context) %}"
+            },
+            "taskToken": "{% $states.context.Task.Token %}"
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "hello": "world",
+    "nested": {
+      "answer": 42
+    }
+  },
+  "result": {
+    "output": {
+      "payload": {
+        "input": {
+          "hello": "world",
+          "nested": {
+            "answer": 42
+          }
+        },
+        "context": {
+          "Execution": {
+            "Id": "arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:execution:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-d7974b83:exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-cca72258",
+            "Input": {
+              "hello": "world",
+              "nested": {
+                "answer": 42
+              }
+            },
+            "StartTime": "2026-04-15T00:05:36.707Z",
+            "Name": "exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-cca72258",
+            "RoleArn": "arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role",
+            "RedriveCount": 0
+          },
+          "StateMachine": {
+            "Id": "arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:stateMachine:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-d7974b83",
+            "Name": "tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-d7974b83"
+          },
+          "State": {
+            "Name": "Probe",
+            "EnteredTime": "2026-04-15T00:05:36.740Z",
+            "RetryCount": 0
+          },
+          "Task": {
+            "Token": "AQDAAAAAKgAAAAMAAAAAAAAAAcVP4ZdVTooptPobwb6GyPbszP7oBNwkeXDRdsnEsbT45hBz42BD6AKP03uRye9j8NsqMUVAA6vqtle++WaVHFPRugbLjo36Ew/ps7IqsiH4C8Sunoq1e2EPZGsRBKcu19QwfHvQVSaZvz3F08iCAryVr5Mkl+udUvRQuC+TbH8=6RQ/BjicWYmRxw00ayD4D9g4I8tjpSZekhfblev8LVHfTFZyBd0tQURsAN+OExrhnQz7I0kPdLa4A2mpLkzqnA0T5YQWbt3oYHjdVoIKUBaa9Eli3nkUlxMElrCXfgwYjXP6kTOLtOgqouXzpXmYba9s4rQs2BvS3r2uS4BASbkCm5NfWl7cBL1CPP4kK+NZrzs7mnkQh120i200d5u1XtlRNMpsmbCYGQdWBcPvHsIx9hSr2WZ/dagO1q8Qx+vRzzua0r+OoFjSzpK0M0qOh4UHOSZPcrNvI4xlJbyIg2r7ARjFOMT1Q/A9o4jTPq1/8wsy360ltNSDD5uhW6Xl1PqqMMw8Jx+/MFxmj+vhyefpxDaRB4LJu+2m/lxt8auIAaScchN9BeBdx5G7PWEgQT+sk7isDdp4MGZliup1QsI/Ioo1twPC81SzO8TrtyPBEL1xAI6SW81XdDTtBGVx6b/+BAnKpqCK7qlnYWOOUxmBCh66lbCWZdv1cHKlh2q8zc+UvC1eRjtTYs+AQWqK"
+          }
+        },
+        "inputString": "{\"hello\":\"world\",\"nested\":{\"answer\":42}}",
+        "contextString": "{\"Execution\":{\"Id\":\"arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:execution:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-d7974b83:exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-cca72258\",\"Input\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"StartTime\":\"2026-04-15T00:05:36.707Z\",\"Name\":\"exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-cca72258\",\"RoleArn\":\"arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role\",\"RedriveCount\":0},\"StateMachine\":{\"Id\":\"arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:stateMachine:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-d7974b83\",\"Name\":\"tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-d7974b83\"},\"State\":{\"Name\":\"Probe\",\"EnteredTime\":\"2026-04-15T00:05:36.740Z\",\"RetryCount\":0},\"Task\":{\"Token\":\"AQDAAAAAKgAAAAMAAAAAAAAAAcVP4ZdVTooptPobwb6GyPbszP7oBNwkeXDRdsnEsbT45hBz42BD6AKP03uRye9j8NsqMUVAA6vqtle++WaVHFPRugbLjo36Ew/ps7IqsiH4C8Sunoq1e2EPZGsRBKcu19QwfHvQVSaZvz3F08iCAryVr5Mkl+udUvRQuC+TbH8=6RQ/BjicWYmRxw00ayD4D9g4I8tjpSZekhfblev8LVHfTFZyBd0tQURsAN+OExrhnQz7I0kPdLa4A2mpLkzqnA0T5YQWbt3oYHjdVoIKUBaa9Eli3nkUlxMElrCXfgwYjXP6kTOLtOgqouXzpXmYba9s4rQs2BvS3r2uS4BASbkCm5NfWl7cBL1CPP4kK+NZrzs7mnkQh120i200d5u1XtlRNMpsmbCYGQdWBcPvHsIx9hSr2WZ/dagO1q8Qx+vRzzua0r+OoFjSzpK0M0qOh4UHOSZPcrNvI4xlJbyIg2r7ARjFOMT1Q/A9o4jTPq1/8wsy360ltNSDD5uhW6Xl1PqqMMw8Jx+/MFxmj+vhyefpxDaRB4LJu+2m/lxt8auIAaScchN9BeBdx5G7PWEgQT+sk7isDdp4MGZliup1QsI/Ioo1twPC81SzO8TrtyPBEL1xAI6SW81XdDTtBGVx6b/+BAnKpqCK7qlnYWOOUxmBCh66lbCWZdv1cHKlh2q8zc+UvC1eRjtTYs+AQWqK\"}}"
+      },
+      "event": {
+        "config": {
+          "script": "const sfn = new aws.sfn.SFNClient({}); await sfn.send(new aws.sfn.SendTaskSuccessCommand({ taskToken, output: JSON.stringify({ payload, event, taskTokenVar: taskToken, contextRequestId: context.awsRequestId }) })); return { callbackSent: true };"
+        },
+        "payload": {
+          "input": {
+            "hello": "world",
+            "nested": {
+              "answer": 42
+            }
+          },
+          "context": {
+            "Execution": {
+              "Id": "arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:execution:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-d7974b83:exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-cca72258",
+              "Input": {
+                "hello": "world",
+                "nested": {
+                  "answer": 42
+                }
+              },
+              "StartTime": "2026-04-15T00:05:36.707Z",
+              "Name": "exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-cca72258",
+              "RoleArn": "arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role",
+              "RedriveCount": 0
+            },
+            "StateMachine": {
+              "Id": "arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:stateMachine:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-d7974b83",
+              "Name": "tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-d7974b83"
+            },
+            "State": {
+              "Name": "Probe",
+              "EnteredTime": "2026-04-15T00:05:36.740Z",
+              "RetryCount": 0
+            },
+            "Task": {
+              "Token": "AQDAAAAAKgAAAAMAAAAAAAAAAcVP4ZdVTooptPobwb6GyPbszP7oBNwkeXDRdsnEsbT45hBz42BD6AKP03uRye9j8NsqMUVAA6vqtle++WaVHFPRugbLjo36Ew/ps7IqsiH4C8Sunoq1e2EPZGsRBKcu19QwfHvQVSaZvz3F08iCAryVr5Mkl+udUvRQuC+TbH8=6RQ/BjicWYmRxw00ayD4D9g4I8tjpSZekhfblev8LVHfTFZyBd0tQURsAN+OExrhnQz7I0kPdLa4A2mpLkzqnA0T5YQWbt3oYHjdVoIKUBaa9Eli3nkUlxMElrCXfgwYjXP6kTOLtOgqouXzpXmYba9s4rQs2BvS3r2uS4BASbkCm5NfWl7cBL1CPP4kK+NZrzs7mnkQh120i200d5u1XtlRNMpsmbCYGQdWBcPvHsIx9hSr2WZ/dagO1q8Qx+vRzzua0r+OoFjSzpK0M0qOh4UHOSZPcrNvI4xlJbyIg2r7ARjFOMT1Q/A9o4jTPq1/8wsy360ltNSDD5uhW6Xl1PqqMMw8Jx+/MFxmj+vhyefpxDaRB4LJu+2m/lxt8auIAaScchN9BeBdx5G7PWEgQT+sk7isDdp4MGZliup1QsI/Ioo1twPC81SzO8TrtyPBEL1xAI6SW81XdDTtBGVx6b/+BAnKpqCK7qlnYWOOUxmBCh66lbCWZdv1cHKlh2q8zc+UvC1eRjtTYs+AQWqK"
+            }
+          },
+          "inputString": "{\"hello\":\"world\",\"nested\":{\"answer\":42}}",
+          "contextString": "{\"Execution\":{\"Id\":\"arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:execution:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-d7974b83:exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-cca72258\",\"Input\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"StartTime\":\"2026-04-15T00:05:36.707Z\",\"Name\":\"exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-cca72258\",\"RoleArn\":\"arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role\",\"RedriveCount\":0},\"StateMachine\":{\"Id\":\"arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:stateMachine:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-d7974b83\",\"Name\":\"tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-d7974b83\"},\"State\":{\"Name\":\"Probe\",\"EnteredTime\":\"2026-04-15T00:05:36.740Z\",\"RetryCount\":0},\"Task\":{\"Token\":\"AQDAAAAAKgAAAAMAAAAAAAAAAcVP4ZdVTooptPobwb6GyPbszP7oBNwkeXDRdsnEsbT45hBz42BD6AKP03uRye9j8NsqMUVAA6vqtle++WaVHFPRugbLjo36Ew/ps7IqsiH4C8Sunoq1e2EPZGsRBKcu19QwfHvQVSaZvz3F08iCAryVr5Mkl+udUvRQuC+TbH8=6RQ/BjicWYmRxw00ayD4D9g4I8tjpSZekhfblev8LVHfTFZyBd0tQURsAN+OExrhnQz7I0kPdLa4A2mpLkzqnA0T5YQWbt3oYHjdVoIKUBaa9Eli3nkUlxMElrCXfgwYjXP6kTOLtOgqouXzpXmYba9s4rQs2BvS3r2uS4BASbkCm5NfWl7cBL1CPP4kK+NZrzs7mnkQh120i200d5u1XtlRNMpsmbCYGQdWBcPvHsIx9hSr2WZ/dagO1q8Qx+vRzzua0r+OoFjSzpK0M0qOh4UHOSZPcrNvI4xlJbyIg2r7ARjFOMT1Q/A9o4jTPq1/8wsy360ltNSDD5uhW6Xl1PqqMMw8Jx+/MFxmj+vhyefpxDaRB4LJu+2m/lxt8auIAaScchN9BeBdx5G7PWEgQT+sk7isDdp4MGZliup1QsI/Ioo1twPC81SzO8TrtyPBEL1xAI6SW81XdDTtBGVx6b/+BAnKpqCK7qlnYWOOUxmBCh66lbCWZdv1cHKlh2q8zc+UvC1eRjtTYs+AQWqK\"}}"
+        },
+        "taskToken": "AQDAAAAAKgAAAAMAAAAAAAAAAcVP4ZdVTooptPobwb6GyPbszP7oBNwkeXDRdsnEsbT45hBz42BD6AKP03uRye9j8NsqMUVAA6vqtle++WaVHFPRugbLjo36Ew/ps7IqsiH4C8Sunoq1e2EPZGsRBKcu19QwfHvQVSaZvz3F08iCAryVr5Mkl+udUvRQuC+TbH8=6RQ/BjicWYmRxw00ayD4D9g4I8tjpSZekhfblev8LVHfTFZyBd0tQURsAN+OExrhnQz7I0kPdLa4A2mpLkzqnA0T5YQWbt3oYHjdVoIKUBaa9Eli3nkUlxMElrCXfgwYjXP6kTOLtOgqouXzpXmYba9s4rQs2BvS3r2uS4BASbkCm5NfWl7cBL1CPP4kK+NZrzs7mnkQh120i200d5u1XtlRNMpsmbCYGQdWBcPvHsIx9hSr2WZ/dagO1q8Qx+vRzzua0r+OoFjSzpK0M0qOh4UHOSZPcrNvI4xlJbyIg2r7ARjFOMT1Q/A9o4jTPq1/8wsy360ltNSDD5uhW6Xl1PqqMMw8Jx+/MFxmj+vhyefpxDaRB4LJu+2m/lxt8auIAaScchN9BeBdx5G7PWEgQT+sk7isDdp4MGZliup1QsI/Ioo1twPC81SzO8TrtyPBEL1xAI6SW81XdDTtBGVx6b/+BAnKpqCK7qlnYWOOUxmBCh66lbCWZdv1cHKlh2q8zc+UvC1eRjtTYs+AQWqK"
+      },
+      "taskTokenVar": "AQDAAAAAKgAAAAMAAAAAAAAAAcVP4ZdVTooptPobwb6GyPbszP7oBNwkeXDRdsnEsbT45hBz42BD6AKP03uRye9j8NsqMUVAA6vqtle++WaVHFPRugbLjo36Ew/ps7IqsiH4C8Sunoq1e2EPZGsRBKcu19QwfHvQVSaZvz3F08iCAryVr5Mkl+udUvRQuC+TbH8=6RQ/BjicWYmRxw00ayD4D9g4I8tjpSZekhfblev8LVHfTFZyBd0tQURsAN+OExrhnQz7I0kPdLa4A2mpLkzqnA0T5YQWbt3oYHjdVoIKUBaa9Eli3nkUlxMElrCXfgwYjXP6kTOLtOgqouXzpXmYba9s4rQs2BvS3r2uS4BASbkCm5NfWl7cBL1CPP4kK+NZrzs7mnkQh120i200d5u1XtlRNMpsmbCYGQdWBcPvHsIx9hSr2WZ/dagO1q8Qx+vRzzua0r+OoFjSzpK0M0qOh4UHOSZPcrNvI4xlJbyIg2r7ARjFOMT1Q/A9o4jTPq1/8wsy360ltNSDD5uhW6Xl1PqqMMw8Jx+/MFxmj+vhyefpxDaRB4LJu+2m/lxt8auIAaScchN9BeBdx5G7PWEgQT+sk7isDdp4MGZliup1QsI/Ioo1twPC81SzO8TrtyPBEL1xAI6SW81XdDTtBGVx6b/+BAnKpqCK7qlnYWOOUxmBCh66lbCWZdv1cHKlh2q8zc+UvC1eRjtTYs+AQWqK",
+      "contextRequestId": "aaf3baec-79fa-46a6-945d-e3bf7d41618a"
+    }
+  }
+}

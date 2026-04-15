@@ -1,0 +1,32 @@
+{
+  "runner": "aws",
+  "id": "019-serialize-boundary-number-array",
+  "title": "serializes negative, fractional, and huge boundary numbers",
+  "group": "States.JsonToString",
+  "hash": "e76884445d70e016335a7a2b0c43a987912eadc41211ed493d488600c250320a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.nums)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "nums": [
+      -1,
+      3.5,
+      -9007199254740991,
+      9007199254740991
+    ]
+  },
+  "result": {
+    "output": {
+      "value": "[-1,3.5,-9007199254740991,9007199254740991]"
+    }
+  }
+}

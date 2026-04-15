@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "004-branch-failure",
+  "title": "branch failure propagates",
+  "group": "Parallel.State",
+  "hash": "535db4146202678b5602f56c0fc40b236e695d8f788b7932df3cc77c59ad10f3",
+  "definition": {
+    "StartAt": "FanOut",
+    "States": {
+      "FanOut": {
+        "Type": "Parallel",
+        "Branches": [
+          {
+            "StartAt": "HealthyBranch",
+            "States": {
+              "HealthyBranch": {
+                "Type": "Task",
+                "Resource": "local:healthy-branch",
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "FailingBranch",
+            "States": {
+              "FailingBranch": {
+                "Type": "Task",
+                "Resource": "local:failing-branch",
+                "End": true
+              }
+            }
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 9
+  },
+  "result": {
+    "error": "ParallelBranchBoom",
+    "cause": "second branch exploded"
+  }
+}

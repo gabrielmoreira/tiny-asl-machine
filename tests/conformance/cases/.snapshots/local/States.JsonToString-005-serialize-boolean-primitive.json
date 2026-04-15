@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "005-serialize-boolean-primitive",
+  "title": "serializes a boolean primitive",
+  "group": "States.JsonToString",
+  "hash": "8835fba2269f775ffeb660c9a28c2a42cd8c82393680a275e07134b325478bee",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.bool)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "bool": false
+  },
+  "result": {
+    "output": {
+      "value": "false"
+    }
+  }
+}

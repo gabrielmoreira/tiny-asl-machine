@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "015-split-nested-format-result",
+  "title": "splits a nested Format result",
+  "group": "States.StringSplit",
+  "hash": "4183c1970d25aeabed061aaea4b0d8b87ec0a79e8d07fb70a86dd1735a99adb9",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit(States.Format('{}-{}', $.a, $.b), '-')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": "x",
+    "b": "y"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "x",
+        "y"
+      ]
+    }
+  }
+}

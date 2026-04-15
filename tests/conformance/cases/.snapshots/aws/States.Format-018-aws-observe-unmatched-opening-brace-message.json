@@ -1,0 +1,26 @@
+{
+  "runner": "aws",
+  "id": "018-aws-observe-unmatched-opening-brace-message",
+  "title": "observes AWS error shape for an unmatched opening brace in States.Format",
+  "group": "States.Format",
+  "hash": "41b33001eb128a222c086bb52ab1076d1e46422044ffec54559eeeee9568c03c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('Hello {', $.a)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": "x"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.Format('Hello {', $.a). Invalid template in States.Format: matching '}' not found for '{'."
+  }
+}

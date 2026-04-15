@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "001-s3-inventory-must-not-specify-inputtype",
+  "title": "fails validation when ManifestType S3_INVENTORY is combined with InputType",
+  "group": "Validation.ItemReader",
+  "hash": "2a1c8e04c9c3128bc8699c43ec3bc5f5d2e09a8e843aaf3c053208154d1d9573",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "ManifestType": "S3_INVENTORY",
+            "InputType": "CSV"
+          },
+          "Parameters": {
+            "Bucket": "amzn-s3-demo-bucket",
+            "Key": "inventory/manifest.json"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "The field 'CSVHeaderLocation' is required"
+  }
+}

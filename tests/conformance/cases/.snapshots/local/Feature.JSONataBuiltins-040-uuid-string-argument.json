@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "040-uuid-string-argument",
+  "title": "$uuid with a string argument follows the AWS-observed ignored-arg or failure semantics",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "670a0ea2ae736f517e08be536508a42384b95c3f84cb7afc57db3d0008e91926",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $uuid(\"x\") %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $uuid(\"x\"). [object Object]"
+  }
+}

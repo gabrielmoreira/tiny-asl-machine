@@ -1,0 +1,35 @@
+{
+  "runner": "local",
+  "id": "012-serialize-nested-mixed-structure",
+  "title": "serializes a nested mixed structure",
+  "group": "States.JsonToString",
+  "hash": "2db4b0ef0b73eee6a733bad74a31d34d3dd7d7b941a586ef7b53d1b480d0ce71",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.obj)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "obj": {
+      "nested": {
+        "a": 1
+      },
+      "arr": [
+        true,
+        null
+      ]
+    }
+  },
+  "result": {
+    "output": {
+      "value": "{\"nested\":{\"a\":1},\"arr\":[true,null]}"
+    }
+  }
+}

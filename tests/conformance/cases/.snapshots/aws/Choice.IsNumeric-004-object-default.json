@@ -1,0 +1,47 @@
+{
+  "runner": "aws",
+  "id": "004-object-default",
+  "title": "returns Default for objects when IsNumeric is true",
+  "group": "Choice.IsNumeric",
+  "hash": "a8e34afe8f0cd71277e0673c3f44175c4fdb533acc717a2f3e3f7e9b457735d3",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsNumeric": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": {
+      "amount": 42
+    }
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

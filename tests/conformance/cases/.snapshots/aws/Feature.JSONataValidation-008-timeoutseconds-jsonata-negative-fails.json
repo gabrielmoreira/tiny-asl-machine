@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "008-timeoutseconds-jsonata-negative-fails",
+  "title": "Task TimeoutSeconds rejects a negative JSONata value",
+  "group": "Feature.JSONataValidation",
+  "hash": "1de161c122117873d518b30a1dd653ef3e192178eb6ff89876b609d58f95f998",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:sts:getCallerIdentity",
+        "TimeoutSeconds": "{% -1 %}",
+        "Arguments": {},
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Invoke' (entered at the event id #2). TimeoutSeconds must be between 0 and 99999999 but was: -1"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "runner": "local",
+  "id": "002-match-nested-later",
+  "title": "matches when nested timestamp paths resolve to a later and earlier instant",
+  "group": "Choice.TimestampGreaterThanPath",
+  "hash": "b7a8a41fc0b76a0afd4276b86d6749504b1e7e40c8ddde4d63a4007de74a2c8a",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.audit.completedAt",
+            "TimestampGreaterThanPath": "$.audit.startedAt",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "audit": {
+      "startedAt": "2025-01-01T12:00:00.000Z",
+      "completedAt": "2025-01-02T00:00:00.000Z"
+    }
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

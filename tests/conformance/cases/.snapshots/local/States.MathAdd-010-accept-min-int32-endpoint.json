@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "010-accept-min-int32-endpoint",
+  "title": "accepts the minimum int32 endpoint",
+  "group": "States.MathAdd",
+  "hash": "1dcc61ff09b5c61d411b5d15a7e94ad8e119d5bc6bc97a25573dcf62f4e37eff",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(-2147483648, 0)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": -2147483648
+    }
+  }
+}

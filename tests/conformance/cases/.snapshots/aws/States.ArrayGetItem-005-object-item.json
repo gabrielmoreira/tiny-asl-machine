@@ -1,0 +1,36 @@
+{
+  "runner": "aws",
+  "id": "005-object-item",
+  "title": "Return object item unchanged",
+  "group": "States.ArrayGetItem",
+  "hash": "be15daa0cc49fd34cb14711cf64e2bc14165074755c34e84f1de114066f109fa",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($.arr, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      {
+        "a": 1
+      },
+      {
+        "b": 2
+      }
+    ]
+  },
+  "result": {
+    "output": {
+      "value": {
+        "b": 2
+      }
+    }
+  }
+}

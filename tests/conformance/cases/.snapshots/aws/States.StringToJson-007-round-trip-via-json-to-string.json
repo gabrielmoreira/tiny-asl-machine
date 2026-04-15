@@ -1,0 +1,37 @@
+{
+  "runner": "aws",
+  "id": "007-round-trip-via-json-to-string",
+  "title": "round-trips through JsonToString",
+  "group": "States.StringToJson",
+  "hash": "e686eb1ce7a8de629c2657e0a05d81c74ad968b6ea658204c11941f4ccc7a6bf",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson(States.JsonToString($.obj))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "obj": {
+      "a": 1,
+      "nested": {
+        "ok": true
+      }
+    }
+  },
+  "result": {
+    "output": {
+      "value": {
+        "a": 1,
+        "nested": {
+          "ok": true
+        }
+      }
+    }
+  }
+}

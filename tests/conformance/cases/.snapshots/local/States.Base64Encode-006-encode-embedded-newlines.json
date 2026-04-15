@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "006-encode-embedded-newlines",
+  "title": "encodes embedded newline characters",
+  "group": "States.Base64Encode",
+  "hash": "c493b1903e796c9efb377c54698d098f5a796a1478778e9cf9ddba137fb20f56",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode($.s)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "line1\nline2"
+  },
+  "result": {
+    "output": {
+      "value": "bGluZTEKbGluZTI="
+    }
+  }
+}

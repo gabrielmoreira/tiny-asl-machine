@@ -1,0 +1,20 @@
+{
+  "runner": "aws",
+  "id": "004-nonterminal-state-missing-next-and-end-fails-validation",
+  "title": "fails validation when a non-terminal state has neither Next nor End",
+  "group": "Validation.BasicStructure",
+  "hash": "88d62ef2c244577d49676cfb5977657a8f8befef9a9ea4eda922ef175145f1a7",
+  "definition": {
+    "StartAt": "First",
+    "States": {
+      "First": {
+        "Type": "Pass"
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "This object should have only one of the following fields: [Next, End]; Workflow has no terminal state"
+  }
+}

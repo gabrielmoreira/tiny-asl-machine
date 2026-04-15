@@ -1,0 +1,65 @@
+{
+  "runner": "local",
+  "id": "002-task-result-fed-into-assign-while-same-state-output-sees-entry-value",
+  "title": "Task result can feed Assign while same-state Output still sees the state-entry snapshot",
+  "group": "Feature.JSONataComposition",
+  "hash": "00529a863435188934a629c6230279c5369a7da39d1a996db901a252f187320c",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "SeedStage",
+    "States": {
+      "SeedStage": {
+        "Type": "Pass",
+        "Assign": {
+          "stage": "entry"
+        },
+        "Next": "Invoke"
+      },
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Arguments": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "return { stage: \"fresh\", status: \"done\" };"
+            },
+            "payload": {
+              "seed": "{% $stage %}"
+            }
+          }
+        },
+        "Assign": {
+          "stage": "{% $states.result.nextStage %}",
+          "status": "{% $states.result.nextStatus %}"
+        },
+        "Output": {
+          "stageSeenByOutput": "{% $stage %}",
+          "statusFromResult": "{% $states.result.status %}",
+          "nextStage": "{% $states.result.stage %}",
+          "nextStatus": "{% $states.result.status %}"
+        },
+        "Next": "Observe"
+      },
+      "Observe": {
+        "Type": "Pass",
+        "Output": {
+          "stage": "{% $stage %}",
+          "status": "{% $status %}",
+          "priorOutputStage": "{% $states.input.stageSeenByOutput %}",
+          "rawStatus": "{% $states.input.statusFromResult %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "stage": "fresh",
+      "status": "done",
+      "priorOutputStage": "entry",
+      "rawStatus": "done"
+    }
+  }
+}

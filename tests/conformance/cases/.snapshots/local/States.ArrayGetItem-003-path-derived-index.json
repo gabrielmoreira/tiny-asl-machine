@@ -1,0 +1,33 @@
+{
+  "runner": "local",
+  "id": "003-path-derived-index",
+  "title": "Use path-derived numeric index",
+  "group": "States.ArrayGetItem",
+  "hash": "0a05ea23fc9f02ea4e5f0d3d8452fd30c8b84c754b2d71b5341f7fa30f3893d9",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($.arr, $.idx)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      10,
+      20,
+      30,
+      40
+    ],
+    "idx": 2
+  },
+  "result": {
+    "output": {
+      "value": 30
+    }
+  }
+}

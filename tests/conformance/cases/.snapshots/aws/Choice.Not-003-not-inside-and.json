@@ -1,0 +1,56 @@
+{
+  "runner": "aws",
+  "id": "003-not-inside-and",
+  "title": "supports Not inside an And composition",
+  "group": "Choice.Not",
+  "hash": "22f5b75bccff97c1d02c6f477c4d70f10c2e8c1693c0961bfd51c14ee0ade70d",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "And": [
+              {
+                "Variable": "$.value",
+                "StringMatches": "D"
+              },
+              {
+                "Not": {
+                  "Variable": "$.somethingElse",
+                  "NumericEquals": 1
+                }
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "its-d"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "unknown-value"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "D",
+    "somethingElse": 2
+  },
+  "result": {
+    "output": {
+      "selected": "its-d"
+    }
+  }
+}

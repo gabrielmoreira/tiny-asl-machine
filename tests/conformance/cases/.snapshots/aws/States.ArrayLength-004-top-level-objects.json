@@ -1,0 +1,34 @@
+{
+  "runner": "aws",
+  "id": "004-top-level-objects",
+  "title": "Count top-level object elements only",
+  "group": "States.ArrayLength",
+  "hash": "af006e1c09945385c5d87d2ba7b4a9564926ca7ffc9d0d3469db8966d388f629",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      {
+        "a": 1
+      },
+      {
+        "b": 2
+      }
+    ]
+  },
+  "result": {
+    "output": {
+      "value": 2
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "020-range-string-start-fails",
+  "title": "$range rejects a string start argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "c8ebd5ea2de4a3ade4063302879fedfd8ac300b041b8beb672f9e6b8f4277625",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $range(\"a\", 5, 1) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$range(\"a\", 5, 1)' specified for the field 'Output' threw an error during evaluation. T0410: Argument 1 of function \"range\" does not match function signature"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "runner": "local",
+  "id": "003-max-attempts-zero-skips-retry",
+  "title": "observes that MaxAttempts zero skips retries and falls directly into Catch",
+  "group": "Feature.Retry",
+  "hash": "359152596c059e093ac2544d4ba256b45d4237a77bf3958e7495c1458b981831",
+  "definition": {
+    "StartAt": "InvokeUnimplementedService",
+    "States": {
+      "InvokeUnimplementedService": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:s3:headBucket",
+        "Parameters": {
+          "Bucket": "tiny-asl-machine-observation-bucket-should-not-exist"
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 0,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.retriedError",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "at": "zero-max-attempts"
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-retry-3"
+  },
+  "result": {
+    "output": {
+      "requestId": "req-retry-3",
+      "retriedError": {
+        "Error": "SyntheticZeroRetryError",
+        "Cause": "local zero-attempt retry observation failure"
+      },
+      "recovery": {
+        "at": "zero-max-attempts"
+      }
+    }
+  }
+}

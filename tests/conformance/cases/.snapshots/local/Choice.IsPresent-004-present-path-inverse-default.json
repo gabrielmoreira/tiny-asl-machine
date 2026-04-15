@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "004-present-path-inverse-default",
+  "title": "returns Default when the variable path exists and IsPresent is false",
+  "group": "Choice.IsPresent",
+  "hash": "f412378308e73b7b06ee1cebe46c344b10d2b5ff69ef85c3316b88c1d87b097e",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsPresent": false,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 1
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

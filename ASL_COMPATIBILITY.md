@@ -1,343 +1,253 @@
-# ASL Compatibility Analysis - Tiny ASL Machine
+# ASL Compatibility
 
-## Current Implementation Status
+This document explains how close Tiny ASL Machine is to AWS Step Functions today.
 
-### ✅ Fully Implemented (100% Compatible)
+It is a **practical compatibility guide**, not a promise of full AWS parity.
 
-#### State Types
-- **Task** - Complete implementation with resource invocation
-- **Pass** - Full support including Result field
-- **Wait** - All variants (Seconds, SecondsPath, Timestamp, TimestampPath)
-- **Choice** - Full operator support with logical combinations
-- **Parallel** - Multiple branch execution
-- **Map** - Iteration with MaxConcurrency support
-- **Succeed** - Terminal state
-- **Fail** - Terminal state with error/cause
+If you need the final answer to "does AWS behave like this?", use the AWS-backed conformance tests.
 
-#### Data Flow Processing
-- **InputPath** - JSONPath filtering on state input
-- **OutputPath** - JSONPath transformation of output
-- **ResultPath** - Merging task results with input
-- **Parameters** - Dynamic parameter construction with `.$` syntax
-- **ResultSelector** - Transform task output before ResultPath
+## Quick summary
 
-#### Choice Operators (All 30+)
-- String: Equals, LessThan, GreaterThan, LessThanEquals, GreaterThanEquals, Matches
-- String Path versions: All above with "Path" suffix
-- Numeric: Equals, LessThan, GreaterThan, LessThanEquals, GreaterThanEquals
-- Numeric Path versions: All above with "Path" suffix
-- Boolean: Equals, EqualsPath
-- Timestamp: Equals, LessThan, GreaterThan, LessThanEquals, GreaterThanEquals
-- Timestamp Path versions: All above with "Path" suffix
-- Type Tests: IsNull, IsPresent, IsNumeric, IsString, IsBoolean, IsTimestamp
-- Logical: And, Or, Not (with full nesting)
+Tiny ASL Machine is strong for:
 
-#### Intrinsic Functions
-- `States.Format(template, value1, value2, ...)` - String formatting
-- `States.JsonToString(value)` - JSON object to string
-- `States.StringToJson(value)` - JSON string to object
-- `States.Array(value1, value2, ...)` - Array construction
-- `States.ArrayContains(array, value)` - Array membership test
+- local testing of Step Functions logic
+- JSONPath-style dataflow
+- `Catch` / `Retry` flows used in normal orchestration
+- intrinsic functions
+- modern JSONata-based authoring
+- `Map` and `Parallel` workflows with mocked resources
 
-**Intrinsic function arguments:** Paths (`$.x`), context paths (`$$.x`), single-quoted strings (`'hello'`), numeric literals (`42`, `-3.14`), booleans (`true`, `false`), `null`, and nested function calls are all supported.
-#### Error Handling
-- **Catch** - Complete implementation
-  - ErrorEquals matching with wildcard support
-  - Next state transition
-  - ResultPath for error context injection
-  - Multiple catch blocks in priority order
+Tiny ASL Machine is **not** a full local copy of AWS Step Functions.
 
-#### Other Fields
-- **Comment** - Documentation fields
-- **TimeoutSeconds** - Task timeout specification
-- **HeartbeatSeconds** - Heartbeat interval (parsed but not enforced)
+The biggest known limits are:
 
-#### Type Safety
-- Full TypeScript type definitions
-- Type-safe discriminated unions for states
-- Proper type inference for parameters
+- advanced distributed `Map` / `ItemReader` cases
+- local Parquet decoding
+- full callback / task-token fidelity
+- durable execution / pause-resume behavior
+- service-level AWS integration behavior
 
----
+## Current support by area
 
-## 🚧 Partially Implemented
+| Area                                      | Status       | Notes                                                                                                                   |
+| ----------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| Core states                               | Very strong  | `Task`, `Pass`, `Choice`, `Wait`, `Parallel`, `Map`, `Succeed`, and `Fail` are available for local execution.           |
+| Dataflow                                  | Very strong  | `InputPath`, `OutputPath`, `ResultPath`, `Parameters`, and `ResultSelector` are covered well for normal workflow tests. |
+| Error handling                            | Very strong  | `Catch` and `Retry` work for common orchestration patterns. AWS is still the final check for edge cases.                |
+| Intrinsics                                | Very strong  | Broad JSONPath intrinsic coverage is available for transformation-heavy workflows.                                      |
+| JSONata                                   | Very strong  | JSONata-based conditions, output shaping, and related execution flow have strong coverage.                              |
+| Validation coverage                       | Good         | A large set of structure and behavior checks exists, but some validation is still AWS-only by design.                   |
+| Advanced distributed `Map` / `ItemReader` | Partial      | Common local cases work. More advanced manifest-driven and service-coupled cases are still limited locally.             |
+| Callback / task-token flows               | Partial      | Some related plumbing exists, but full callback fidelity is not complete.                                               |
+| Persistence / durable execution           | Out of scope | This package is for testing workflow logic, not for running durable production workflows.                               |
 
-### Retry Logic (Structure Defined, Logic Not Implemented)
-**Current Status**: Definition exists in types, but execution logic not implemented
+## Conformance coverage snapshot
 
-**File**: [src/states/index.ts](src/states/index.ts#L69)
-```typescript
-// TODO implement retry logic
+The project has a large compatibility test suite.
+
+Current snapshot from the conformance case files:
+
+- about **946 conformance cases**
+- across **79 groups**
+- about **12 cases per group on average**
+
+Approximate case count by area:
+
+| Area                               | Approx. case count |
+| ---------------------------------- | -----------------: |
+| Intrinsic functions                |                404 |
+| Feature / integration-style groups |                257 |
+| Choice operator groups             |                188 |
+| Classic state suites               |                 47 |
+| Observation groups                 |                 27 |
+| Validation groups                  |                 23 |
+
+Examples of larger groups today:
+
+- `Feature.JSONataBuiltins` — 46 cases
+- `States.MathAdd` — 36 cases
+- `States.Hash` — 31 cases
+- `Feature.MapErrors` — 28 cases
+- `States.MathRandom` — 28 cases
+- `Observation.ItemReader` — 27 cases
+
+That does **not** mean every Step Functions feature is finished.
+
+It does mean the project has already invested heavily in compatibility testing, especially in the areas that matter most for real workflow logic.
+
+## What the compatibility tests actually do
+
+The compatibility suite has two runners:
+
+### 1. Local conformance
+
+The local runner:
+
+- loads one conformance case
+- runs it through Tiny ASL Machine
+- uses mocked local resources when needed
+- captures either output or error
+- checks that result against the expected behavior
+
+In code, that is mainly wired through:
+
+- `tests/conformance.spec.ts`
+- `tests/conformance/support/runLocalCase.ts`
+
+Local conformance is best for:
+
+- fast feedback
+- everyday logic checks
+- payload shaping
+- branching behavior
+- mocked task-resource behavior
+
+### 2. AWS-backed conformance
+
+The AWS runner:
+
+- validates the state machine definition with AWS
+- creates a temporary state machine in Step Functions
+- starts one execution with the case input
+- waits for completion
+- captures AWS output or AWS error
+- compares that result against the expected behavior
+- deletes the temporary state machine afterward
+
+In code, that is mainly wired through:
+
+- `tests/conformance.spec.ts`
+- `tests/conformance/support/runAwsCase.ts`
+
+AWS-backed conformance is best for:
+
+- parity-sensitive features
+- validation behavior
+- edge cases where AWS details matter
+- cases where local behavior is intentionally guarded or incomplete
+
+## How the conformance suite is organized
+
+Each test case belongs to a **group**.
+
+Examples:
+
+- `Choice.StringEquals`
+- `States.MathAdd`
+- `Feature.JSONPathPipeline`
+- `Feature.JSONataComposition`
+- `Validation.BasicStructure`
+- `Observation.ItemReader`
+
+The runner groups cases by `group`, then runs each case by `id`.
+
+That gives the project a clean way to track compatibility area by area.
+
+It also makes focused runs easy.
+
+## How to run compatibility tests
+
+### Run the full local suite
+
+```bash
+pnpm run test:conformance:local
 ```
 
-**What's Missing**:
-1. **Exponential backoff calculation** - Not computing backoff times
-2. **Retry attempt counting** - RetryCount exists but not incremented
-3. **Error matching in retries** - Not filtering which errors trigger retry
-4. **Backoff rate application** - Formula: `interval = BaseInterval * (BackoffRate ^ attemptNumber)`
-5. **MaxAttempts enforcement** - Not tracking or enforcing max attempts
+### Run the AWS-backed suite
 
-**Expected Behavior** (from AWS Docs):
-```
-First attempt: immediate
-Retry 1: wait IntervalSeconds seconds, then retry
-Retry 2: wait IntervalSeconds * BackoffRate seconds, then retry
-Retry N: wait IntervalSeconds * (BackoffRate ^ N) seconds, then retry
-Stop: after MaxAttempts attempts + 1 initial attempt
+```bash
+pnpm run test:conformance:aws
 ```
 
-**Definition Structure Already Supports**:
-```typescript
-Retry: [
-  {
-    ErrorEquals: ['States.TaskFailed', 'States.Timeout'],
-    IntervalSeconds: 2,
-    MaxAttempts: 5,
-    BackoffRate: 2.0,
-  }
-]
+### Run all tests in CI mode
+
+```bash
+pnpm run test:ci
 ```
 
----
+### Run only one area or one group
 
-## ❌ Not Implemented Features
+Examples:
 
-### 1. **Asynchronous Task Token Pattern**
-**AWS Docs**: [Task Token](https://docs.aws.amazon.com/step-functions/latest/dg/task-tokens.html)
-
-**What It Is**: 
-- Lambda function receives a token from Step Functions
-- Lambda can pause execution and do async work
-- Lambda calls back with the token when done
-
-**Why Missing**: 
-- Requires distributed callback system
-- Not essential for unit testing
-- Would need persistent state storage
-
-### 2. **Execution State Serialization/Deserialization**
-**Why Missing**:
-- Designed for testing, not production deployments
-- Unit tests don't need pause/resume capability
-- Would require complex state versioning
-
-### 3. **Advanced Map State Features**
-**Missing**:
-- **ResultSelector** - ✅ Supported (applied via processStateOutput)
-- **Dynamic MaxConcurrency** - Can't use path expressions
-- **Iterator parameters** - Limited context passing to items
-- **Map Run Records** - No execution tracking per item
-
-### 4. **Additional Intrinsic Functions**
-**AWS Provides These (NOT YET IMPLEMENTED)**:
-
-#### Hash Functions
-```
-States.Hash.MD5
-States.Hash.SHA256  
-States.Hash.SHA1
-States.Hash.HMAC.MD5
-States.Hash.HMAC.SHA256
-States.Hash.HMAC.SHA1
+```bash
+pnpm run test:conformance -- --case='group:"Feature.JSONataComposition"'
+pnpm run test:conformance -- --case='group:"States.MathAdd"'
+pnpm run test:conformance -- --case='id:"006-parquet-versionid-is-unsupported"'
 ```
 
-#### UUID Generation
-```
-States.UUID()
-```
+The case filter works on fields like:
 
-#### Date/Time Functions
-```
-States.Now() - Current timestamp in milliseconds
-States.DateAdd(date, seconds, unit) - Add time to date
-```
+- `group`
+- `id`
+- `title`
+- `tags`
 
-#### Base64 Encoding
-```
-States.Base64.Encode(str)
-States.Base64.Decode(str)
-```
+## How to read the results correctly
 
-### 5. **Heartbeat Enforcement**
-**What's Missing**: 
-- HeartbeatSeconds field parsed but not enforced
-- In AWS, task must report progress within interval or fails
-- Unit tests don't need this validation
+A feature can be in one of these states:
 
-### 6. **Timeout Enforcement**
-**What's Missing**:
-- TimeoutSeconds field parsed but not enforced at runtime
-- Would require actual timing interrupts
-- Unit tests typically mock time (vitest.useFakeTimers)
+### Broadly supported
 
-**Note**: Mocking framework (vitest) can fake these delays for testing
+This means:
 
-### 7. **Execution Validation**
-**Missing**:
-- Pre-execution definition validation
-- State reference validation (undefined Next states)
-- Circular dependency detection
-- Type mismatch detection
+- local execution works well for common use
+- the behavior is tested enough to trust in everyday workflow tests
+- AWS may still differ in some rare edge cases
 
-### 8. **State Machine Branching Edge Cases**
-- **DynamicMap with parameters** - Limited support
-- **Nested Parallel in Parallel** - Untested
-- **Map within Map** - Untested edge cases
-- **Complex ResultPath merging** - Some edge cases may not work
+### Partial
 
-### 9. **Lambda-Specific Error Types**
-**Current Partial Support**:
-- `Lambda.ServiceException` ✅
-- `Lambda.AWSLambdaException` ✅
-- `Lambda.SdkClientException` ✅
-- `Lambda.TooManyRequestsException` ✅
-- `Lambda.Unknown` ✅
-- `States.Permissions` ❌
-- `States.DataLimitExceeded` - Only partial
+This means:
 
-### 10. **InputPath for Wait/Choice States**
-- Wait states DO support InputPath (the library applies `processStateInput` before Wait execution)
-- Choice states process input through InputPath but don't transform output
-- ✅ Both behave correctly per the library's implementation
+- useful parts already work
+- some shapes, data sources, or edge cases still need AWS checks
+- local behavior may be guarded, limited, or incomplete
 
----
+### Deferred or out of scope
 
-## 📊 ASL Compatibility Score Breakdown
+This means the project is not trying to fully model that behavior locally right now.
 
-| Category | Coverage | Notes |
-|----------|----------|-------|
-| **State Types** | 100% (8/8) | All core types implemented |
-| **Choice Operators** | 100% (31/31) | All comparison & logic operators |
-| **Intrinsic Functions** | 40% (4/10) | Missing hash, UUID, date functions |
-| **Error Handling** | 50% | Catch ✅, Retry ❌ |
-| **Data Flow** | 95% | All paths + params, minor edge cases |
-| **Task Features** | 80% | Missing task tokens, limited heartbeat |
-| **Advanced Features** | 30% | Limited async, no persistence |
-| **Type Safety** | 100% | Full TypeScript support |
+Usually that is because the feature is:
 
-**Overall**: ~**75-80% ASL Compatible**
+- very AWS-service-specific
+- hard to model locally without fake infrastructure
+- outside the package's goal as a testing tool
 
----
+## Known areas where AWS should still be the authority
 
-## 🎯 Path to 100% Compatibility
+Use AWS-backed checks first when you care about:
 
-### Must-Have for Most Use Cases (Tier 1)
-1. **✅ DONE** - All state types
-2. **✅ DONE** - All choice operators  
-3. **✅ DONE** - InputPath/OutputPath/ResultPath
-4. **⚠️ PRIORITY** - **Retry logic** - Used in many production state machines
-5. **⚠️ PRIORITY** - **Heartbeat/Timeout validation** - Production safety net
+- advanced `ItemReader` manifests
+- Parquet-backed ingestion behavior
+- callback / task-token workflows
+- exact validation wording and AWS-only validation rules
+- service-coupled edge cases
+- very new Step Functions features
 
-### Nice-to-Have (Tier 2)
-6. **Additional intrinsic functions** - Hash, UUID, date operations
-7. **Better error type matching** - More AWS error types
-8. **Execution validation** - Catch config errors early
-9. **Advanced Map features** - ResultSelector, better context
+## Notes on advanced `Map` / `ItemReader`
 
-### Production Features (Tier 3)
-10. **Task token pattern** - For async integration patterns
-11. **State serialization** - For pause/resume workflows
-12. **Proper timeout enforcement** - Real runtime interrupts
-13. **Heartbeat validation** - Actual timing checks
+Local support already covers important non-Parquet cases such as:
 
----
+- JSON item loading
+- `ItemsPointer`
+- `MaxItems`
+- CSV with supported header modes
+- JSONL
+- `LOAD_AND_FLATTEN` for supported JSON flows
+- `listObjectsV2` observation paths used in current conformance work
 
-## 🔧 Implementation Guide
+But local support is still limited for:
 
-### Implementing Retry Logic
+- advanced manifest-driven flows
+- some service-coupled ingestion behavior
+- full Parquet local decoding
 
-**File to Modify**: `src/states/index.ts`
+For Parquet, the project currently prefers **clear guardrails** instead of pretending to support full local decoding.
 
-**Current Code** (line 69):
-```typescript
-// TODO implement retry logic
-return await catchErrors(context, state, input, () =>
-  Executors[state.Type](context, state, input)
-);
-```
+## Bottom line
 
-**Required Changes**:
-1. Wrap state execution with retry wrapper
-2. Track attempt count in context
-3. Calculate exponential backoff
-4. Match errors against ErrorEquals
-5. Implement sleep between retries
+A fair short summary is:
 
-**Pseudocode**:
-```typescript
-async function executeWithRetry(
-  state: State,
-  context: Context,
-  input: StateData,
-  executeStateFn: () => Promise<StateData>
-) {
-  const retriers = state.Retry || [];
-  
-  for (let attempt = 0; attempt <= maxAttempts; attempt++) {
-    try {
-      return await executeStateFn();
-    } catch (error) {
-      const matchingRetrier = retriers.find(r =>
-        r.ErrorEquals.some(pattern =>
-          matchesError(error.name, pattern)
-        )
-      );
-      
-      if (!matchingRetrier || attempt >= matchingRetrier.MaxAttempts) {
-        throw error;
-      }
-      
-      const backoffMs = calculateBackoff(
-        matchingRetrier.IntervalSeconds,
-        matchingRetrier.BackoffRate,
-        attempt
-      );
-      
-      await sleep(backoffMs);
-    }
-  }
-}
-```
-
-### Implementing Missing Intrinsic Functions
-
-**File to Modify**: `src/utils/parseIntrinsicFunction.ts`
-
-**Add Functions**:
-- `States.Hash.SHA256(input)` - crypto.createHash
-- `States.UUID()` - crypto.randomUUID
-- `States.Now()` - Date.now()
-
----
-
-## 📝 Breaking Changes to Consider
-
-### None Currently
-This library follows semantic versioning. Implementing missing features will be:
-- Patch version (0.0.x) for bug fixes
-- Minor version (0.x.0) for feature additions
-- Major version (x.0.0) only for API breaking changes
-
----
-
-## Testing Compatibility
-
-The existing test suite (`tests/sampleETLOrchestration.spec.ts`) demonstrates:
-- ✅ Complex workflow orchestration
-- ✅ Multiple task states with retries (structure tested, not logic)
-- ✅ Choice state branching
-- ✅ Wait state timing
-- ✅ Parallel execution
-- ✅ Error handling patterns
-
----
-
-## References
-
-- [AWS Step Functions Developer Guide](https://docs.aws.amazon.com/step-functions/latest/dg/)
-- [States Language Specification](https://states-language.net/)
-- [ASL JSON Specification](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html)
-
----
-
-**Last Updated**: February 2025
-**Current Version**: 0.0.11
+- Tiny ASL Machine has **high-value local compatibility** for a large part of Step Functions logic
+- the project has already done **a lot of conformance work**
+- AWS parity is **strong in many areas**, but still **not total**
+- for hard edge cases, **AWS-backed conformance is the authority**

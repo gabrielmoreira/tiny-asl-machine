@@ -1,0 +1,275 @@
+{
+  "runner": "aws",
+  "id": "001-retry-all-then-catch",
+  "title": "observes retry exhaustion before Catch recovery with States.ALL",
+  "group": "Feature.Retry",
+  "hash": "111ed0c09e0da75fd655c7a32971c39613f3b1a1f87c7667cf10272e425e682e",
+  "definition": {
+    "StartAt": "InvokeUnimplementedService",
+    "States": {
+      "InvokeUnimplementedService": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:s3:headBucket",
+        "Parameters": {
+          "Bucket": "tiny-asl-machine-observation-bucket-should-not-exist"
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 2,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.retriedError",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "at": "catch-after-retry"
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-retry-1"
+  },
+  "result": {
+    "output": {
+      "requestId": "req-retry-1",
+      "retriedError": {
+        "Error": "States.TaskFailed",
+        "Cause": "The principal states.amazonaws.com is not authorized to assume the provided role. (role: arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role)"
+      },
+      "recovery": {
+        "at": "catch-after-retry"
+      }
+    },
+    "meta": {
+      "history": [
+        {
+          "id": 1,
+          "type": "ExecutionStarted",
+          "previousEventId": 0,
+          "timestamp": "2026-04-14T23:51:54.933Z",
+          "details": {
+            "executionStartedEventDetails": {
+              "input": "{\"requestId\":\"req-retry-1\"}",
+              "inputDetails": {
+                "truncated": false
+              },
+              "roleArn": "arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "type": "TaskStateEntered",
+          "previousEventId": 0,
+          "timestamp": "2026-04-14T23:51:54.960Z",
+          "details": {
+            "stateEnteredEventDetails": {
+              "name": "InvokeUnimplementedService",
+              "input": "{\"requestId\":\"req-retry-1\"}",
+              "inputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "type": "TaskScheduled",
+          "previousEventId": 2,
+          "timestamp": "2026-04-14T23:51:54.960Z",
+          "details": {
+            "taskScheduledEventDetails": {
+              "resourceType": "aws-sdk:s3",
+              "resource": "headBucket",
+              "region": "<REDACTED_VAR:REGION>",
+              "parameters": "{\"Bucket\":\"tiny-asl-machine-observation-bucket-should-not-exist\"}"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "type": "TaskStarted",
+          "previousEventId": 3,
+          "timestamp": "2026-04-14T23:51:54.997Z",
+          "details": {
+            "taskStartedEventDetails": {
+              "resourceType": "aws-sdk:s3",
+              "resource": "headBucket"
+            }
+          }
+        },
+        {
+          "id": 5,
+          "type": "TaskFailed",
+          "previousEventId": 4,
+          "timestamp": "2026-04-14T23:51:55.011Z",
+          "details": {
+            "taskFailedEventDetails": {
+              "resourceType": "aws-sdk:s3",
+              "resource": "headBucket",
+              "error": "States.TaskFailed",
+              "cause": "The principal states.amazonaws.com is not authorized to assume the provided role. (role: arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role)"
+            }
+          }
+        },
+        {
+          "id": 6,
+          "type": "TaskScheduled",
+          "previousEventId": 5,
+          "timestamp": "2026-04-14T23:51:56.053Z",
+          "details": {
+            "taskScheduledEventDetails": {
+              "resourceType": "aws-sdk:s3",
+              "resource": "headBucket",
+              "region": "<REDACTED_VAR:REGION>",
+              "parameters": "{\"Bucket\":\"tiny-asl-machine-observation-bucket-should-not-exist\"}"
+            }
+          }
+        },
+        {
+          "id": 7,
+          "type": "TaskStarted",
+          "previousEventId": 6,
+          "timestamp": "2026-04-14T23:51:56.102Z",
+          "details": {
+            "taskStartedEventDetails": {
+              "resourceType": "aws-sdk:s3",
+              "resource": "headBucket"
+            }
+          }
+        },
+        {
+          "id": 8,
+          "type": "TaskFailed",
+          "previousEventId": 7,
+          "timestamp": "2026-04-14T23:51:56.117Z",
+          "details": {
+            "taskFailedEventDetails": {
+              "resourceType": "aws-sdk:s3",
+              "resource": "headBucket",
+              "error": "States.TaskFailed",
+              "cause": "The principal states.amazonaws.com is not authorized to assume the provided role. (role: arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role)"
+            }
+          }
+        },
+        {
+          "id": 9,
+          "type": "TaskScheduled",
+          "previousEventId": 8,
+          "timestamp": "2026-04-14T23:51:58.162Z",
+          "details": {
+            "taskScheduledEventDetails": {
+              "resourceType": "aws-sdk:s3",
+              "resource": "headBucket",
+              "region": "<REDACTED_VAR:REGION>",
+              "parameters": "{\"Bucket\":\"tiny-asl-machine-observation-bucket-should-not-exist\"}"
+            }
+          }
+        },
+        {
+          "id": 10,
+          "type": "TaskStarted",
+          "previousEventId": 9,
+          "timestamp": "2026-04-14T23:51:58.201Z",
+          "details": {
+            "taskStartedEventDetails": {
+              "resourceType": "aws-sdk:s3",
+              "resource": "headBucket"
+            }
+          }
+        },
+        {
+          "id": 11,
+          "type": "TaskFailed",
+          "previousEventId": 10,
+          "timestamp": "2026-04-14T23:51:58.219Z",
+          "details": {
+            "taskFailedEventDetails": {
+              "resourceType": "aws-sdk:s3",
+              "resource": "headBucket",
+              "error": "States.TaskFailed",
+              "cause": "The principal states.amazonaws.com is not authorized to assume the provided role. (role: arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role)"
+            }
+          }
+        },
+        {
+          "id": 12,
+          "type": "TaskStateExited",
+          "previousEventId": 11,
+          "timestamp": "2026-04-14T23:51:58.222Z",
+          "details": {
+            "stateExitedEventDetails": {
+              "name": "InvokeUnimplementedService",
+              "output": "{\"requestId\":\"req-retry-1\",\"retriedError\":{\"Error\":\"States.TaskFailed\",\"Cause\":\"The principal states.amazonaws.com is not authorized to assume the provided role. (role: arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role)\"}}",
+              "outputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        },
+        {
+          "id": 13,
+          "type": "PassStateEntered",
+          "previousEventId": 12,
+          "timestamp": "2026-04-14T23:51:58.222Z",
+          "details": {
+            "stateEnteredEventDetails": {
+              "name": "Recovered",
+              "input": "{\"requestId\":\"req-retry-1\",\"retriedError\":{\"Error\":\"States.TaskFailed\",\"Cause\":\"The principal states.amazonaws.com is not authorized to assume the provided role. (role: arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role)\"}}",
+              "inputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        },
+        {
+          "id": 14,
+          "type": "PassStateExited",
+          "previousEventId": 13,
+          "timestamp": "2026-04-14T23:51:58.222Z",
+          "details": {
+            "stateExitedEventDetails": {
+              "name": "Recovered",
+              "output": "{\"requestId\":\"req-retry-1\",\"retriedError\":{\"Error\":\"States.TaskFailed\",\"Cause\":\"The principal states.amazonaws.com is not authorized to assume the provided role. (role: arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role)\"},\"recovery\":{\"at\":\"catch-after-retry\"}}",
+              "outputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        },
+        {
+          "id": 15,
+          "type": "ExecutionSucceeded",
+          "previousEventId": 14,
+          "timestamp": "2026-04-14T23:51:58.248Z",
+          "details": {
+            "executionSucceededEventDetails": {
+              "output": "{\"requestId\":\"req-retry-1\",\"retriedError\":{\"Error\":\"States.TaskFailed\",\"Cause\":\"The principal states.amazonaws.com is not authorized to assume the provided role. (role: arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role)\"},\"recovery\":{\"at\":\"catch-after-retry\"}}",
+              "outputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "runner": "local",
+  "id": "004-fail-static-error-and-cause-jsonpath",
+  "title": "JSONPath Fail supports static Error and Cause strings",
+  "group": "Feature.FailPaths",
+  "hash": "205dde4e2f98479f36ed7a970aa61e556510e23d142b2285d6e3c6c2597e87e4",
+  "definition": {
+    "StartAt": "FailState",
+    "States": {
+      "FailState": {
+        "Type": "Fail",
+        "Error": "StaticJsonPathError",
+        "Cause": "static fail cause"
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "StaticJsonPathError",
+    "cause": "static fail cause"
+  }
+}

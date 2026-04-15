@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "004-itemspointer-must-be-valid-json-pointer",
+  "title": "fails validation when ItemsPointer is not a valid JSONPointer string",
+  "group": "Validation.ItemReader",
+  "hash": "ce1270f4e91649a64f06e91579d7084ba09f4296e8d134645429a8a65a244841",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "JSON",
+            "ItemsPointer": "data/items"
+          },
+          "Parameters": {
+            "Bucket": "amzn-s3-demo-bucket",
+            "Key": "dataset/file.json"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Invalid input: JSON Pointer expression must start with '/': \"data/items\""
+  }
+}

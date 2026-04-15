@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "044-random-null-seed-behavior",
+  "title": "$random with null seed follows the AWS-observed null-seed semantics",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "1248f3a489af319ee372173c7e580fabca16878ed3a947cd2f2d57190218877a",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $random(null) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $random(null). [object Object]"
+  }
+}

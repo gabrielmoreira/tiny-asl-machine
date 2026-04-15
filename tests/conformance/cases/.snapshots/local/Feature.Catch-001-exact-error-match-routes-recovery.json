@@ -1,0 +1,58 @@
+{
+  "runner": "local",
+  "id": "001-exact-error-match-routes-recovery",
+  "title": "exact error match routes to the matching recovery state",
+  "group": "Feature.Catch",
+  "hash": "76354425c1798efdb35e1ed41592375d747aafe88a0e5a75d1a9ea4f3733692e",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:catch:exact-match",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "ValidationError"
+            ],
+            "Next": "WrongRecovery"
+          },
+          {
+            "ErrorEquals": [
+              "OrderNotFound"
+            ],
+            "Next": "RecoverExactMatch"
+          }
+        ],
+        "End": true
+      },
+      "WrongRecovery": {
+        "Type": "Pass",
+        "Result": {
+          "route": "wrong"
+        },
+        "End": true
+      },
+      "RecoverExactMatch": {
+        "Type": "Pass",
+        "Result": {
+          "route": "exact"
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "orderId": "ord-7"
+  },
+  "result": {
+    "output": {
+      "Error": "OrderNotFound",
+      "Cause": "missing order ord-7",
+      "recovery": {
+        "route": "exact"
+      }
+    }
+  }
+}

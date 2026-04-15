@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "004-preserve-leading-empty-segment",
+  "title": "preserves an empty first segment for a leading delimiter",
+  "group": "States.StringSplit",
+  "hash": "0418402da906e95331c30c0316d6964d560166d4d4b745437a41052c764ecb1e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, ',')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": ",a,b"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "",
+        "a",
+        "b"
+      ]
+    }
+  }
+}

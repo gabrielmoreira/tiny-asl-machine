@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "003-default-on-equal",
+  "title": "falls through to default when the compared timestamps are equal",
+  "group": "Choice.TimestampGreaterThanPath",
+  "hash": "0fa533b308541a934b2f4a8bcb80c39d47e34b58082eb89744efca8121250f28",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampGreaterThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "2025-01-01T12:00:00.000Z",
+    "right": "2025-01-01T07:00:00.000-05:00"
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

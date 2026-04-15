@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "004-uuid-version-nibble-v4",
+  "title": "exposes the UUID version nibble as v4",
+  "group": "States.UUID",
+  "hash": "9c7f59404002c4fa03abeb61ea20dd9df1337db2276408e1a600a5ec6f18ff8e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "b7988ac4-b73b-4cd6-80e3-cc344bd41165"
+    }
+  }
+}

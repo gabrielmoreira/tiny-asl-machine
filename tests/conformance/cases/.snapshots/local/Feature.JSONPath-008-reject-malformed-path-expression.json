@@ -1,0 +1,28 @@
+{
+  "runner": "local",
+  "id": "008-reject-malformed-path-expression",
+  "title": "fails for a malformed path expression",
+  "group": "Feature.JSONPath",
+  "hash": "7899d3fa66804d0673a46a09fa387f7b0d3dfbb2040ea502b8306c2c1ce639ec",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "$.payload["
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "payload": [
+      "x"
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: unexpected end of string at index 10 in \"$.payload[\""
+  }
+}

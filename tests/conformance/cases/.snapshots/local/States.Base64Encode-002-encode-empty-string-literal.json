@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "002-encode-empty-string-literal",
+  "title": "encodes empty string literal",
+  "group": "States.Base64Encode",
+  "hash": "8735f8806ca32f003a1695a1ef3e2e80eb09bc3de7abdffe08bb6e5d544bc7c4",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode('')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": ""
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "013-reject-missing-end-argument",
+  "title": "rejects a missing end argument",
+  "group": "States.MathRandom",
+  "hash": "bf783394b3353630cfbd784c318b45e9997dc49ac1ebb4e1e1d48865414c1f08",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.MathRandom expects 2 to 3 argument(s) but received 1."
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "001-fail-error-only-classic",
+  "title": "allows a classic Fail state with Error only",
+  "group": "Feature.FailSucceedClassic",
+  "hash": "a4ee890596272a16dd4ab7623773176f60a7179f407029151715daf133836ac3",
+  "definition": {
+    "StartAt": "FailState",
+    "States": {
+      "FailState": {
+        "Type": "Fail",
+        "Error": "ClassicErrorOnly"
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-fail-error-only"
+  },
+  "result": {
+    "error": "ClassicErrorOnly",
+    "cause": "FAILED"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "006-secondspath-non-number",
+  "title": "fails with States.Runtime when SecondsPath resolves to a non-numeric object",
+  "group": "Feature.WaitValidation",
+  "hash": "b857127f8fa054da8f1c41ca9b9cfce0c6c826cbb8003b28b5f6f2c54158e6e8",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "SecondsPath": "$.waitSeconds",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "waitSeconds": {
+      "raw": "3"
+    }
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Expected numeric value at path '$.waitSeconds'."
+  }
+}

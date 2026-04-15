@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "012-fail-sum-underflow-int32",
+  "title": "fails when the sum underflows int32",
+  "group": "States.MathAdd",
+  "hash": "574092c41d76057aa8513da69c509b93f684cd4ca948aef1ecbcdd8c4e46ebf9",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(-2147483648, -1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathAdd(-2147483648, -1). Invalid arguments in States.MathAdd"
+  }
+}

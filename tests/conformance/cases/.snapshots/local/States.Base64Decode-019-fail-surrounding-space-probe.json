@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "019-fail-surrounding-space-probe",
+  "title": "fails on surrounding space tolerance probe",
+  "group": "States.Base64Decode",
+  "hash": "8ddfa6445820656f3c6242e82f18d1219799c691dc73a3889e9878726e9ce87d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode(' YWJjZA== ')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Base64Decode(' YWJjZA== '). Invalid arguments in States.Base64Decode, caused by: Invalid Base64 input"
+  }
+}

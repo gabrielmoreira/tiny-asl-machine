@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "004-no-default-nonmatch",
+  "title": "fails with States.Runtime when no boolean rule matches and no default exists",
+  "group": "Choice.BooleanEquals",
+  "hash": "ee958093530e7b4503a03f160d4cc7b6b54d098b32ff5a027285a83a2bde659b",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.approved",
+            "BooleanEquals": true,
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "approved": false
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

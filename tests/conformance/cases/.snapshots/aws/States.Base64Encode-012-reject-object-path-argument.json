@@ -1,0 +1,26 @@
+{
+  "runner": "aws",
+  "id": "012-reject-object-path-argument",
+  "title": "rejects object argument from path",
+  "group": "States.Base64Encode",
+  "hash": "480182fe44eea29a7f3bf9b8bea30922582862835995751cdab0381bd5f82297",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode($.obj)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "obj": {}
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.Base64Encode($.obj). Invalid arguments in States.Base64Encode"
+  }
+}

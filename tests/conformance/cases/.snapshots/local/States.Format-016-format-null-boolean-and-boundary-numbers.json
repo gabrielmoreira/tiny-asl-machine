@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "016-format-null-boolean-and-boundary-numbers",
+  "title": "formats null, boolean, and numeric boundary values",
+  "group": "States.Format",
+  "hash": "b396550692e7483eb7d9cec2e83fcc2458b68efc6cf2c18cfa78506cbab9571e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('{}|{}|{}|{}|{}', $.nil, $.bool, $.negative, $.fractional, $.hugePositive)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "nil": null,
+    "bool": false,
+    "negative": -1,
+    "fractional": 3.5,
+    "hugePositive": 9007199254740991
+  },
+  "result": {
+    "output": {
+      "value": "|false|-1|3.5|9007199254740991"
+    }
+  }
+}

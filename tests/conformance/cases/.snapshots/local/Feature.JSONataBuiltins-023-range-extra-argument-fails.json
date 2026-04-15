@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "023-range-extra-argument-fails",
+  "title": "$range rejects an extra fourth argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "af800d8f4947fd4a60d85e98f81c6761a0ffaeea8d84a2ff99b94b35a98bcb6d",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $range(1, 5, 1, 99) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $range(1, 5, 1, 99). [object Object]"
+  }
+}

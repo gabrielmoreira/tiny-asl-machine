@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "013-array-literal-syntax",
+  "title": "Reject direct array literal argument syntax",
+  "group": "States.Array",
+  "hash": "f6b5f89c3896e045438d9877e6f956f9ba1f2b43e1d0ed9d88babbb72d5636ed",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array([1,2])"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: expected $, function, string, number, boolean, or null at index 13 in \"States.Array([1,2])\""
+  }
+}

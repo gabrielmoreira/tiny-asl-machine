@@ -1,0 +1,52 @@
+{
+  "runner": "local",
+  "id": "005-aws-observe-catch-taskfailed-matches-custom-error",
+  "title": "observes whether States.TaskFailed catches a custom AWS SDK task failure",
+  "group": "Feature.Catch",
+  "hash": "289d85c436679d937e24d0eb7743eb7c744369346667b3a726afd7cafec630a6",
+  "definition": {
+    "StartAt": "InvokeMissingService",
+    "States": {
+      "InvokeMissingService": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:s3:headBucket",
+        "Parameters": {
+          "Bucket": "tiny-asl-machine-observation-bucket-should-not-exist"
+        },
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.TaskFailed"
+            ],
+            "ResultPath": "$.caught",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "recovered": true
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "probe": "taskfailed"
+  },
+  "result": {
+    "output": {
+      "probe": "taskfailed",
+      "caught": {
+        "Error": "S3.NoSuchBucketException",
+        "Cause": "local observation failure"
+      },
+      "recovery": {
+        "recovered": true
+      }
+    }
+  }
+}

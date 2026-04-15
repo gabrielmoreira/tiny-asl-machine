@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "001-generate-uuid-zero-arg",
+  "title": "generates a UUID from the canonical zero-arg form",
+  "group": "States.UUID",
+  "hash": "9c7f59404002c4fa03abeb61ea20dd9df1337db2276408e1a600a5ec6f18ff8e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "0047a81f-ca72-4d56-a786-4bb580dc1539"
+    }
+  }
+}

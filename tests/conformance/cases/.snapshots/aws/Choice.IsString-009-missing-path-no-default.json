@@ -1,0 +1,36 @@
+{
+  "runner": "aws",
+  "id": "009-missing-path-no-default",
+  "title": "fails with States.Runtime when the variable path is missing and there is no Default",
+  "group": "Choice.IsString",
+  "hash": "17c30cfec5142aced2c011c69e1389b772e86394f2d9340cf51444a904020b42",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.missing",
+            "IsString": true,
+            "Next": "Matched0"
+          }
+        ]
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "present but ignored"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Invalid path '$.missing': The choice state's condition path references an invalid value."
+  }
+}

@@ -1,9 +1,9 @@
-# 🎯 Tiny ASL Machine
+# Tiny ASL Machine
 
-A lightweight TypeScript interpreter for AWS Step Functions' Amazon States Language (ASL).
+A lightweight TypeScript interpreter for AWS Step Functions' Amazon States Language (ASL), built for local testing.
 
-**Perfect for:** Unit testing Step Functions state machines locally  
-**Not for:** Production execution, persistent state, AWS service integration
+**Best for:** exercising Step Functions logic in unit and integration tests with mocked resource handlers  
+**Not for:** running production workflows, persisting executions, or replacing AWS Step Functions
 
 [![npm version](https://badge.fury.io/js/tiny-asl-machine.svg)](https://badge.fury.io/js/tiny-asl-machine)
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -18,48 +18,67 @@ yarn add tiny-asl-machine
 
 ## Quick Start
 
-```typescript
-import { run } from 'tiny-asl-machine';
+```ts
+import { run, type StateDefinition } from 'tiny-asl-machine';
 
-// Define your state machine
-const definition = {
+const definition: StateDefinition = {
   StartAt: 'MyTask',
   States: {
     MyTask: {
       Type: 'Task',
-      Resource: 'arn:aws:lambda:function:MyFunction',
+      Resource: 'arn:aws:lambda:us-east-1:123456789012:function:MyFunction',
       End: true,
     },
   },
 };
 
-// Mock your Lambda
 const result = await run(
   {
     definition,
     resourceContext: {
       invoke: async (resource, input) => {
-        return { processed: true, ...input };
+        if (resource === 'arn:aws:lambda:us-east-1:123456789012:function:MyFunction') {
+          return { processed: true, ...input };
+        }
+
+        throw new Error(`Unexpected resource: ${resource}`);
       },
     },
   },
   { data: 'test' }
 );
+
+console.log(result);
 ```
 
-## 📚 Examples
+## What this library is good at
 
-### Choice State
+Tiny ASL Machine is for the part of Step Functions development that is awkward to validate in AWS on every edit: workflow logic.
 
-```typescript
-const definition = {
+Its sweet spot is local execution of ASL definitions where you want to:
+
+- keep the state machine JSON close to production
+- mock Task resources in-process
+- verify branching, dataflow, retries, catches, waits, map/parallel behavior, and output shaping
+- iterate quickly before or alongside AWS-backed tests
+
+If you need durable executions, callback/task-token workflows with full service fidelity use AWS Step Functions itself.
+
+## Typed definition examples
+
+All examples below annotate the machine with `StateDefinition` so users can see the package type directly in normal usage.
+
+### Choice state
+
+```ts
+import { type StateDefinition } from 'tiny-asl-machine';
+
+const definition: StateDefinition = {
   StartAt: 'CheckAmount',
   States: {
     CheckAmount: {
       Type: 'Choice',
-      Choices: [
-        { Variable: '$.amount', NumericGreaterThan: 1000, Next: 'HighValue' },
-      ],
+      Choices: [{ Variable: '$.amount', NumericGreaterThan: 1000, Next: 'HighValue' }],
       Default: 'Standard',
     },
     HighValue: { Type: 'Pass', Result: 'Needs approval', End: true },
@@ -68,10 +87,12 @@ const definition = {
 };
 ```
 
-### Parallel Execution
+### Parallel execution
 
-```typescript
-const definition = {
+```ts
+import { type StateDefinition } from 'tiny-asl-machine';
+
+const definition: StateDefinition = {
   StartAt: 'ParallelWork',
   States: {
     ParallelWork: {
@@ -86,10 +107,12 @@ const definition = {
 };
 ```
 
-### Map (Array Iteration)
+### Map iteration
 
-```typescript
-const definition = {
+```ts
+import { type StateDefinition } from 'tiny-asl-machine';
+
+const definition: StateDefinition = {
   StartAt: 'ProcessItems',
   States: {
     ProcessItems: {
@@ -100,7 +123,7 @@ const definition = {
         States: {
           ProcessOne: {
             Type: 'Task',
-            Resource: 'arn:aws:lambda:function:ProcessItem',
+            Resource: 'arn:aws:lambda:us-east-1:123456789012:function:ProcessItem',
             End: true,
           },
         },
@@ -111,15 +134,17 @@ const definition = {
 };
 ```
 
-### Error Handling with Catch
+### Error handling with Catch
 
-```typescript
-const definition = {
+```ts
+import { type StateDefinition } from 'tiny-asl-machine';
+
+const definition: StateDefinition = {
   StartAt: 'RiskyTask',
   States: {
     RiskyTask: {
       Type: 'Task',
-      Resource: 'arn:aws:lambda:function:Risky',
+      Resource: 'arn:aws:lambda:us-east-1:123456789012:function:Risky',
       Catch: [
         {
           ErrorEquals: ['States.ALL'],
@@ -137,16 +162,16 @@ const definition = {
 
 More examples: [EXAMPLES.md](EXAMPLES.md) | [Real-world ETL test](tests/sampleETLOrchestration.spec.ts)
 
-## 🚀 Same JSON for Tests & Production
+## Same JSON for tests and production
 
-**Key Property:** The tool accepts any string as a resource name. This means you can use your existing state machine JSON from your codebase or exported from AWS without modification.
+One of the most useful properties of the library is that it matches Task resources by the exact string in your ASL definition. In practice, that means you can usually test the same JSON you deploy, as long as your `resourceContext` knows how to respond to those resource names.
 
-### Scenario 1: With Placeholders (Development)
+### Scenario 1: Placeholder resources in source control
 
-If your project uses placeholders that get replaced at deploy time:
+If your project keeps placeholders that are resolved during deployment:
 
 ```json
-// stateMachine.json (in your codebase)
+// stateMachine.json
 {
   "StartAt": "ProcessPayment",
   "States": {
@@ -157,9 +182,7 @@ If your project uses placeholders that get replaced at deploy time:
     },
     "ValidateResult": {
       "Type": "Choice",
-      "Choices": [
-        { "Variable": "$.status", "StringEquals": "approved", "Next": "Success" }
-      ],
+      "Choices": [{ "Variable": "$.status", "StringEquals": "approved", "Next": "Success" }],
       "Default": "Fail"
     },
     "Success": { "Type": "Succeed" }
@@ -167,19 +190,23 @@ If your project uses placeholders that get replaced at deploy time:
 }
 ```
 
-```typescript
-// test.spec.ts - Mock the placeholder string as-is
-import definition from './stateMachine.json';
+```ts
+import { run, type StateDefinition } from 'tiny-asl-machine';
+import stateMachineJson from './stateMachine.json';
 
-it('should process approved payment', async () => {
+const definition: StateDefinition = stateMachineJson;
+
+it('processes an approved payment', async () => {
   const result = await run(
     {
       definition,
       resourceContext: {
-        invoke: async (resource) => {
+        invoke: async resource => {
           if (resource === '{myPaymentLambdaArn}') {
             return { status: 'approved', txnId: 'TXN-123' };
           }
+
+          throw new Error(`Unexpected resource: ${resource}`);
         },
       },
     },
@@ -190,14 +217,14 @@ it('should process approved payment', async () => {
 });
 ```
 
-Your CI/CD pipeline replaces `{myPaymentLambdaArn}` with the actual ARN before deployment.
+Your deployment system can still replace `{myPaymentLambdaArn}` with the real ARN later.
 
-### Scenario 2: Export from AWS Console
+### Scenario 2: Exported definitions from AWS
 
-Export your deployed state machine directly from AWS console (ARNs are already resolved):
+If you export a deployed state machine from AWS, you can mock the resolved ARN strings directly:
 
 ```json
-// stateMachine-deployed.json (exported from AWS console)
+// stateMachine-deployed.json
 {
   "StartAt": "ProcessPayment",
   "States": {
@@ -205,25 +232,28 @@ Export your deployed state machine directly from AWS console (ARNs are already r
       "Type": "Task",
       "Resource": "arn:aws:lambda:us-east-1:123456789012:function:ProcessPayment",
       "Next": "ValidateResult"
-    },
-    ...
+    }
   }
 }
 ```
 
-```typescript
-// test.spec.ts - Mock the actual ARN string
-import definition from './stateMachine-deployed.json';
+```ts
+import { run, type StateDefinition } from 'tiny-asl-machine';
+import stateMachineJson from './stateMachine-deployed.json';
 
-it('should process approved payment', async () => {
+const definition: StateDefinition = stateMachineJson;
+
+it('processes an approved payment', async () => {
   const result = await run(
     {
       definition,
       resourceContext: {
-        invoke: async (resource) => {
+        invoke: async resource => {
           if (resource === 'arn:aws:lambda:us-east-1:123456789012:function:ProcessPayment') {
             return { status: 'approved', txnId: 'TXN-123' };
           }
+
+          throw new Error(`Unexpected resource: ${resource}`);
         },
       },
     },
@@ -234,85 +264,71 @@ it('should process approved payment', async () => {
 });
 ```
 
-**Why this works great:**
-- ✅ The tool accepts any string as a resource name
-- ✅ No need to maintain separate test/prod JSON versions
-- ✅ Use your production JSON file (with placeholders or real ARNs) directly in tests
-- ✅ Mock whatever resource string is in your definition - placeholder or ARN
-- ✅ Export from AWS console and test immediately (after anonymizing sensitive values if prod)
+That keeps your tests close to the definition AWS actually runs, without maintaining a separate test-only version of the state machine.
 
-## 📋 Feature Status
+## 📦 Packaged testing guide
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| **Task** | ✅ | Resource invocation, Parameters, ResultPath |
-| **Pass** | ✅ | Data transformation, Result field |
-| **Choice** | ✅ | All 30+ operators (String, Numeric, Boolean, Timestamp) |
-| **Wait** | ✅ | Seconds, Timestamp, SecondsPath |
-| **Parallel** | ✅ | Concurrent branch execution |
-| **Map** | ✅ | Array iteration with MaxConcurrency |
-| **Succeed** | ✅ | Terminal success state |
-| **Fail** | ✅ | Terminal failure state |
-| **Catch** | ✅ | Error handling blocks |
-| **Retry** | 🚧 | Structure defined, logic pending |
-| **InputPath/OutputPath** | ✅ | JSONPath filtering |
-| **ResultPath** | ✅ | Result merging |
-| **Parameters** | ✅ | Dynamic field mapping, Intrinsic Functions |
-| **Intrinsic Functions** | 🚧 | 4 of 10 implemented (Format, StringToJson, JsonToString, Array) |
-| **Task Tokens** | 🚧 | Not yet implemented |
-| **State Persistence** | ❌ | Not supported |
+The published package includes a user-facing guide at:
 
-**Overall:** ~75-80% ASL compatible. Covers most common testing use cases.
+- `skills/write-local-state-machine-tests/SKILL.md`
 
-## 🎯 Real-World Example
+Use it when you want a compact playbook for patterns like:
 
-We've tested this library with a [test based on AWS's official ETL orchestration sample](tests/sampleETLOrchestration.spec.ts), demonstrating it can execute [complex ASL definitions](https://github.com/aws-samples/getting-started-with-amazon-redshift-data-api/tree/main/use-cases/etl-orchestration-with-step-functions).
+- exact resource-string mocking
+- failure-path tests
+- `Choice`, `Map`, and `Parallel` assertions
+- payload-shaping verification
+- deciding when local tests are enough and when AWS should be the final check
 
-The test demonstrates:
-- Multiple Task states with resource invocation
-- Choice branching for conditional logic
-- Wait states for polling patterns
-- Parallel execution
-- Error handling with Catch blocks
+## ✨ Why people use this package
 
-See the test to understand how realistic state machines can be tested.
+A lot of effort has gone into AWS-first conformance work, especially around the parts of Step Functions that tend to break real workflows:
 
-## 💡 Ideas for Contribution
+- branching and transition logic
+- JSONPath-style dataflow shaping
+- `Catch` / `Retry` behavior
+- intrinsic functions
+- modern JSONata authoring
+- `Map` and `Parallel` composition
 
-Beyond bug fixes and core features, there are some interesting opportunities:
+So while this project does **not** claim full AWS parity, it does offer a **high-confidence local testing experience** for a large portion of real-world Step Functions logic.
 
-- **CLI tool** - Analyze state machine JSON and generate typed test stubs with all Task resources automatically extracted and mocked
-- **AI-powered test generation** - Generate LLM prompts to help create comprehensive test scenarios from a state machine definition
-- **AWS fidelity** - Implement all remaining intrinsic functions and known behaviors to create a fully trustworthy testing motor that matches AWS Step Functions
+## 🚀 Coverage at a glance
 
-## 🤝 Contributing
+| Area                                 | Status          | What that means for you                                                                                                   |
+| ------------------------------------ | --------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Core states                          | 🟢 Very strong  | `Task`, `Pass`, `Choice`, `Wait`, `Parallel`, `Map`, `Succeed`, and `Fail` are all available for local execution.         |
+| Dataflow                             | 🟢 Very strong  | `InputPath`, `OutputPath`, `ResultPath`, `Parameters`, and `ResultSelector` are covered well for everyday workflow tests. |
+| Error handling                       | 🟢 Very strong  | `Catch` and `Retry` are usable for common orchestration scenarios and heavily exercised in conformance work.              |
+| Intrinsics                           | 🟢 Very strong  | Broad JSONPath intrinsic coverage is available for transformation-heavy workflows.                                        |
+| JSONata support                      | 🟢 Very strong  | Modern JSONata-based authoring is one of the strengths of the project today.                                              |
+| Advanced Map / distributed patterns  | 🟡 Partial      | Common local `Map` use cases work well; some advanced `ItemReader` and manifest-driven flows are still limited locally.   |
+| Callback patterns                    | 🟡 Partial      | Task-token related behavior exists in limited form, but full callback fidelity is not complete.                           |
+| Persistence / long-running execution | 🔴 Out of scope | Durable execution, pause/resume, and production-engine behavior are not what this package is for.                         |
 
-We welcome contributions! The codebase is simple and easy to extend:
+For a deeper breakdown, see [ASL_COMPATIBILITY.md](ASL_COMPATIBILITY.md).
 
-- **Bug fixes** - Found an issue? Submit a PR
-- **Feature implementation** - Implement missing intrinsic functions or Retry logic
-- **Tests** - Add edge case coverage
-- **Documentation** - Improve examples
+## Real-world example
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for setup and guidelines.
+The repository includes a [test based on AWS's ETL orchestration sample](tests/sampleETLOrchestration.spec.ts). It demonstrates how the library can exercise realistic state-machine structure locally while still leaving AWS as the final authority for edge-case parity.
 
-## 🚫 What's NOT Supported
+## What's not supported
 
-- Production execution (not persistent, not real AWS integration)
-- Task Token async patterns
-- State persistence or pause/resume
-- Database connections
+- Production workflow execution
+- Durable execution state or pause/resume
+- Full AWS service-integration fidelity
+- Complete task-token callback semantics
+- Every advanced distributed Map data source and manifest format locally
 
-**Use AWS Step Functions for production workloads.**
+Use AWS Step Functions for production workloads and for final confirmation of behavior that depends on service-level semantics.
 
-## 📄 License
+## Resources
+
+- [Examples & Patterns](EXAMPLES.md)
+- [FAQ](FAQ.md)
+- [ASL Compatibility Details](ASL_COMPATIBILITY.md)
+- [Report Issues](https://github.com/gabrielmoreira/tiny-asl-machine/issues)
+
+## License
 
 MIT - See [LICENSE](LICENSE)
-
-## 📚 Resources
-
-- 📖 [Examples & Patterns](EXAMPLES.md)
-- ❓ [FAQ](FAQ.md)
-- 🔧 [ASL Compatibility Details](ASL_COMPATIBILITY.md)
-- 🤝 [Contributing Guide](CONTRIBUTING.md)
-- 🐛 [Report Issues](https://github.com/gabrielmoreira/tiny-asl-machine/issues)

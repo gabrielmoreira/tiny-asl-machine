@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "002-repeated-seed-deterministic",
+  "title": "repeats the same seed in one outer expression deterministically",
+  "group": "States.MathRandom",
+  "hash": "3303f931b4237583f9be8c768fa8c42ee35c6126ea63677e133352610591f266",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "first.$": "States.MathRandom(1, 100, 42)",
+          "second.$": "States.MathRandom(1, 100, 42)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "first": 88,
+      "second": 88
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "003-present-string",
+  "title": "Find present string primitive",
+  "group": "States.ArrayContains",
+  "hash": "f09d0ab163a972358ac3be985d777b3ca3ac3a3bc42b5fb1e66c35d384b6d77e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, 'C')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "result": {
+    "output": {
+      "value": true
+    }
+  }
+}

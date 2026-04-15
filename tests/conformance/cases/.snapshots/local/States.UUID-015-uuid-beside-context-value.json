@@ -1,0 +1,29 @@
+{
+  "runner": "local",
+  "id": "015-uuid-beside-context-value",
+  "title": "composes UUID beside an execution context value",
+  "group": "States.UUID",
+  "hash": "df6d24f973c1c09fa05458e3bbbf1626d047f57b43bdc151cc00adb0787dc31f",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "executionInputEcho.$": "$$.Execution.Input.prefix",
+          "generated.$": "States.UUID()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "prefix": "ctx"
+  },
+  "result": {
+    "output": {
+      "executionInputEcho": "ctx",
+      "generated": "d1264be7-a67e-41f9-a724-1ef70854d5fa"
+    }
+  }
+}

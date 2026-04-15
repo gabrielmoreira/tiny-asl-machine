@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "014-non-numeric-step",
+  "title": "rejects a non-numeric step argument",
+  "group": "States.ArrayRange",
+  "hash": "d1dd1aff3c0cac4b5b88934d76a7aba1350a99488aec8ef37a87e57e15ba0da5",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(1, 5, 'c')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayRange(1, 5, 'c'). Invalid arguments in States.ArrayRange, caused by: States.ArrayRange expected a number, got string"
+  }
+}

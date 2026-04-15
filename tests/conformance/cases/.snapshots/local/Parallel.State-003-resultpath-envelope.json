@@ -1,0 +1,73 @@
+{
+  "runner": "local",
+  "id": "003-resultpath-envelope",
+  "title": "ResultPath inserts the branch output array into an envelope",
+  "group": "Parallel.State",
+  "hash": "95721ed3d6cc71b613edfb4a8d76a2badd3c01c57163852003fe9bfd3364b6bb",
+  "definition": {
+    "StartAt": "FanOut",
+    "States": {
+      "FanOut": {
+        "Type": "Parallel",
+        "ResultPath": "$.envelope.parallel",
+        "Branches": [
+          {
+            "StartAt": "Double",
+            "States": {
+              "Double": {
+                "Type": "Task",
+                "Resource": "local:double",
+                "Parameters": {
+                  "operation": "double",
+                  "value.$": "$.amount"
+                },
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "Triple",
+            "States": {
+              "Triple": {
+                "Type": "Task",
+                "Resource": "local:triple",
+                "Parameters": {
+                  "operation": "triple",
+                  "value.$": "$.amount"
+                },
+                "End": true
+              }
+            }
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-7",
+    "amount": 5,
+    "envelope": {
+      "existing": true
+    }
+  },
+  "result": {
+    "output": {
+      "requestId": "req-7",
+      "amount": 5,
+      "envelope": {
+        "existing": true,
+        "parallel": [
+          {
+            "operation": "double",
+            "result": 10
+          },
+          {
+            "operation": "triple",
+            "result": 15
+          }
+        ]
+      }
+    }
+  }
+}

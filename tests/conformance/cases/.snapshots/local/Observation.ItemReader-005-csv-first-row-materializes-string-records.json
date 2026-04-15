@@ -1,0 +1,57 @@
+{
+  "runner": "local",
+  "id": "005-csv-first-row-materializes-string-records",
+  "title": "ItemReader CSV with FIRST_ROW header materializes row objects with string values",
+  "group": "Observation.ItemReader",
+  "hash": "bb95da8f9ff0dd38789c8ae9481fdcce6063e1088a18cd160ffeaf163c94c599",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "CSV",
+            "CSVHeaderLocation": "FIRST_ROW"
+          },
+          "Parameters": {
+            "Bucket": "<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+            "Key": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/csv/first-row.csv"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": [
+      {
+        "id": "1",
+        "name": "Alice"
+      },
+      {
+        "id": "2",
+        "name": "Bob"
+      },
+      {
+        "id": "3",
+        "name": "Carol"
+      }
+    ]
+  }
+}

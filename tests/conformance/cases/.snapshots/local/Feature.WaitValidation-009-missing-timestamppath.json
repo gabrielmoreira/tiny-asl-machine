@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "009-missing-timestamppath",
+  "title": "fails with States.Runtime when TimestampPath is missing from the input",
+  "group": "Feature.WaitValidation",
+  "hash": "f4a52f20478337924681db97ef98119cce245077867f64bfa16494ba9957fd55",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "TimestampPath": "$.resumeAt",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-missing-timestamp"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Expected string value at path '$.resumeAt'."
+  }
+}

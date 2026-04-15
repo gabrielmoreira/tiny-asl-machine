@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "009-ignore-path-argument",
+  "title": "still returns a UUID when given a path argument",
+  "group": "States.UUID",
+  "hash": "9dd3d1bc5a7e2306c8a140bf31e8bf6a500df8a849a1a9a7c9c881bf43fa7cd4",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID($.x)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "x": "ignored"
+  },
+  "result": {
+    "output": {
+      "value": "92405380-3f6f-48d5-a06b-56cdc09237f0"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "020-encode-astral-unicode-character",
+  "title": "encodes astral-plane Unicode character",
+  "group": "States.Base64Encode",
+  "hash": "7c5562b71bf81aa78540c529f758cdf11ad750b1b32651b1a0eb7c83d664e7c7",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode('🚀')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "8J+agA=="
+    }
+  }
+}

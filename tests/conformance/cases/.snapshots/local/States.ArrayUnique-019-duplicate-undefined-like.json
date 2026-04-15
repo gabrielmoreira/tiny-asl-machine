@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "019-duplicate-undefined-like",
+  "title": "Document duplicate undefined-like entries as a non-JSON case",
+  "group": "States.ArrayUnique",
+  "hash": "369623b9622729e007cfb2a40725ae45c5e177cfccbd30d053029c11b2487c75",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": []
+  },
+  "result": {
+    "output": {
+      "value": []
+    }
+  }
+}

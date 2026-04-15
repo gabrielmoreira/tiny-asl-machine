@@ -1,0 +1,33 @@
+{
+  "runner": "local",
+  "id": "003-task-resultpath-then-outputpath",
+  "title": "writes a task result through ResultPath before OutputPath projects from the merged structure",
+  "group": "Feature.JSONPathPipeline",
+  "hash": "0a10583867c277a85debd7ee4df754f1eb29c76e86d51b10fbdb37e9b0255013",
+  "definition": {
+    "StartAt": "CallService",
+    "States": {
+      "CallService": {
+        "Type": "Task",
+        "Resource": "arn:local:jsonpath-pipeline:service-response",
+        "ResultPath": "$.service.response",
+        "OutputPath": "$.service.response.summary.status",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-3",
+    "service": {
+      "name": "billing",
+      "response": {
+        "summary": {
+          "status": "stale"
+        }
+      }
+    }
+  },
+  "result": {
+    "output": "accepted"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "010-argument-whitespace",
+  "title": "Tolerate internal argument whitespace",
+  "group": "States.Array",
+  "hash": "55fec1224b021435c7c90bb188160884c5c24dc1ebfea8a7e921828ca533821b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array( $.a , $.b )"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": 1,
+    "b": 2
+  },
+  "result": {
+    "output": {
+      "value": [
+        1,
+        2
+      ]
+    }
+  }
+}

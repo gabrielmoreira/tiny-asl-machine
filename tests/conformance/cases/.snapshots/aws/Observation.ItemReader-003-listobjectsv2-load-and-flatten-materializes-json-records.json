@@ -1,0 +1,67 @@
+{
+  "runner": "aws",
+  "id": "003-listobjectsv2-load-and-flatten-materializes-json-records",
+  "title": "ItemReader ListObjectsV2 with LOAD_AND_FLATTEN materializes JSON records with object-level source",
+  "group": "Observation.ItemReader",
+  "hash": "00aa1af992515caa8623a7359a0f7001931bfdd582a1965df57e7fa4e1625f8f",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:listObjectsV2",
+          "ReaderConfig": {
+            "InputType": "JSON",
+            "Transformation": "LOAD_AND_FLATTEN"
+          },
+          "Parameters": {
+            "Bucket": "<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+            "Prefix": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/load-and-flatten/"
+          }
+        },
+        "ItemSelector": {
+          "Source.$": "$$.Map.Item.Source",
+          "Value.$": "$$.Map.Item.Value"
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": [
+      {
+        "Value": {
+          "id": "one-a"
+        },
+        "Source": "s3://<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>/itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/load-and-flatten/one.json"
+      },
+      {
+        "Value": {
+          "id": "one-b"
+        },
+        "Source": "s3://<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>/itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/load-and-flatten/one.json"
+      },
+      {
+        "Value": {
+          "id": "two-a"
+        },
+        "Source": "s3://<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>/itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/load-and-flatten/two.json"
+      }
+    ]
+  }
+}

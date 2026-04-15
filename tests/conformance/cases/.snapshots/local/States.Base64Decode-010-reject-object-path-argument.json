@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "010-reject-object-path-argument",
+  "title": "rejects object argument from path",
+  "group": "States.Base64Decode",
+  "hash": "9dc82885a156bf9b3b371e9e1106260553ef8567d8616671b61b20944e3d64e0",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode($.obj)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "obj": {}
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Base64Decode($.obj). Invalid arguments in States.Base64Decode, caused by: States.Base64Decode expected a string, got object"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "013-reject-empty-string-parse",
+  "title": "rejects an empty string parse attempt",
+  "group": "States.StringToJson",
+  "hash": "3de4607c17d73fca5a569a0e7f486e63107f8ecb0244ea61b49ba0925786871b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": ""
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.StringToJson($.json). Invalid arguments in States.StringToJson, caused by: Unexpected end of JSON input"
+  }
+}

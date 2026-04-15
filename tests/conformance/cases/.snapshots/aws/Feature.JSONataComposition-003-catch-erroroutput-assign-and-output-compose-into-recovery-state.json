@@ -1,0 +1,64 @@
+{
+  "runner": "aws",
+  "id": "003-catch-erroroutput-assign-and-output-compose-into-recovery-state",
+  "title": "Catch can expose $states.errorOutput to both Assign and Output before recovery runs",
+  "group": "Feature.JSONataComposition",
+  "hash": "424d059e152527960cf2c06c7b2c149933af55ace924ddcf9a4f60234036e307",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Arguments": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "throw new Error(\"boom from composition\");"
+            },
+            "payload": "{% $states.input %}"
+          }
+        },
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Assign": {
+              "caughtName": "{% $states.errorOutput.Error %}",
+              "caughtCause": "{% $states.errorOutput.Cause %}"
+            },
+            "Output": {
+              "requestId": "{% $states.input.requestId %}",
+              "surfaced": "{% $states.errorOutput.Error %}"
+            },
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Output": {
+          "requestId": "{% $states.input.requestId %}",
+          "surfaced": "{% $states.input.surfaced %}",
+          "caughtName": "{% $caughtName %}",
+          "causeIsString": "{% $type($caughtCause) = \"string\" %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-jsonata-compose-catch"
+  },
+  "result": {
+    "output": {
+      "requestId": "req-jsonata-compose-catch",
+      "surfaced": "Error",
+      "caughtName": "Error",
+      "causeIsString": true
+    }
+  }
+}

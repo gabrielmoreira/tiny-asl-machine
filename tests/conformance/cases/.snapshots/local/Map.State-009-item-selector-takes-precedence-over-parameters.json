@@ -1,0 +1,57 @@
+{
+  "runner": "local",
+  "id": "009-item-selector-takes-precedence-over-parameters",
+  "title": "ItemSelector takes precedence over deprecated Parameters on Map",
+  "group": "Map.State",
+  "hash": "717f307730830b7cad03f069a1cebe22f3f050585f777475c4676b3e8cd490ce",
+  "definition": {
+    "StartAt": "AnnotateItems",
+    "States": {
+      "AnnotateItems": {
+        "Type": "Map",
+        "ItemsPath": "$.colors",
+        "Parameters": {
+          "ignored": true,
+          "region.$": "$.wrongRegion"
+        },
+        "ItemSelector": {
+          "position.$": "$$.Map.Item.Index",
+          "color.$": "$$.Map.Item.Value",
+          "region.$": "$.region"
+        },
+        "Iterator": {
+          "StartAt": "EchoAnnotatedItem",
+          "States": {
+            "EchoAnnotatedItem": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "region": "<REDACTED_VAR:REGION>",
+    "wrongRegion": "should-not-appear",
+    "colors": [
+      "red",
+      "blue"
+    ]
+  },
+  "result": {
+    "output": [
+      {
+        "position": 0,
+        "color": "red",
+        "region": "<REDACTED_VAR:REGION>"
+      },
+      {
+        "position": 1,
+        "color": "blue",
+        "region": "<REDACTED_VAR:REGION>"
+      }
+    ]
+  }
+}

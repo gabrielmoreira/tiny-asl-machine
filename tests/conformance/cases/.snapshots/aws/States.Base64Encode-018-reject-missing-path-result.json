@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "018-reject-missing-path-result",
+  "title": "rejects missing path result",
+  "group": "States.Base64Encode",
+  "hash": "a35ff33c2bbe514ef4ed2ea9bd366edd62fb469c91d3c0758a5c275d42b7b05b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode($.missing)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). The function 'States.Base64Encode($.missing)' had the following error: The JsonPath argument for the field '$.missing' could not be found in the input '{}'"
+  }
+}

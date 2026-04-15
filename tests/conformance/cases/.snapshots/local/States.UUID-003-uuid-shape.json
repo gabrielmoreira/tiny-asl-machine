@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "003-uuid-shape",
+  "title": "matches the UUID 8-4-4-4-12 shape",
+  "group": "States.UUID",
+  "hash": "9c7f59404002c4fa03abeb61ea20dd9df1337db2276408e1a600a5ec6f18ff8e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "fd972dc1-70e4-4833-ad75-bc4c46a7816b"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "001-static-result-replaces-input",
+  "title": "uses a static Result as the state output",
+  "group": "Pass.State",
+  "hash": "56cb396ef84dbbc40957a6908fcfd7479aa95fa21d6a3f5a399185e046f96503",
+  "definition": {
+    "StartAt": "ReplaceWithStaticResult",
+    "States": {
+      "ReplaceWithStaticResult": {
+        "Type": "Pass",
+        "Result": {
+          "status": "done",
+          "code": 200
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-123",
+    "original": true
+  },
+  "result": {
+    "output": {
+      "status": "done",
+      "code": 200
+    }
+  }
+}

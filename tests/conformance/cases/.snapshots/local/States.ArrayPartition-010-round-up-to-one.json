@@ -1,0 +1,41 @@
+{
+  "runner": "local",
+  "id": "010-round-up-to-one",
+  "title": "rounds 0.6 up to the minimum valid chunk size of 1",
+  "group": "States.ArrayPartition",
+  "hash": "46ce0c90082eb1cda8af011eb91d6e72f2a6d4bdc9484b6f9b37d36f35a8207e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 0.6)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ]
+      ]
+    }
+  }
+}

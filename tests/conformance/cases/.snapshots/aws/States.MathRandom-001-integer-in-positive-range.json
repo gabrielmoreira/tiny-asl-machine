@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "001-integer-in-positive-range",
+  "title": "returns an integer in a basic positive range",
+  "group": "States.MathRandom",
+  "hash": "b7df2b25dd901cb23b3cf5171c8e1ede314f851c8029b5e181d67b6c7a55cd18",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1, 999)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 511
+    }
+  }
+}

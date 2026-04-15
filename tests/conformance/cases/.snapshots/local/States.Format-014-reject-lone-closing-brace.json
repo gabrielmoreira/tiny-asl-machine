@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "014-reject-lone-closing-brace",
+  "title": "rejects a lone closing brace literal",
+  "group": "States.Format",
+  "hash": "514b077250b3ec2f599462c05eb36c6a5b4c7ec2b85e813c91891d1130e8f371",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('}')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Format('}'). Invalid template in States.Format: matching '{' not found for '}' at index 1 in \"'}'\""
+  }
+}

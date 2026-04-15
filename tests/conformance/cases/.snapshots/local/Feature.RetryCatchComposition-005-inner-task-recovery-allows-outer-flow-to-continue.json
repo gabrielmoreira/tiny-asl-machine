@@ -1,0 +1,83 @@
+{
+  "runner": "local",
+  "id": "005-inner-task-recovery-allows-outer-flow-to-continue",
+  "title": "a task in a larger machine uses Retry/Catch while the outer flow continues",
+  "group": "Feature.RetryCatchComposition",
+  "hash": "bcdc89d6ada18d45bd2f13d019d5e1e4fabb4855ac13ff4189e132c28a84c8f9",
+  "definition": {
+    "StartAt": "Seed",
+    "States": {
+      "Seed": {
+        "Type": "Pass",
+        "Result": {
+          "seeded": true
+        },
+        "ResultPath": "$.meta",
+        "Next": "InvokeTask"
+      },
+      "InvokeTask": {
+        "Type": "Task",
+        "Resource": "local:feature:retry-catch:outer-flow",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "TransientError"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 1,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.taskFailure",
+            "Next": "ContinueAfterCatch"
+          }
+        ],
+        "End": true
+      },
+      "ContinueAfterCatch": {
+        "Type": "Pass",
+        "Result": {
+          "continued": true,
+          "resumedAt": "ContinueAfterCatch"
+        },
+        "ResultPath": "$.workflow",
+        "Next": "Finalize"
+      },
+      "Finalize": {
+        "Type": "Pass",
+        "Result": {
+          "done": true
+        },
+        "ResultPath": "$.workflow.final",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-retry-catch-5"
+  },
+  "result": {
+    "output": {
+      "requestId": "req-retry-catch-5",
+      "meta": {
+        "seeded": true
+      },
+      "taskFailure": {
+        "Error": "TransientError",
+        "Cause": "outer-flow-attempt-2"
+      },
+      "workflow": {
+        "continued": true,
+        "resumedAt": "ContinueAfterCatch",
+        "final": {
+          "done": true
+        }
+      }
+    }
+  }
+}

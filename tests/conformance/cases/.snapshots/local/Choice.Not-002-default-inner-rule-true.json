@@ -1,0 +1,47 @@
+{
+  "runner": "local",
+  "id": "002-default-inner-rule-true",
+  "title": "takes the default branch when the nested rule already evaluates to true",
+  "group": "Choice.Not",
+  "hash": "64bac6a6d64a7fbafbb46bf3b509b41dd132b105cfce3def072ca28d328c4ac2",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Not": {
+              "Variable": "$.visibility",
+              "StringEquals": "Private"
+            },
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "public-flow"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "private-flow"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "visibility": "Private"
+  },
+  "result": {
+    "output": {
+      "selected": "private-flow"
+    }
+  }
+}

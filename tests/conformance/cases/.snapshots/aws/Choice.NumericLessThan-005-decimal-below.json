@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "005-decimal-below",
+  "title": "matches decimal numbers below the threshold",
+  "group": "Choice.NumericLessThan",
+  "hash": "be4a59b60328185c322624268d7d446a25335f46d933c296afbc6de369e61d88",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericLessThan": 10.5,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 10.25
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

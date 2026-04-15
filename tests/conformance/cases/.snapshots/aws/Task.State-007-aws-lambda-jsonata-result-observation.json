@@ -1,0 +1,141 @@
+{
+  "runner": "aws",
+  "id": "007-aws-lambda-jsonata-result-observation",
+  "title": "observes JSONata $states.result through optimized lambda invoke",
+  "group": "Task.State",
+  "hash": "570e5a920ff8d1ccef6e8244da1c1f13c9dc69bedd58f03385ccc890cd5344ec",
+  "definition": {
+    "Comment": "Observe JSONata Step Functions task result through optimized Lambda invoke",
+    "QueryLanguage": "JSONata",
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Arguments": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "return { fromLambda: true, echoed: payload, requestId: context.awsRequestId };"
+            },
+            "payload": "{% $states.input %}"
+          }
+        },
+        "Output": {
+          "rawResult": "{% $states.result %}",
+          "resultString": "{% $string($states.result) %}",
+          "payload": "{% $states.result.Payload %}",
+          "payloadString": "{% $string($states.result.Payload) %}",
+          "statusCode": "{% $states.result.StatusCode %}",
+          "executedVersion": "{% $states.result.ExecutedVersion %}",
+          "context": "{% $states.context %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "hello": "world",
+    "nested": {
+      "answer": 42
+    }
+  },
+  "result": {
+    "output": {
+      "rawResult": {
+        "ExecutedVersion": "$LATEST",
+        "Payload": {
+          "fromLambda": true,
+          "echoed": {
+            "hello": "world",
+            "nested": {
+              "answer": 42
+            }
+          },
+          "requestId": "813d3e44-c43b-4288-b245-179614fd76be"
+        },
+        "SdkHttpMetadata": {
+          "AllHttpHeaders": {
+            "X-Amz-Executed-Version": [
+              "$LATEST"
+            ],
+            "x-amzn-Remapped-Content-Length": [
+              "0"
+            ],
+            "Connection": [
+              "keep-alive"
+            ],
+            "x-amzn-RequestId": [
+              "813d3e44-c43b-4288-b245-179614fd76be"
+            ],
+            "Content-Length": [
+              "120"
+            ],
+            "Date": [
+              "Wed, 15 Apr 2026 00:05:36 GMT"
+            ],
+            "X-Amzn-Trace-Id": [
+              "Root=1-69ded650-0c0cbdb15856efff1221f01d;Parent=2dd9a1e7cb355704;Sampled=0;Lineage=1:0d230a94:0"
+            ],
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "HttpHeaders": {
+            "Connection": "keep-alive",
+            "Content-Length": "120",
+            "Content-Type": "application/json",
+            "Date": "Wed, 15 Apr 2026 00:05:36 GMT",
+            "X-Amz-Executed-Version": "$LATEST",
+            "x-amzn-Remapped-Content-Length": "0",
+            "x-amzn-RequestId": "813d3e44-c43b-4288-b245-179614fd76be",
+            "X-Amzn-Trace-Id": "Root=1-69ded650-0c0cbdb15856efff1221f01d;Parent=2dd9a1e7cb355704;Sampled=0;Lineage=1:0d230a94:0"
+          },
+          "HttpStatusCode": 200
+        },
+        "SdkResponseMetadata": {
+          "RequestId": "813d3e44-c43b-4288-b245-179614fd76be"
+        },
+        "StatusCode": 200
+      },
+      "resultString": "{\"ExecutedVersion\":\"$LATEST\",\"Payload\":{\"fromLambda\":true,\"echoed\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"requestId\":\"813d3e44-c43b-4288-b245-179614fd76be\"},\"SdkHttpMetadata\":{\"AllHttpHeaders\":{\"X-Amz-Executed-Version\":[\"$LATEST\"],\"x-amzn-Remapped-Content-Length\":[\"0\"],\"Connection\":[\"keep-alive\"],\"x-amzn-RequestId\":[\"813d3e44-c43b-4288-b245-179614fd76be\"],\"Content-Length\":[\"120\"],\"Date\":[\"Wed, 15 Apr 2026 00:05:36 GMT\"],\"X-Amzn-Trace-Id\":[\"Root=1-69ded650-0c0cbdb15856efff1221f01d;Parent=2dd9a1e7cb355704;Sampled=0;Lineage=1:0d230a94:0\"],\"Content-Type\":[\"application/json\"]},\"HttpHeaders\":{\"Connection\":\"keep-alive\",\"Content-Length\":\"120\",\"Content-Type\":\"application/json\",\"Date\":\"Wed, 15 Apr 2026 00:05:36 GMT\",\"X-Amz-Executed-Version\":\"$LATEST\",\"x-amzn-Remapped-Content-Length\":\"0\",\"x-amzn-RequestId\":\"813d3e44-c43b-4288-b245-179614fd76be\",\"X-Amzn-Trace-Id\":\"Root=1-69ded650-0c0cbdb15856efff1221f01d;Parent=2dd9a1e7cb355704;Sampled=0;Lineage=1:0d230a94:0\"},\"HttpStatusCode\":200},\"SdkResponseMetadata\":{\"RequestId\":\"813d3e44-c43b-4288-b245-179614fd76be\"},\"StatusCode\":200}",
+      "payload": {
+        "fromLambda": true,
+        "echoed": {
+          "hello": "world",
+          "nested": {
+            "answer": 42
+          }
+        },
+        "requestId": "813d3e44-c43b-4288-b245-179614fd76be"
+      },
+      "payloadString": "{\"fromLambda\":true,\"echoed\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"requestId\":\"813d3e44-c43b-4288-b245-179614fd76be\"}",
+      "statusCode": 200,
+      "executedVersion": "$LATEST",
+      "context": {
+        "Execution": {
+          "Id": "arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:execution:tam-conf-Task-State-007-aws-lambda-jsonata-result-observation-8f201d1d:exec-conf-Task-State-007-aws-lambda-jsonata-result-observation-e7657d64",
+          "Input": {
+            "hello": "world",
+            "nested": {
+              "answer": 42
+            }
+          },
+          "StartTime": "2026-04-15T00:05:36.683Z",
+          "Name": "exec-conf-Task-State-007-aws-lambda-jsonata-result-observation-e7657d64",
+          "RoleArn": "arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role",
+          "RedriveCount": 0
+        },
+        "StateMachine": {
+          "Id": "arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:stateMachine:tam-conf-Task-State-007-aws-lambda-jsonata-result-observation-8f201d1d",
+          "Name": "tam-conf-Task-State-007-aws-lambda-jsonata-result-observation-8f201d1d"
+        },
+        "State": {
+          "Name": "Invoke",
+          "EnteredTime": "2026-04-15T00:05:36.710Z",
+          "RetryCount": 0
+        }
+      }
+    }
+  }
+}

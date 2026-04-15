@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "010-literal-plus-delimiter",
+  "title": "treats a plus delimiter literally",
+  "group": "States.StringSplit",
+  "hash": "7f6d62433bb7815dd4ce5ebed0ba83840f8cd7b7e278ca45571a6be8d83352ee",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, '+')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "a+b+c"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "a",
+        "b",
+        "c"
+      ]
+    }
+  }
+}

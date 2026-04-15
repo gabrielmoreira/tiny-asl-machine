@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "001-task-returns-scalar",
+  "title": "task can return a scalar result without object normalization",
+  "group": "Feature.TaskShapes",
+  "hash": "3900e9b5587009e5f4804e75989db71126c865fe1faaeebc07ad41e850ff9c48",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:task-shapes:scalar",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-31"
+  },
+  "result": {
+    "output": 7
+  }
+}

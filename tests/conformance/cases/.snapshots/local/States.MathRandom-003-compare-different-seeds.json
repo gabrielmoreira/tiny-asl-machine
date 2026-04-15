@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "003-compare-different-seeds",
+  "title": "compares different seeds side by side without asserting distinctness",
+  "group": "States.MathRandom",
+  "hash": "329e387c9c90fa1911db4c7e71c9dc1b44def8109be52e31c30bf85af3ea1518",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "first.$": "States.MathRandom(1, 1000, 1)",
+          "second.$": "States.MathRandom(1, 1000, 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "first": 251,
+      "second": 291
+    }
+  }
+}

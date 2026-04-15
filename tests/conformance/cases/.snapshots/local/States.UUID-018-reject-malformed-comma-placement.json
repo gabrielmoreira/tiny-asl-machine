@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "018-reject-malformed-comma-placement",
+  "title": "rejects malformed comma placement",
+  "group": "States.UUID",
+  "hash": "41e2eb616ded74f33e984c7f8609725c16248ddadbe7d97cb8ee133558da8ff2",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID(,)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: expected $, function, string, number, boolean, or null at index 12 in \"States.UUID(,)\""
+  }
+}

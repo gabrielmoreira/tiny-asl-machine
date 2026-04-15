@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "004-timestamp-path",
+  "title": "waits until the timestamp selected by TimestampPath",
+  "group": "Wait.State",
+  "hash": "2a593fc3d3ba005e5bf2d70a9561f38eab30cfc1568bda4f6ce397b3c0e0eefd",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "TimestampPath": "$.resumeAt",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "resumeAt": "2025-01-01T00:00:20.000Z",
+    "workflow": "reconcile"
+  },
+  "result": {
+    "output": {
+      "resumeAt": "2025-01-01T00:00:20.000Z",
+      "workflow": "reconcile"
+    }
+  }
+}

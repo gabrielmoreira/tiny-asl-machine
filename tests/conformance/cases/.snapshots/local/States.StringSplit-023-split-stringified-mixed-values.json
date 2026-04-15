@@ -1,0 +1,40 @@
+{
+  "runner": "local",
+  "id": "023-split-stringified-mixed-values",
+  "title": "splits a string containing mixed textualized values",
+  "group": "States.StringSplit",
+  "hash": "12ad57f750775144d9516ba5e7f28c95b3b97bee93aa84f5c98cdd59802c1f4b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, ',')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "null,, ,-1,1.5,-9007199254740991,9007199254740991,true,false,[0,1,false]"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "null",
+        "",
+        " ",
+        "-1",
+        "1.5",
+        "-9007199254740991",
+        "9007199254740991",
+        "true",
+        "false",
+        "[0",
+        "1",
+        "false]"
+      ]
+    }
+  }
+}

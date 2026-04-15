@@ -1,0 +1,64 @@
+{
+  "runner": "aws",
+  "id": "020-serialize-mixed-type-pairs-object",
+  "title": "serializes a readable object of mixed-type pairings",
+  "group": "States.JsonToString",
+  "hash": "08668cf96a35b7589e0da0b18d3507b042498207707fe5830c2ee920aec5eccb",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.obj)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "obj": {
+      "boolNumber": [
+        true,
+        0
+      ],
+      "boolString": [
+        false,
+        "false"
+      ],
+      "stringBool": [
+        "true",
+        true
+      ],
+      "stringNumber": [
+        "42",
+        42
+      ],
+      "stringDate": [
+        "1970-01-01T00:00:00Z",
+        "2024-02-29T12:34:56.789Z"
+      ],
+      "stringArray": [
+        "items",
+        [
+          0,
+          1,
+          false
+        ]
+      ],
+      "numberArray": [
+        7,
+        [
+          0,
+          1,
+          false
+        ]
+      ]
+    }
+  },
+  "result": {
+    "output": {
+      "value": "{\"boolNumber\":[true,0],\"boolString\":[false,\"false\"],\"stringBool\":[\"true\",true],\"stringNumber\":[\"42\",42],\"stringDate\":[\"1970-01-01T00:00:00Z\",\"2024-02-29T12:34:56.789Z\"],\"stringArray\":[\"items\",[0,1,false]],\"numberArray\":[7,[0,1,false]]}"
+    }
+  }
+}

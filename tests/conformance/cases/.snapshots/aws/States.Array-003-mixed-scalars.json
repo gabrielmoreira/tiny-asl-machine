@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "003-mixed-scalars",
+  "title": "Construct array from mixed scalar literals",
+  "group": "States.Array",
+  "hash": "5861fd35f5baa6a09e749469da3b042825e28fc74ba7a1402cb1e0a250af6414",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array(42, true, null, 'hello')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        42,
+        true,
+        null,
+        "hello"
+      ]
+    }
+  }
+}

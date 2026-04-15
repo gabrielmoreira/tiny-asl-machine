@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "004-negative-below",
+  "title": "matches negative numbers below a negative threshold",
+  "group": "Choice.NumericLessThan",
+  "hash": "2d7eb4208131617a08f55e9d783915d1912ff3f9ee7d1d27c047f3589786afe2",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericLessThan": -2,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": -3
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

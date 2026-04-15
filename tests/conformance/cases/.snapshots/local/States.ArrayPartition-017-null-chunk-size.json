@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "017-null-chunk-size",
+  "title": "rejects a null chunk size",
+  "group": "States.ArrayPartition",
+  "hash": "20a98f3e91d9ab11267e21688b51f7088f0e72ebd3d8cac792be9df4075ec34e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, null)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayPartition($.arr, null). Invalid arguments in States.ArrayPartition, caused by: States.ArrayPartition expected a number, got object"
+  }
+}

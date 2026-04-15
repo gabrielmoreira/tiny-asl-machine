@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "005-csv-header-location-must-match-supported-inputtypes",
+  "title": "fails validation when CSVHeaderLocation is used with JSON input",
+  "group": "Validation.ItemReader",
+  "hash": "7e6d7d2dd824477a82657c8565f5fdc7ddfb737db8a479cc189e3baf78c60b38",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "JSON",
+            "CSVHeaderLocation": "FIRST_ROW"
+          },
+          "Parameters": {
+            "Bucket": "amzn-s3-demo-bucket",
+            "Key": "dataset/file.json"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Field 'CSVHeaderLocation' is not supported"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "runner": "local",
+  "id": "005-max-delay-seconds-caps-backoff-delay",
+  "title": "MaxDelaySeconds caps exponential backoff between retries",
+  "group": "Feature.Retry",
+  "hash": "76e7e839973496ce7b3cd2f0cd5072b987bd62c05a77a098504138c336d36e3d",
+  "definition": {
+    "StartAt": "FlakyTask",
+    "States": {
+      "FlakyTask": {
+        "Type": "Task",
+        "Resource": "arn:local:retry:max-delay",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "BackoffRate": 3,
+            "MaxAttempts": 3,
+            "MaxDelaySeconds": 2
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "ok": true,
+      "attempts": 4
+    }
+  }
+}

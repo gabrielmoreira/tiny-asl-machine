@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "003-fail-causepath-only-jsonpath",
+  "title": "JSONPath Fail can read CausePath and still use the default Error",
+  "group": "Feature.FailPaths",
+  "hash": "73db574d50db95b7ebdb73f408ee3399c9141ac8d69c7f7f150f66f2fced6468",
+  "definition": {
+    "StartAt": "FailState",
+    "States": {
+      "FailState": {
+        "Type": "Fail",
+        "CausePath": "$.Cause"
+      }
+    }
+  },
+  "input": {
+    "Cause": "PathOnlyCause"
+  },
+  "result": {
+    "error": "FAILED",
+    "cause": "PathOnlyCause"
+  }
+}

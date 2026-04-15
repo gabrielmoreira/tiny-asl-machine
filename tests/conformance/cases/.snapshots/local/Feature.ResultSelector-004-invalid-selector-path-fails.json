@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "004-invalid-selector-path-fails",
+  "title": "ResultSelector fails when one of its JSONPath expressions is invalid",
+  "group": "Feature.ResultSelector",
+  "hash": "948c4540ba0f2b61487f33c733aa98a51e18ff0fabfd84ba12120b0b24f0d5c0",
+  "definition": {
+    "StartAt": "InvalidSelector",
+    "States": {
+      "InvalidSelector": {
+        "Type": "Task",
+        "Resource": "arn:local:result-selector:invalid-selector",
+        "ResultSelector": {
+          "value.$": "not-a-path"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: unexpected end of string at index 10 in \"not-a-path\""
+  }
+}

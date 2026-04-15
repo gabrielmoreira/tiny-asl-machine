@@ -1,0 +1,29 @@
+{
+  "runner": "aws",
+  "id": "012-nested-intrinsic-values",
+  "title": "Deduplicate values produced by a nested States.Array intrinsic",
+  "group": "States.ArrayUnique",
+  "hash": "65131574732389b94f03d8a38182bc320cca429b2b700bc67804904cfad12998",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique(States.Array(1,1,2,2,3))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    }
+  }
+}

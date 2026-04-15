@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "008-descending-positive-step-empty",
+  "title": "descending bounds with positive step yield an empty range",
+  "group": "States.ArrayRange",
+  "hash": "8af23f9b4afe5ffd08b49655d33b8fa4056bfb2342116db00456c5dad643a927",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(5, 1, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": []
+    }
+  }
+}

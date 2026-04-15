@@ -1,0 +1,35 @@
+{
+  "runner": "local",
+  "id": "007-jitter-strategy-full-randomizes-delay",
+  "title": "JitterStrategy FULL randomizes each retry delay using runtime.random",
+  "group": "Feature.Retry",
+  "hash": "533b5c888fc4e14eb73c919b438e837323ea50d8916c1d10ab193b58d1bcdd0a",
+  "definition": {
+    "StartAt": "FlakyTask",
+    "States": {
+      "FlakyTask": {
+        "Type": "Task",
+        "Resource": "arn:local:retry:jitter-full",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "BackoffRate": 2,
+            "MaxAttempts": 2,
+            "JitterStrategy": "FULL"
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "ok": true,
+      "attempts": 3
+    }
+  }
+}

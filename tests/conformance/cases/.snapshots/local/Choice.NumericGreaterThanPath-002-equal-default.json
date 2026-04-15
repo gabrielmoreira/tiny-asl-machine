@@ -1,0 +1,46 @@
+{
+  "runner": "local",
+  "id": "002-equal-default",
+  "title": "falls through to Default when both numeric paths resolve to the same value",
+  "group": "Choice.NumericGreaterThanPath",
+  "hash": "b0da83a48f7069c8b17433b75e257d4e15c03d0797f489b452b307de85a6ed9f",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericGreaterThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 8,
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

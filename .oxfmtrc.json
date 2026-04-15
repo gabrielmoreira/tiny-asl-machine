@@ -1,0 +1,17 @@
+{
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "semi": true,
+  "singleQuote": true,
+  "printWidth": 100,
+  "arrowParens": "avoid",
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "pnpm-lock.yaml",
+    "coverage/",
+    "lib/",
+    "node_modules/",
+    "test-reports/",
+    "tests/conformance/cases/.snapshots/"
+  ]
+}

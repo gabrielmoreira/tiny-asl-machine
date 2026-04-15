@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "006-parquet-versionid-is-unsupported",
+  "title": "fails validation when PARQUET ItemReader specifies VersionId",
+  "group": "Validation.ItemReader",
+  "hash": "6641f0316a3a0e82ca985f5257e82c3026bc2356fb4dcf2dfbe46f765d416de8",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "PARQUET"
+          },
+          "Parameters": {
+            "Bucket": "amzn-s3-demo-bucket",
+            "Key": "dataset/file.parquet",
+            "VersionId": "example-version-id"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.ItemReaderFailed",
+    "cause": "S3 Version ID selection is not currently supported for PARQUET files"
+  }
+}

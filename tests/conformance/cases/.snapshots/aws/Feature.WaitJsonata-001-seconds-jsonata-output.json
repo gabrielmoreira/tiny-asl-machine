@@ -1,0 +1,32 @@
+{
+  "runner": "aws",
+  "id": "001-seconds-jsonata-output",
+  "title": "evaluates Wait.Seconds from a JSONata string and applies Wait.Output",
+  "group": "Feature.WaitJsonata",
+  "hash": "869d7e440012dc7fef3244bf1bb8a7218788e123b8db9a39bf1403829132049d",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "WaitForInputDelay",
+    "States": {
+      "WaitForInputDelay": {
+        "Type": "Wait",
+        "Seconds": "{% $states.input.delaySeconds %}",
+        "Output": {
+          "delay": "{% $states.input.delaySeconds %}",
+          "requestId": "{% $states.input.requestId %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "delaySeconds": 0,
+    "requestId": "req-wait-seconds"
+  },
+  "result": {
+    "output": {
+      "delay": 0,
+      "requestId": "req-wait-seconds"
+    }
+  }
+}

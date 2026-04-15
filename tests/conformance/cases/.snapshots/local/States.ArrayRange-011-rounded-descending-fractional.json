@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "011-rounded-descending-fractional",
+  "title": "descending fractional inputs combine rounding with negative-step semantics",
+  "group": "States.ArrayRange",
+  "hash": "984a98c33ab0a9b7d1e306658f06c37ecbc31f329fca78e5ef21ce27e2d9fd79",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(5.4, -0.6, -2.4)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        5,
+        3,
+        1,
+        -1
+      ]
+    }
+  }
+}

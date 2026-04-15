@@ -1,0 +1,26 @@
+{
+  "runner": "aws",
+  "id": "016-reject-non-string-first-argument",
+  "title": "rejects a non-string first argument",
+  "group": "States.StringSplit",
+  "hash": "3df4303765b568098b13a87ed855989db186125b7733bc0f83d9c34b38222e81",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.val, ',')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "val": 123
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.StringSplit($.val, ','). Invalid arguments in States.StringSplit"
+  }
+}

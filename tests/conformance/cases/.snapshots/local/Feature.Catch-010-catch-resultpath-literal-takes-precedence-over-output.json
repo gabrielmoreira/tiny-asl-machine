@@ -1,0 +1,43 @@
+{
+  "runner": "local",
+  "id": "010-catch-resultpath-literal-takes-precedence-over-output",
+  "title": "JSONPath Catch ResultPath wins over Output when both fields are present",
+  "group": "Feature.Catch",
+  "hash": "911a148c82054133bce582c65cd331406e7e48942cbcf65ebc1a55fd66cb9893",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:catch:inject-error",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "ValidationError"
+            ],
+            "ResultPath": "$.taskError",
+            "Output": "{% {\"should\": \"be ignored\"} %}",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-catch-precedence"
+  },
+  "result": {
+    "output": {
+      "requestId": "req-catch-precedence",
+      "taskError": {
+        "Error": "ValidationError",
+        "Cause": "payload missing customerId"
+      }
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "runner": "aws",
+  "id": "001-arguments-assign-output-compose-across-task-and-next-state",
+  "title": "Task Arguments, Assign, and Output compose across a task state and the following state",
+  "group": "Feature.JSONataComposition",
+  "hash": "82a3aaf7eadb34171de90e51490ce8fefbc9b88a4ff164ddd2c903cc38422e5b",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "SeedPrefix",
+    "States": {
+      "SeedPrefix": {
+        "Type": "Pass",
+        "Assign": {
+          "prefix": "acct"
+        },
+        "Next": "InvokeCompose"
+      },
+      "InvokeCompose": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Arguments": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "return { total: payload.left + payload.right, decorated: payload.label + \":\" + (payload.left + payload.right) };"
+            },
+            "payload": {
+              "left": "{% $states.input.left %}",
+              "right": "{% $states.input.right %}",
+              "label": "{% $prefix & \"-\" & $states.input.label %}"
+            }
+          }
+        },
+        "Assign": {
+          "total": "{% $states.result.totalFromResult %}",
+          "decorated": "{% $states.result.decoratedFromResult %}"
+        },
+        "Output": {
+          "requestId": "{% $states.input.requestId %}",
+          "rawDecorated": "{% $states.result.rawDecorated.decorated %}",
+          "totalFromResult": "{% $states.result.rawDecorated.total %}",
+          "decoratedFromResult": "{% $states.result.rawDecorated.decorated %}",
+          "prefixSeen": "{% $prefix %}"
+        },
+        "Next": "Summarize"
+      },
+      "Summarize": {
+        "Type": "Pass",
+        "Output": {
+          "requestId": "{% $states.input.requestId %}",
+          "rawDecorated": "{% $states.input.rawDecorated %}",
+          "assignedDecorated": "{% $decorated %}",
+          "total": "{% $total %}",
+          "prefixSeen": "{% $states.input.prefixSeen %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 4,
+    "right": 5,
+    "label": "invoice",
+    "requestId": "req-jsonata-compose-1"
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'InvokeCompose' (entered at the event id #4). The JSONata expression '$states.result.rawDecorated.decorated' specified for the field 'Output/rawDecorated' returned nothing (undefined)."
+  }
+}

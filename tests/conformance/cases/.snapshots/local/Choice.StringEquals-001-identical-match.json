@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "001-identical-match",
+  "title": "matches identical strings",
+  "group": "Choice.StringEquals",
+  "hash": "453f27a434b5c88e9e45a95d8009f03558103c601f64e50c10259e5f960af094",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringEquals": "hello",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "hello"
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

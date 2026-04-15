@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "041-uuid-null-argument",
+  "title": "$uuid with a null argument follows the AWS-observed ignored-arg or failure semantics",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "08e4ca755b50b9eb82a192fec36038a6753d7633d9fc9f45cf969590cea9bd73",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $uuid(null) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $uuid(null). [object Object]"
+  }
+}

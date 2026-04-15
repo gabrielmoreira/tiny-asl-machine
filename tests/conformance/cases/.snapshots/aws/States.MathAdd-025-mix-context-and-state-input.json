@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "025-mix-context-and-state-input",
+  "title": "mixes execution input context and state input",
+  "group": "States.MathAdd",
+  "hash": "aa4715d98d47a6a387ef1da443b415ca2ed656d1e2552ce1b65d69e30f01c10d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd($$.Execution.Input.offset, $.delta)",
+          "offsetFromContext.$": "$$.Execution.Input.offset"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "offset": 10,
+    "delta": 5
+  },
+  "result": {
+    "output": {
+      "value": 15,
+      "offsetFromContext": 10
+    }
+  }
+}

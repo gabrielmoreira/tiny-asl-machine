@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "001-hash-hello-md5",
+  "title": "hashes hello with MD5",
+  "group": "States.Hash",
+  "hash": "4791ca5e2fe969e8ee0e5050b8b2743ec79639973ecd721ed20c9932269d86b6",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('hello', 'MD5')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "5d41402abc4b2a76b9719d911017c592"
+    }
+  }
+}

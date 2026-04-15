@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "003-parse-string-primitive",
+  "title": "parses a JSON string primitive",
+  "group": "States.StringToJson",
+  "hash": "17424987309e9209e609f852d74b95e461b7b10d6d95ef6a9ee0edf0a0998606",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "\"hello\""
+  },
+  "result": {
+    "output": {
+      "value": "hello"
+    }
+  }
+}

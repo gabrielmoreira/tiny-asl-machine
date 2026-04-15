@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "015-reject-object-data-path",
+  "title": "rejects object data argument from path",
+  "group": "States.Hash",
+  "hash": "0964a2ab0e39311fdf05bcde20a9d5d088f13cd216cd6aa8820d9d0f82b6ff32",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash($.obj, 'SHA-256')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "obj": {}
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Hash($.obj, 'SHA-256'). Invalid arguments in States.Hash, caused by: States.Hash expected a string, got object"
+  }
+}

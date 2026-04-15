@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "020-reject-malformed-path-token",
+  "title": "rejects a malformed path token argument",
+  "group": "States.UUID",
+  "hash": "96b92698015d40d778deaa99d09884352081e4df933a2be176327736c17d3f5c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID($"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: unexpected end of string at index 13 in \"States.UUID($\""
+  }
+}

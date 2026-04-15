@@ -1,0 +1,76 @@
+{
+  "runner": "local",
+  "id": "004-inner-task-catch-prevents-whole-map-failure",
+  "title": "inner task Catch prevents whole-map failure and preserves aggregate output",
+  "group": "Feature.MapErrors",
+  "hash": "c1b8ab0a9db1499186d08c52ffeff76545dafb5d58c021435bdab06020e8c132",
+  "definition": {
+    "StartAt": "ProcessItems",
+    "States": {
+      "ProcessItems": {
+        "Type": "Map",
+        "ItemsPath": "$.items",
+        "Iterator": {
+          "StartAt": "InvokeProcessor",
+          "States": {
+            "InvokeProcessor": {
+              "Type": "Task",
+              "Resource": "arn:local:feature:map-errors:inner-catch",
+              "Catch": [
+                {
+                  "ErrorEquals": [
+                    "ItemRecoverableError"
+                  ],
+                  "ResultPath": "$.taskError",
+                  "Next": "RecoveredItem"
+                }
+              ],
+              "End": true
+            },
+            "RecoveredItem": {
+              "Type": "Pass",
+              "Parameters": {
+                "id.$": "$.id",
+                "status": "recovered",
+                "error.$": "$.taskError.Error"
+              },
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "items": [
+      {
+        "id": "ok-1"
+      },
+      {
+        "id": "recover-me",
+        "fail": true
+      },
+      {
+        "id": "ok-2"
+      }
+    ]
+  },
+  "result": {
+    "output": [
+      {
+        "id": "ok-1",
+        "status": "ok"
+      },
+      {
+        "status": "recovered",
+        "id": "recover-me",
+        "error": "ItemRecoverableError"
+      },
+      {
+        "id": "ok-2",
+        "status": "ok"
+      }
+    ]
+  }
+}

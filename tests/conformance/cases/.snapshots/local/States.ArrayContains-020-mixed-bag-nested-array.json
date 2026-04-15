@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "020-mixed-bag-nested-array",
+  "title": "finds an exact nested array inside a mixed primitive bag",
+  "group": "States.ArrayContains",
+  "hash": "6602ca037e378677f3f924f6d891daeb95c9d1ec61abd5a7156dae8ed4432310",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, $.target)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      null,
+      "",
+      " ",
+      0,
+      1,
+      true,
+      false,
+      [
+        0,
+        1,
+        false
+      ]
+    ],
+    "target": [
+      0,
+      1,
+      false
+    ]
+  },
+  "result": {
+    "output": {
+      "value": true
+    }
+  }
+}

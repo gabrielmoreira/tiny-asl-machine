@@ -1,0 +1,29 @@
+{
+  "runner": "aws",
+  "id": "002-range-generates-ascending-step-array",
+  "title": "$range(0, 10, 2) produces [0,2,4,6,8,10]",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "c2eca6308b904b746cf80c8f26289f68e6204c24357dab3e7057fa028d71e647",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $range(0, 10, 2) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ]
+  }
+}

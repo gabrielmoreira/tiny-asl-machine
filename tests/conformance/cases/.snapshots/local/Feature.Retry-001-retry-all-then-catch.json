@@ -1,0 +1,62 @@
+{
+  "runner": "local",
+  "id": "001-retry-all-then-catch",
+  "title": "observes retry exhaustion before Catch recovery with States.ALL",
+  "group": "Feature.Retry",
+  "hash": "111ed0c09e0da75fd655c7a32971c39613f3b1a1f87c7667cf10272e425e682e",
+  "definition": {
+    "StartAt": "InvokeUnimplementedService",
+    "States": {
+      "InvokeUnimplementedService": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:s3:headBucket",
+        "Parameters": {
+          "Bucket": "tiny-asl-machine-observation-bucket-should-not-exist"
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 2,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.retriedError",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "at": "catch-after-retry"
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-retry-1"
+  },
+  "result": {
+    "output": {
+      "requestId": "req-retry-1",
+      "retriedError": {
+        "Error": "SyntheticRetryError",
+        "Cause": "local retry observation failure"
+      },
+      "recovery": {
+        "at": "catch-after-retry"
+      }
+    }
+  }
+}

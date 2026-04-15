@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "013-preserve-empties-across-mixed-delimiters",
+  "title": "preserves empties across adjacent mixed delimiters",
+  "group": "States.StringSplit",
+  "hash": "149db2e89f73ee7dfdb266bc13ef4211e426432b89b04d561277acabeb7c7073",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, '.,')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "a.,,b"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "a",
+        "b"
+      ]
+    }
+  }
+}

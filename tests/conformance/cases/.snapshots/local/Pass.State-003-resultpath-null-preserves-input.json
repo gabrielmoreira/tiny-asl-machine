@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "003-resultpath-null-preserves-input",
+  "title": "ignores the state result when ResultPath is null",
+  "group": "Pass.State",
+  "hash": "58b5615962a9b8273a6cd1de5222a9b9bec7d150bd7b86ceca55fc8d85bace25",
+  "definition": {
+    "StartAt": "IgnoreComputedResult",
+    "States": {
+      "IgnoreComputedResult": {
+        "Type": "Pass",
+        "Result": {
+          "shouldNotAppear": true
+        },
+        "ResultPath": null,
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "orderId": "A-100",
+    "totals": {
+      "subtotal": 12,
+      "tax": 3
+    }
+  },
+  "result": {
+    "output": {
+      "orderId": "A-100",
+      "totals": {
+        "subtotal": 12,
+        "tax": 3
+      }
+    }
+  }
+}

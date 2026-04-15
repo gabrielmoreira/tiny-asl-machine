@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "005-default-on-nonmatch",
+  "title": "takes the default branch when the pattern does not match",
+  "group": "Choice.StringMatches",
+  "hash": "682f4359d10d1e7cbf1279aa37a402a9ce28ff624f10d7da4482b3729038fde9",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringMatches": "invoice-*.json",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "single-wildcard-pattern"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "no-pattern-match"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "report-2025.json"
+  },
+  "result": {
+    "output": {
+      "selected": "no-pattern-match"
+    }
+  }
+}

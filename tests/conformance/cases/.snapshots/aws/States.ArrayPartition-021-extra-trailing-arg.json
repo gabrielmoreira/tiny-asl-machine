@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "021-extra-trailing-arg",
+  "title": "extra trailing argument fails exact arity validation",
+  "group": "States.ArrayPartition",
+  "hash": "3249cf7b64644d8cc6c7f27c9875cf488a318ef3a05dde9cb615513e9dfee19c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 2, 999)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.ArrayPartition($.arr, 2, 999). Invalid arguments in States.ArrayPartition"
+  }
+}

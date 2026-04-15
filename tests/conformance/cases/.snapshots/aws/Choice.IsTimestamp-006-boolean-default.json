@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "006-boolean-default",
+  "title": "routes to Default for a boolean value",
+  "group": "Choice.IsTimestamp",
+  "hash": "54ff0cc29ba495a4615aec5098b06a303f2db8057d55e85e693dad890496d9c9",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsTimestamp": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": true
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

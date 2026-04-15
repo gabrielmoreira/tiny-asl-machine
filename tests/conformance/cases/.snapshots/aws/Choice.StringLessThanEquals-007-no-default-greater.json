@@ -1,0 +1,36 @@
+{
+  "runner": "aws",
+  "id": "007-no-default-greater",
+  "title": "StringLessThanEquals fails with States.Runtime without Default when the input sorts after the comparison string",
+  "group": "Choice.StringLessThanEquals",
+  "hash": "259d22617e97fbedafd58b92b7c9862ac9a956a565a904783f8ad959778cee54",
+  "definition": {
+    "StartAt": "Compare",
+    "States": {
+      "Compare": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringLessThanEquals": "bravo",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "charlie"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Compare' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

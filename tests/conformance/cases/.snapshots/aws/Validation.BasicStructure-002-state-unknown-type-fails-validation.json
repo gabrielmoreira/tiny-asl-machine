@@ -1,0 +1,21 @@
+{
+  "runner": "aws",
+  "id": "002-state-unknown-type-fails-validation",
+  "title": "fails validation when a state specifies an unknown Type",
+  "group": "Validation.BasicStructure",
+  "hash": "824e7ba06581c9582ce3810e4ec2feff6aa3e9796dab9b4c7d4b413a01a84c98",
+  "definition": {
+    "StartAt": "First",
+    "States": {
+      "First": {
+        "Type": "UnknownStateType",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "The field 'Type' should have one of these values: [Task, Wait, Pass, Succeed, Fail, Choice, Parallel, Map]"
+  }
+}

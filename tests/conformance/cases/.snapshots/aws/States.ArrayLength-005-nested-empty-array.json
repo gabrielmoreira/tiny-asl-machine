@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "005-nested-empty-array",
+  "title": "Count empty array produced by nested intrinsic",
+  "group": "States.ArrayLength",
+  "hash": "28ab2e7bb10f1edd6f2f11d651ae1de15588ef5a31efbf40858d72d23fae6982",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength(States.Array())"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 0
+    }
+  }
+}

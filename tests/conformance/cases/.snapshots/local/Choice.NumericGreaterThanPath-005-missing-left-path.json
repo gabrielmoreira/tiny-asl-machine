@@ -1,0 +1,44 @@
+{
+  "runner": "local",
+  "id": "005-missing-left-path",
+  "title": "fails with States.Runtime when the variable path is missing",
+  "group": "Choice.NumericGreaterThanPath",
+  "hash": "853e7c6d31809373e4a212db7fc7b0103198327a33fb9aec0427b760ca1e6d2c",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericGreaterThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "right": 8
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid path '$.left': The choice state's condition path references an invalid value."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "001-local-mocked-happy-path",
+  "title": "invokes a local mocked task and returns its result",
+  "group": "Task.State",
+  "hash": "913057b2c13d8681df5870a09e405a2378f31abeb1e07a1c7adf1c9821ad3e39",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:task:echo",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "orderId": "ord-123",
+    "amount": 42
+  },
+  "result": {
+    "output": {
+      "ok": true,
+      "echoed": {
+        "orderId": "ord-123",
+        "amount": 42
+      }
+    }
+  }
+}

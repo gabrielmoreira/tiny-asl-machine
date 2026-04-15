@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "preserveConstEnums": true,
+    "esModuleInterop": true,
+    "allowJs": false,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ES2022",
+    "types": ["node", "vitest"],
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": ["./src/**/*", "./tests/**/*", "./scripts/**/*", "./types/**/*", "./vitest.config.ts"],
+  "exclude": ["coverage", "node_modules", "lib", "coverage/**/*"]
+}

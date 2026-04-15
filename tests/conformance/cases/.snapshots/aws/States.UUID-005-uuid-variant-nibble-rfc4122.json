@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "005-uuid-variant-nibble-rfc4122",
+  "title": "exposes the UUID variant nibble in RFC 4122 range",
+  "group": "States.UUID",
+  "hash": "9c7f59404002c4fa03abeb61ea20dd9df1337db2276408e1a600a5ec6f18ff8e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "4a26a987-4c1b-44b0-a51d-29bb9672230b"
+    }
+  }
+}

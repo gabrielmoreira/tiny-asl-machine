@@ -1,0 +1,39 @@
+{
+  "runner": "aws",
+  "id": "011-first-seen-order",
+  "title": "Preserve first-seen order when deduplicating",
+  "group": "States.ArrayUnique",
+  "hash": "90b5acfe10b03fdb0e8a0c8da069f09f80f505dd60210c1f07cdf604bf8fca73",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      1,
+      3,
+      2,
+      4
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        1,
+        2,
+        3,
+        4
+      ]
+    }
+  }
+}

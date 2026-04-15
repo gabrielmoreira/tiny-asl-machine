@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "025-mixed-sign-interval",
+  "title": "handles a mixed-sign interval crossing zero",
+  "group": "States.MathRandom",
+  "hash": "1bdee0a5ab764956698d98dc4204b767dadf5eec8bcb20d97d2ea23ceb746664",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(-5, 5, 42)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 3
+    }
+  }
+}

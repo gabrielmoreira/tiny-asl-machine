@@ -1,0 +1,46 @@
+{
+  "runner": "local",
+  "id": "008-malformed-comparison-path-default",
+  "title": "catalogs malformed runtime timestamp data on the comparison path as a non-match",
+  "group": "Choice.TimestampEqualsPath",
+  "hash": "3038f4c3150d5ee7bb958aa897adaca9281ee0652bd573d6e56aa904a0ed04a3",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "2025-01-01T12:00:00.000Z",
+    "right": "not-a-timestamp"
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

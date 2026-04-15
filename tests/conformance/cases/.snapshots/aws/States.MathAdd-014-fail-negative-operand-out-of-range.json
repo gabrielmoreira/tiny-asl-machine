@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "014-fail-negative-operand-out-of-range",
+  "title": "fails when a negative operand is below int32 range",
+  "group": "States.MathAdd",
+  "hash": "6754c7190faa68500e193d5b31f1ee5fa53c2b8eff518df84ad8d94f0c14b034",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(-3000000000, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathAdd(-3000000000, 1). Invalid arguments in States.MathAdd"
+  }
+}

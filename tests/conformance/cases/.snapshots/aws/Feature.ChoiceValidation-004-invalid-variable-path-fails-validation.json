@@ -1,0 +1,38 @@
+{
+  "runner": "aws",
+  "id": "004-invalid-variable-path-fails-validation",
+  "title": "fails validation when a Choice Variable is not a valid reference path",
+  "group": "Feature.ChoiceValidation",
+  "hash": "4e4f81ccd577e9bf9932d84a2bb7b581f344707aeed513cad63e2550b3928d69",
+  "definition": {
+    "StartAt": "Dispatch",
+    "States": {
+      "Dispatch": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "status",
+            "StringEquals": "READY",
+            "Next": "Matched"
+          }
+        ],
+        "Default": "Fallback"
+      },
+      "Matched": {
+        "Type": "Pass",
+        "End": true
+      },
+      "Fallback": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "status": "READY"
+  },
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Value is not a Reference Path: Reference path didn't start with '$'"
+  }
+}

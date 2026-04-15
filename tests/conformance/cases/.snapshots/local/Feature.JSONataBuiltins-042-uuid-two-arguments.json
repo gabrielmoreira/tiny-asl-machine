@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "042-uuid-two-arguments",
+  "title": "$uuid with two arguments follows the AWS-observed ignored-arg or failure semantics",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "e39694fd257caa248204bf9c0f4675f5c9828d9d7b4ebcb765f823617bcf2b11",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $uuid(1, 2) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $uuid(1, 2). [object Object]"
+  }
+}

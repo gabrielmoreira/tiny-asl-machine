@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "004-add-mixed-sign-integers",
+  "title": "adds mixed-sign integers",
+  "group": "States.MathAdd",
+  "hash": "4ac250a63bc2e6d32de987c823ea8a48142a711710b5379928455e5d30eb3e04",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(-5, 3)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": -2
+    }
+  }
+}

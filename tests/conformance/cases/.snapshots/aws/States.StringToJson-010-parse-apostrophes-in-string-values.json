@@ -1,0 +1,29 @@
+{
+  "runner": "aws",
+  "id": "010-parse-apostrophes-in-string-values",
+  "title": "parses escaped apostrophes inside JSON string values",
+  "group": "States.StringToJson",
+  "hash": "97dfc88532ea7b1dd2166f24537b5d12fb111e72a59823e04dc09d6695577860",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "{\"a\":\"it's\"}"
+  },
+  "result": {
+    "output": {
+      "value": {
+        "a": "it's"
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "002-hash-hello-sha-1",
+  "title": "hashes hello with SHA-1",
+  "group": "States.Hash",
+  "hash": "a717073e1dca512f004e22b5cd5f3bde81963439230d441acd410e4468992b5e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('hello', 'SHA-1')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d"
+    }
+  }
+}

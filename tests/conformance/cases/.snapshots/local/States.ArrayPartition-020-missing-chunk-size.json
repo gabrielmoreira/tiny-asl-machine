@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "020-missing-chunk-size",
+  "title": "missing chunk-size argument fails exact arity validation",
+  "group": "States.ArrayPartition",
+  "hash": "2dee36c676a4e9c0da25d7739f90741d9783b7e04c7451abaf0de2aeb02669f4",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.ArrayPartition expects 2 argument(s) but received 1."
+  }
+}

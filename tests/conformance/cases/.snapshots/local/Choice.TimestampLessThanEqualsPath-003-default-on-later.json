@@ -1,0 +1,46 @@
+{
+  "runner": "local",
+  "id": "003-default-on-later",
+  "title": "falls back to Default when the left timestamp is later than the right path timestamp",
+  "group": "Choice.TimestampLessThanEqualsPath",
+  "hash": "a0334a1d6bc3cfc71678a65d499e0bd61762b7544248b08163e2ad5d70d0f729",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampLessThanEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "2025-01-01T00:00:20Z",
+    "right": "2025-01-01T00:00:10Z"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

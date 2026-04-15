@@ -1,0 +1,46 @@
+{
+  "runner": "local",
+  "id": "001-match-later-than-path",
+  "title": "matches when the variable timestamp path resolves later than the comparison path",
+  "group": "Choice.TimestampGreaterThanPath",
+  "hash": "49aa5a2655f656af019230eb79134338f50e8f3c76066837f1df1e5477d41084",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampGreaterThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "2025-01-02T00:00:00.000Z",
+    "right": "2025-01-01T12:00:00.000Z"
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

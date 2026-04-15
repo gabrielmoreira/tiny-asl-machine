@@ -1,0 +1,76 @@
+{
+  "runner": "local",
+  "id": "002-retries-exhaust-before-catch-recovery",
+  "title": "retries exhaust and Catch runs afterward",
+  "group": "Feature.RetryCatchComposition",
+  "hash": "68d153c837c20d193ef1492922a9f2648d09f656e5e8dd6815d939419969dc1a",
+  "definition": {
+    "StartAt": "InvokeFixture",
+    "States": {
+      "InvokeFixture": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "throw new Error(`exhausted-${payload.requestId}`);"
+            },
+            "payload": {
+              "requestId.$": "$.requestId"
+            }
+          }
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 1,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.retriedError",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "status": "caught-after-exhaustion"
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-retry-catch-2",
+    "job": {
+      "id": "job-2"
+    }
+  },
+  "result": {
+    "output": {
+      "requestId": "req-retry-catch-2",
+      "job": {
+        "id": "job-2"
+      },
+      "retriedError": {
+        "Error": "Lambda.AWSLambdaException",
+        "Cause": "exhausted-req-retry-catch-2"
+      },
+      "recovery": {
+        "status": "caught-after-exhaustion"
+      }
+    }
+  }
+}

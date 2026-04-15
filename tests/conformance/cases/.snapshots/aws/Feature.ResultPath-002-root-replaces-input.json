@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "002-root-replaces-input",
+  "title": "ResultPath dollar replaces the entire input with the state result",
+  "group": "Feature.ResultPath",
+  "hash": "d492731f8353e9d43bd20f2a9a64affd1a99c55f62a93506a135ac4a1c78ed5b",
+  "definition": {
+    "StartAt": "ReplaceInput",
+    "States": {
+      "ReplaceInput": {
+        "Type": "Pass",
+        "Result": {
+          "status": "done",
+          "count": 3
+        },
+        "ResultPath": "$",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-12",
+    "ignored": true
+  },
+  "result": {
+    "output": {
+      "status": "done",
+      "count": 3
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "002-decrement-input-by-one",
+  "title": "decrements an input value by one",
+  "group": "States.MathAdd",
+  "hash": "0ac526d2036fa9c217ec4104c736247274fef9b215603b0ca2b078283868c2e3",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd($.val, -1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "val": 111
+  },
+  "result": {
+    "output": {
+      "value": 110
+    }
+  }
+}

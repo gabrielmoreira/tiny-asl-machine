@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "013-non-numeric-end",
+  "title": "rejects a non-numeric end argument",
+  "group": "States.ArrayRange",
+  "hash": "4a292729c66210c560fb795484f1110512cfba7aeba04e42915f3677ea34cf2d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(1, 'b', 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.ArrayRange(1, 'b', 1). Invalid arguments in States.ArrayRange"
+  }
+}

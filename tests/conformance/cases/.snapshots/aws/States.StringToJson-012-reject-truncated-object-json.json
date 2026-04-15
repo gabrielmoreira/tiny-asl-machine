@@ -1,0 +1,26 @@
+{
+  "runner": "aws",
+  "id": "012-reject-truncated-object-json",
+  "title": "rejects truncated object JSON text",
+  "group": "States.StringToJson",
+  "hash": "d572d64c9e4d7b10c17d085df85fc3543503e4f980dc18cd382f0738448669b1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "{\"a\":1"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.StringToJson($.json). Cannot convert String to Json in States.StringToJson, caused by: Unexpected end-of-input: expected close marker for Object (start marker at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1])\n at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 7]"
+  }
+}

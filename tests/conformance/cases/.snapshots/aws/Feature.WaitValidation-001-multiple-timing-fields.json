@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "001-multiple-timing-fields",
+  "title": "rejects a Wait state with more than one timing field",
+  "group": "Feature.WaitValidation",
+  "hash": "069871720295571739a5106580aeb3cf695f9e4956dae4a1766b528ade18bd7c",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "Seconds": 1,
+        "Timestamp": "2025-01-01T00:00:10.000Z",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "There should only be one of the following fields: [SecondsPath, Seconds, TimestampPath, Timestamp]"
+  }
+}

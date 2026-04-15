@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "027-hash-unsupported-algorithm-fails",
+  "title": "$hash rejects an unsupported algorithm token",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "1074f7aa64d009895ede247dac7f81872fde8d1553cdea7598df60e271244b67",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $hash(\"data\", \"UNSUPPORTED\") %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $hash(\"data\", \"UNSUPPORTED\"). Unsupported hash algorithm: UNSUPPORTED"
+  }
+}

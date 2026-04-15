@@ -1,0 +1,54 @@
+{
+  "runner": "aws",
+  "id": "002-default-any-rule-fails",
+  "title": "takes the default branch when any nested rule evaluates to false",
+  "group": "Choice.And",
+  "hash": "2f692cfc428518dff7d216b287b8ede3efcb0cbd4a9e4309210b8c61fe0e7137",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "And": [
+              {
+                "Variable": "$.status",
+                "StringEquals": "READY"
+              },
+              {
+                "Variable": "$.attempt",
+                "NumericGreaterThanEquals": 2
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "approved"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "manual-review"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "status": "READY",
+    "attempt": 1
+  },
+  "result": {
+    "output": {
+      "selected": "manual-review"
+    }
+  }
+}

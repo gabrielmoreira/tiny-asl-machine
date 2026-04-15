@@ -1,0 +1,38 @@
+{
+  "runner": "local",
+  "id": "006-no-default-inner-match",
+  "title": "fails with States.Runtime when the nested rule is true and there is no default",
+  "group": "Choice.Not",
+  "hash": "631e25b6b05e06b5725211698bd1b451dd131e26b01fd9ba8e2844ac56cd0747",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Not": {
+              "Variable": "$.visibility",
+              "StringEquals": "Private"
+            },
+            "Next": "PublicFlow"
+          }
+        ]
+      },
+      "PublicFlow": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "public-flow"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "visibility": "Private"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

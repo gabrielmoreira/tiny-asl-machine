@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "006-repeat-literal-sha-256-deterministically",
+  "title": "repeats literal SHA-256 deterministically",
+  "group": "States.Hash",
+  "hash": "be213b2efd212ec60af824539a9ba1f2f94a0ee6dff712fd757ada3ec157c783",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('hello', 'SHA-256')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "runner": "local",
+  "id": "004-task-resultpath-null-discards-result",
+  "title": "Task ResultPath null preserves the original input and discards the task result",
+  "group": "Feature.TaskShapes",
+  "hash": "0b13679bdf39b61b8fb4fcc346d1ef1a4baa6e5de5cef57c4836a4b474560097",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:task-shapes:discarded-result",
+        "ResultPath": null,
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-34",
+    "original": {
+      "keep": true
+    }
+  },
+  "result": {
+    "output": {
+      "requestId": "req-34",
+      "original": {
+        "keep": true
+      }
+    }
+  }
+}

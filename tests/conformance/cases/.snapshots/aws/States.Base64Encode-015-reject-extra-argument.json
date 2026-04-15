@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "015-reject-extra-argument",
+  "title": "rejects extra argument",
+  "group": "States.Base64Encode",
+  "hash": "4a626ed43ba91da0059423c5b08eeb0a6b164b07e03a0ac1c46c7bf2f2cbc076",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode('a', 'b')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.Base64Encode('a', 'b'). Invalid arguments in States.Base64Encode"
+  }
+}

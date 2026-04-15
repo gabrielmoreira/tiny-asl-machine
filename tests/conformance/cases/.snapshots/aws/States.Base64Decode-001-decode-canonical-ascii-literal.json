@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "001-decode-canonical-ascii-literal",
+  "title": "decodes canonical ASCII literal",
+  "group": "States.Base64Decode",
+  "hash": "e8033ed5facb0f50f46696cc746c7db4a35b9fd84e6820028cd9d8b7c3140baf",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode('aGVsbG8=')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "hello"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "runner": "local",
+  "id": "036-reject-negative-number-plus-mixed-array-probe",
+  "title": "rejects a mixed-value array probe even when paired with a negative number",
+  "group": "States.MathAdd",
+  "hash": "3ca02ca55825177aef287c399b9c9c747b1393a072e038f0b91fc3d7f699db67",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(-1, $.probe)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "probe": [
+      null,
+      "",
+      " ",
+      0,
+      1,
+      true,
+      false,
+      [
+        0,
+        1,
+        false
+      ]
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.MathAdd(-1, $.probe). Invalid arguments in States.MathAdd, caused by: States.MathAdd expected a number, got object"
+  }
+}

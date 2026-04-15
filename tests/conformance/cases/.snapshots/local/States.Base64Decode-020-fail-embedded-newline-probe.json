@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "020-fail-embedded-newline-probe",
+  "title": "fails on embedded newline tolerance probe",
+  "group": "States.Base64Decode",
+  "hash": "cde5b7a7cb6221d38d32d7b937b2dd6549e9bf8b55f12798e0bb6f2965d208c7",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode('YWJj\\nZA==')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Base64Decode('YWJj\\nZA=='). Invalid arguments in States.Base64Decode, caused by: Invalid Base64 input"
+  }
+}

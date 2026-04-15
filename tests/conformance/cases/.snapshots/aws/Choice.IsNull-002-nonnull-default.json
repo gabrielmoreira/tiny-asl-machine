@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "002-nonnull-default",
+  "title": "falls back to Default when the variable is not null and IsNull is true",
+  "group": "Choice.IsNull",
+  "hash": "fa46ebc49621d211aaa437a5f8ad16a9014115768b49d5dc639cd10fadebb8b5",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsNull": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "not-null"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

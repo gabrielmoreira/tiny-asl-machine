@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "006-repeated-uuid-calls",
+  "title": "evaluates repeated UUID calls independently in one expression",
+  "group": "States.UUID",
+  "hash": "7d98baadb5603ff75525d78d2182a62b6bf6f728c19b35b1f050f3b15fbe8bd1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "first.$": "States.UUID()",
+          "second.$": "States.UUID()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "first": "2c8ded06-9392-4dbf-ad2f-fde6eb3489be",
+      "second": "0964a9bc-4364-451f-995e-5bcc6b2787ae"
+    }
+  }
+}

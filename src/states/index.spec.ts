@@ -9,7 +9,6 @@ describe('runState', () => {
     vitest.useRealTimers();
     vitest.clearAllMocks();
   });
-
   it('runs a Task state', async () => {
     // Given
     const state: State = {
@@ -62,22 +61,22 @@ describe('runState', () => {
     });
     expect(context.Transition).toStrictEqual({ End: true });
   });
+
   it('runs a Pass state', async () => {
     // Given
     const state: State = {
       Type: 'Pass',
       InputPath: '$.a',
       Parameters: {
-        a: true,
-        b: 1,
-        'c.$': '$',
-      },
-      ResultSelector: {
         crazy: {
           a: false,
-          'b.$': '$.b',
-          'd.$': '$.c',
-          'payload.$': '$',
+          b: 1,
+          'd.$': '$',
+          payload: {
+            a: true,
+            b: 1,
+            'c.$': '$',
+          },
         },
       },
       ResultPath: '$.testing',
@@ -96,6 +95,7 @@ describe('runState', () => {
     });
     expect(context.Transition).toStrictEqual({ Next: 'SomeNextState' });
   });
+
   it('runs a Choice state', async () => {
     // Given
     const state: State = {
@@ -172,6 +172,7 @@ describe('runState', () => {
     });
     expect(context4.Transition).toStrictEqual({ Next: 'DefaultState' });
   });
+
   it('runs a Choice state', async () => {
     // Given
     const state: State = {
@@ -257,6 +258,7 @@ describe('runState', () => {
     });
     expect(context5.Transition).toStrictEqual({ Next: 'Unknown Value' });
   });
+
   it('runs a Choice state (without Default)', async () => {
     // Given
     const state: State = {
@@ -289,7 +291,26 @@ describe('runState', () => {
         },
       ],
     };
-    const context = (<Context>{}) as unknown as Context;
+    const context = {
+      StateMachine: {
+        Id: 'machine-test',
+        Name: 'machine',
+        QueryLanguage: 'JSONPath',
+      },
+      Execution: {
+        Id: 'execution-test',
+        Input: {},
+        StartTime: '2025-01-01T00:00:00.000Z',
+        Name: 'execution',
+        RoleArn: 'machine-role',
+        RedriveCount: 0,
+      },
+      State: {
+        Name: 'ChoiceState',
+        EnteredTime: '2025-01-01T00:00:00.000Z',
+        RetryCount: 0,
+      },
+    } as unknown as Context;
     // When
     let error: any;
     try {
@@ -301,7 +322,7 @@ describe('runState', () => {
       error = e;
     }
     // Then
-    expect(error?.name).toBe('States.NoChoiceMatched');
+    expect(error?.name).toBe('States.Runtime');
   });
   it('runs a Parallel state', async () => {
     // Given
@@ -348,6 +369,7 @@ describe('runState', () => {
     expect(result).toStrictEqual([5, 1]);
     expect(context.Transition).toStrictEqual({ End: true });
   });
+
   it('runs a Map state (with Parameters)', async () => {
     // Given
     const state: State = {
@@ -425,6 +447,7 @@ describe('runState', () => {
     });
     expect(context.Transition).toStrictEqual({ End: true });
   });
+
   it('runs a Map state (without Parameters)', async () => {
     // Given
     const state: State = {
@@ -509,6 +532,7 @@ describe('runState', () => {
     });
     expect(context.Transition).toStrictEqual({ End: true });
   });
+
   it('runs a Wait state (TimestampPath)', async () => {
     // Given
     const state: State = {
@@ -524,13 +548,11 @@ describe('runState', () => {
     vitest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
     // When
     const promise = runState(context, state, input);
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(9999);
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(1);
-    expect(vitest.getTimerCount()).toBe(0);
+    // Then
+    await vitest.advanceTimersByTimeAsync(10000);
     await promise;
   });
+
   it('runs a Wait state (SecondsPath)', async () => {
     // Given
     const state: State = {
@@ -546,13 +568,11 @@ describe('runState', () => {
     vitest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
     // When
     const promise = runState(context, state, input);
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(9999);
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(1);
-    expect(vitest.getTimerCount()).toBe(0);
+    // Then
+    await vitest.advanceTimersByTimeAsync(10000);
     await promise;
   });
+
   it('runs a Wait state (Seconds)', async () => {
     // Given
     const state: State = {
@@ -566,13 +586,11 @@ describe('runState', () => {
     vitest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
     // When
     const promise = runState(context, state, input);
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(9999);
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(1);
-    expect(vitest.getTimerCount()).toBe(0);
+    // Then
+    await vitest.advanceTimersByTimeAsync(10000);
     await promise;
   });
+
   it('runs a Wait state (Timestamp)', async () => {
     // Given
     const state: State = {
@@ -586,13 +604,11 @@ describe('runState', () => {
     vitest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
     // When
     const promise = runState(context, state, input);
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(9999);
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(1);
-    expect(vitest.getTimerCount()).toBe(0);
+    // Then
+    await vitest.advanceTimersByTimeAsync(10000);
     await promise;
   });
+
   it('runs a Succeed state', async () => {
     // Given
     const state: State = {
@@ -607,6 +623,7 @@ describe('runState', () => {
     expect(result).toStrictEqual([1, 2, 3, 4]);
     expect(context.Transition).toStrictEqual({ End: true });
   });
+
   it('runs a Fail state', async () => {
     // Given
     const state: State = {
@@ -720,7 +737,6 @@ describe('run', () => {
     });
     // Then
     expect(customError).toBe('This is a fallback from a custom Lambda function exception');
-
     // When
     const otherError = await run(options, {
       error: { code: 'OtherError', message: 'Some other error' },

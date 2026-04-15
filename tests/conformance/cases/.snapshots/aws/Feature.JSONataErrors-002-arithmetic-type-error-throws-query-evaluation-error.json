@@ -1,0 +1,26 @@
+{
+  "runner": "aws",
+  "id": "002-arithmetic-type-error-throws-query-evaluation-error",
+  "title": "adding a string and a number in JSONata throws States.QueryEvaluationError",
+  "group": "Feature.JSONataErrors",
+  "hash": "f78198bddc73417631a8057a870ae70d2d4ad88b166bb37e47f122eb5d814a2e",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $states.input.str + $states.input.num %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "hello",
+    "num": 5
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$states.input.str + $states.input.num' specified for the field 'Output' threw an error during evaluation. T2001: The left side of the \"+\" operator must evaluate to a number"
+  }
+}

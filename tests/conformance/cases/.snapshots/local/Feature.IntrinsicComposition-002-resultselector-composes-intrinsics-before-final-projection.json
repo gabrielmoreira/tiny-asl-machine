@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "002-resultselector-composes-intrinsics-before-final-projection",
+  "title": "composes intrinsics inside ResultSelector before ResultPath insertion and OutputPath projection",
+  "group": "Feature.IntrinsicComposition",
+  "hash": "48925b1eec20ff789f3db664b50a81b5b4dbe16e09bf946ea3358b57d0b8b8d2",
+  "definition": {
+    "StartAt": "SelectComposedTaskResult",
+    "States": {
+      "SelectComposedTaskResult": {
+        "Type": "Task",
+        "Resource": "arn:local:intrinsic-composition:selector",
+        "ResultSelector": {
+          "overview": {
+            "label.$": "States.Format('{}:{}', $.kind, States.JsonToString($.payload))",
+            "tagCount.$": "States.ArrayLength($.tags)",
+            "payloadSnapshot.$": "States.JsonToString($.payload)"
+          },
+          "firstTag.$": "$.tags[0]"
+        },
+        "ResultPath": "$.task",
+        "OutputPath": "$.task.overview",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-31"
+  },
+  "result": {
+    "output": {
+      "label": "report:{\"approved\":true,\"pages\":4}",
+      "tagCount": 2,
+      "payloadSnapshot": "{\"approved\":true,\"pages\":4}"
+    }
+  }
+}

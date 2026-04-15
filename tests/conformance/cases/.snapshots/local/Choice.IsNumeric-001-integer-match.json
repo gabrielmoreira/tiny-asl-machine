@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "001-integer-match",
+  "title": "matches integer values when IsNumeric is true",
+  "group": "Choice.IsNumeric",
+  "hash": "237f84a70ef3150efb65578061e819cbd0bdcc2b8147c8df62a291d1ecfd810b",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsNumeric": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 42
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

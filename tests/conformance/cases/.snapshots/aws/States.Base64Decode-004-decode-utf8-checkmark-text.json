@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "004-decode-utf8-checkmark-text",
+  "title": "decodes UTF-8 checkmark text",
+  "group": "States.Base64Decode",
+  "hash": "4e357419feab7cc73554bc1a02df8360cb720cde5b0875a5545a033ee097f400",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode('4pyT')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "✓"
+    }
+  }
+}

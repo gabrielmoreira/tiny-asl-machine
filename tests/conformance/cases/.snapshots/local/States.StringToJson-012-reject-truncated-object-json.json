@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "012-reject-truncated-object-json",
+  "title": "rejects truncated object JSON text",
+  "group": "States.StringToJson",
+  "hash": "d572d64c9e4d7b10c17d085df85fc3543503e4f980dc18cd382f0738448669b1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "{\"a\":1"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.StringToJson($.json). Invalid arguments in States.StringToJson, caused by: Expected ',' or '}' after property value in JSON at position 6 (line 1 column 7)"
+  }
+}

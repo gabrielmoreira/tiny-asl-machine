@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "006-string-nonmatch",
+  "title": "does not match a numeric string runtime value",
+  "group": "Choice.NumericGreaterThan",
+  "hash": "be68215e4e824e2815e688c76f69b4d08c7dd6857a93001ff1c66c1d0051d51a",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericGreaterThan": 10,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "11"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

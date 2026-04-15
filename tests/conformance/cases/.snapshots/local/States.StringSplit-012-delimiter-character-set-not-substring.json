@@ -1,0 +1,32 @@
+{
+  "runner": "local",
+  "id": "012-delimiter-character-set-not-substring",
+  "title": "breaks on each delimiter character rather than a whole substring",
+  "group": "States.StringSplit",
+  "hash": "c76e342f748f1d2db7df055ad9998685fbe4006666e84030cc8c720a8b91e661",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, 'ab')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "1a2b3ab4"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    }
+  }
+}

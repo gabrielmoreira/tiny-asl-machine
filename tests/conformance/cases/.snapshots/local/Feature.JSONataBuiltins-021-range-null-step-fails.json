@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "021-range-null-step-fails",
+  "title": "$range rejects a null step argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "5bf09b93ae49a4d66935088c35f33f6bdf585efd76793a16402675ed1bece3c1",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $range(1, 5, null) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $range(1, 5, null). [object Object]"
+  }
+}

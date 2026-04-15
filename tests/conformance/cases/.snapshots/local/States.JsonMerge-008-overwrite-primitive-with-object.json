@@ -1,0 +1,38 @@
+{
+  "runner": "local",
+  "id": "008-overwrite-primitive-with-object",
+  "title": "overwrites a primitive with an object in shallow mode",
+  "group": "States.JsonMerge",
+  "hash": "9b527a60234569a313257a44e4040b7779033077096afae1e6db8ed117f3dd59",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "x": 1
+    },
+    "b": {
+      "x": {
+        "new": true
+      }
+    }
+  },
+  "result": {
+    "output": {
+      "value": {
+        "x": {
+          "new": true
+        }
+      }
+    }
+  }
+}

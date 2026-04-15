@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "006-no-default-nonmatch",
+  "title": "fails with States.Runtime when the string does not match and there is no default",
+  "group": "Choice.StringEquals",
+  "hash": "a58f14a6f1df3745d073bf0f021b673f1d84403882a5b2df6f832cf32920a915",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringEquals": "hello",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "world"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

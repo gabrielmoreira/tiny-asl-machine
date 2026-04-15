@@ -1,0 +1,43 @@
+{
+  "runner": "aws",
+  "id": "001-items-path-selects-array",
+  "title": "ItemsPath selects the iteration array from parent input",
+  "group": "Map.State",
+  "hash": "033f99b1dc90ea54db0b63f40b0b41e27a00de688d67eb5cbcac544f50d6a7c7",
+  "definition": {
+    "StartAt": "IterateSelected",
+    "States": {
+      "IterateSelected": {
+        "Type": "Map",
+        "ItemsPath": "$.selected",
+        "Iterator": {
+          "StartAt": "ReturnItem",
+          "States": {
+            "ReturnItem": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "selected": [
+      "sku-1",
+      "sku-2",
+      "sku-3"
+    ],
+    "ignored": [
+      "skip-me"
+    ]
+  },
+  "result": {
+    "output": [
+      "sku-1",
+      "sku-2",
+      "sku-3"
+    ]
+  }
+}

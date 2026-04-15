@@ -1,0 +1,32 @@
+{
+  "runner": "aws",
+  "id": "008-context-array-item",
+  "title": "Read array item from execution-input context",
+  "group": "States.ArrayGetItem",
+  "hash": "92f684a2d43bd1410acb33c773aba70d85edec5455af423b595e9db240698f97",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($$.Execution.Input.arr, $.idx)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      "zero",
+      "one",
+      "two"
+    ],
+    "idx": 2
+  },
+  "result": {
+    "output": {
+      "value": "two"
+    }
+  }
+}

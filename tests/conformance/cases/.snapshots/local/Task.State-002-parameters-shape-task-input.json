@@ -1,0 +1,56 @@
+{
+  "runner": "local",
+  "id": "002-parameters-shape-task-input",
+  "title": "applies Parameters before invoking the task resource",
+  "group": "Task.State",
+  "hash": "17709e8f2392ab2d6d0bc2fc717ab7dd901fbd5eeea8650c149a5d210f17b3e1",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:task:shape",
+        "Parameters": {
+          "action": "validate",
+          "request": {
+            "customerId.$": "$.customer.id",
+            "sku.$": "$.item.sku",
+            "quantity.$": "$.item.quantity"
+          },
+          "original.$": "$"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "customer": {
+      "id": "cust-7",
+      "tier": "gold"
+    },
+    "item": {
+      "sku": "sku-1",
+      "quantity": 3
+    }
+  },
+  "result": {
+    "output": {
+      "action": "validate",
+      "request": {
+        "customerId": "cust-7",
+        "sku": "sku-1",
+        "quantity": 3
+      },
+      "original": {
+        "customer": {
+          "id": "cust-7",
+          "tier": "gold"
+        },
+        "item": {
+          "sku": "sku-1",
+          "quantity": 3
+        }
+      }
+    }
+  }
+}

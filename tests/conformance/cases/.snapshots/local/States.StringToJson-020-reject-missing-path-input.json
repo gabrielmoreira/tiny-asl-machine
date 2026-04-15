@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "020-reject-missing-path-input",
+  "title": "rejects missing path input",
+  "group": "States.StringToJson",
+  "hash": "be8de03b771438b4ace851eadcbf4b168a7976acb0eb6cb338657420ebb25272",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.missing)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.StringToJson($.missing). The JsonPath argument for the field '$.missing' could not be found in the input '{}'"
+  }
+}

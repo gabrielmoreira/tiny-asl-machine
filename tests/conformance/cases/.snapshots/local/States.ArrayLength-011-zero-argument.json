@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "011-zero-argument",
+  "title": "Reject zero-argument arity",
+  "group": "States.ArrayLength",
+  "hash": "ed54b1cf1c35fdc86ab74b486b2b63c2df669143bd86f16e008fe23e065c3a57",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.ArrayLength expects 1 argument(s) but received 0."
+  }
+}

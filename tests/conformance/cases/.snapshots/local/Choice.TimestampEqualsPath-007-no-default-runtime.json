@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "007-no-default-runtime",
+  "title": "fails with States.Runtime when the timestamps do not match and no default is configured",
+  "group": "Choice.TimestampEqualsPath",
+  "hash": "ebe9cbba21bb4366f16c1e45dc0239ac59bb6c13e9a8ef62b297e2ac617bdad4",
+  "definition": {
+    "StartAt": "CheckTimestamp",
+    "States": {
+      "CheckTimestamp": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampEqualsPath": "$.right",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "2025-01-01T00:00:00.000Z",
+    "right": "2025-01-02T00:00:00.000Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

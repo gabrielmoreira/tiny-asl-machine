@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "003-smaller-default",
+  "title": "falls through to Default when the left numeric path resolves to a smaller value",
+  "group": "Choice.NumericGreaterThanEqualsPath",
+  "hash": "ff214705dda395213d9c14e606ad16bef482f00559bcd8120e290a59a37c02f3",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericGreaterThanEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 7,
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

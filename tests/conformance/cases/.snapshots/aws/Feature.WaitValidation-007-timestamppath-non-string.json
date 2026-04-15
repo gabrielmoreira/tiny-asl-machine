@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "007-timestamppath-non-string",
+  "title": "fails with States.Runtime when TimestampPath resolves to a non-string",
+  "group": "Feature.WaitValidation",
+  "hash": "bc4559ddcbc3467c0ad9e2238570e48ed3356a51fdb02a4a048355997d3bc506",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "TimestampPath": "$.resumeAt",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "resumeAt": 1735689600000
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'WaitHere' (entered at the event id #2). The TimestampPath parameter does not reference a valid ISO-8601 extended offset date-time format string: $.resumeAt == 1735689600000"
+  }
+}

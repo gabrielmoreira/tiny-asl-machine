@@ -1,0 +1,54 @@
+{
+  "runner": "local",
+  "id": "001-all-rules-match",
+  "title": "routes to Approved when all nested rules match",
+  "group": "Choice.And",
+  "hash": "b3b3d6ea68a50ded0e01342df76c8669eda7de0eaacaa2aeef5d935280dd419b",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "And": [
+              {
+                "Variable": "$.status",
+                "StringEquals": "READY"
+              },
+              {
+                "Variable": "$.attempt",
+                "NumericGreaterThanEquals": 2
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "approved"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "rejected"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "status": "READY",
+    "attempt": 2
+  },
+  "result": {
+    "output": {
+      "selected": "approved"
+    }
+  }
+}

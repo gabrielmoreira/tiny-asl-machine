@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "012-unfinished-parenthesis",
+  "title": "Reject unfinished opening parenthesis",
+  "group": "States.Array",
+  "hash": "3bbd6d8df27b3cb6db369074d26bc887f4bb8bcc82717bccd808e30586cbf703",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array("
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: unexpected end of string at index 13 in \"States.Array(\""
+  }
+}

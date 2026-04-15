@@ -1,0 +1,57 @@
+{
+  "runner": "local",
+  "id": "004-stringmatches-alternative",
+  "title": "matches when one StringMatches alternative inside Or succeeds",
+  "group": "Choice.Or",
+  "hash": "9e06c68762526554c62196f9392e5f678c15c46b00e90480b4925a5416e584d2",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Or": [
+              {
+                "Variable": "$.value",
+                "StringMatches": "A"
+              },
+              {
+                "Variable": "$.value",
+                "StringMatches": "B"
+              },
+              {
+                "Variable": "$.value",
+                "StringMatches": "C"
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "known-value"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "unknown-value"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "B"
+  },
+  "result": {
+    "output": {
+      "selected": "known-value"
+    }
+  }
+}

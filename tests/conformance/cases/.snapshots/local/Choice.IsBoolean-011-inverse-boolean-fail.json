@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "011-inverse-boolean-fail",
+  "title": "fails when IsBoolean is false but the runtime value is boolean",
+  "group": "Choice.IsBoolean",
+  "hash": "063d085cd52f44b528361f5cac9088eabf94e6138571751e1707f9b2298d3576",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsBoolean": false,
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": false
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

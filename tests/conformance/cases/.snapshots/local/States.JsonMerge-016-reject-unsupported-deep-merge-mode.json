@@ -1,0 +1,38 @@
+{
+  "runner": "local",
+  "id": "016-reject-unsupported-deep-merge-mode",
+  "title": "rejects unsupported deep merge mode",
+  "group": "States.JsonMerge",
+  "hash": "b646603b2ada286da928eff89fa0414f8afea8a0325c640eb64baf7af3d9ac89",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, true)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "nested": {
+        "left": 1,
+        "keep": true
+      },
+      "top": "a"
+    },
+    "b": {
+      "nested": {
+        "right": 2
+      },
+      "extra": "b"
+    }
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.JsonMerge($.a, $.b, true). Invalid arguments in States.JsonMerge, caused by: JsonMerge deep mode is not supported"
+  }
+}

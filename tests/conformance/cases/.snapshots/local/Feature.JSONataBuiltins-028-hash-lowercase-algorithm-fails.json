@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "028-hash-lowercase-algorithm-fails",
+  "title": "$hash rejects a lowercase algorithm token",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "6e858dfedf2efcab41256c6ce3ce641f22954931ef9c66f4b4bc7d1a3d4acfef",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $hash(\"hello\", \"sha-256\") %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $hash(\"hello\", \"sha-256\"). Unsupported hash algorithm: sha-256"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "006-format-with-execution-input-context",
+  "title": "formats using both input data and execution input context",
+  "group": "States.Format",
+  "hash": "d696d57c52f935d295cd9745ef9a69c2a8a0e5e4c189885096e6ef7981687971",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('{}:{}', $.name, $$.Execution.Input.suffix)",
+          "suffixFromContext.$": "$$.Execution.Input.suffix"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "name": "job",
+    "suffix": "run"
+  },
+  "result": {
+    "output": {
+      "value": "job:run",
+      "suffixFromContext": "run"
+    }
+  }
+}

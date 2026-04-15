@@ -1,0 +1,46 @@
+{
+  "runner": "local",
+  "id": "001-left-smaller-integer",
+  "title": "matches when the left numeric path resolves to a smaller integer",
+  "group": "Choice.NumericLessThanPath",
+  "hash": "28717b5fd1842b426fe81a3a1399246dc80573f4f3cc4e88790e26fd663b3619",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericLessThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 7,
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

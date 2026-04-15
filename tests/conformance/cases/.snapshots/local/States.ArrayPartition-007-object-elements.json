@@ -1,0 +1,51 @@
+{
+  "runner": "local",
+  "id": "007-object-elements",
+  "title": "partitions arrays containing objects without altering element identity",
+  "group": "States.ArrayPartition",
+  "hash": "2472f3f7727186c8a1a743c19e891669ce5062dc71a96b9cf297ea530f780397",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      {
+        "a": 1
+      },
+      {
+        "b": 2
+      },
+      {
+        "c": 3
+      }
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        [
+          {
+            "a": 1
+          },
+          {
+            "b": 2
+          }
+        ],
+        [
+          {
+            "c": 3
+          }
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "003-greater-default",
+  "title": "StringLessThan falls through to Default when the input sorts after the comparison string",
+  "group": "Choice.StringLessThan",
+  "hash": "bed08fd6454ae4aa5c3bd263323c082d1a2c24d5712d11f6b56dc8f2f98dbeeb",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringLessThan": "bravo",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "charlie"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

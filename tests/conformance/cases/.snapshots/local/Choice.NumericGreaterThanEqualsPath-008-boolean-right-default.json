@@ -1,0 +1,46 @@
+{
+  "runner": "local",
+  "id": "008-boolean-right-default",
+  "title": "falls through to Default when the comparison path resolves to a boolean runtime value",
+  "group": "Choice.NumericGreaterThanEqualsPath",
+  "hash": "3b1af14407fe02d366e01d85023772ad5d45be4e1246f129cd3fb51cad8e35e8",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericGreaterThanEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 8,
+    "right": false
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

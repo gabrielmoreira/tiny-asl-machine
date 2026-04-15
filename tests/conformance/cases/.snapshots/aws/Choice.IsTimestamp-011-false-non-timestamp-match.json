@@ -1,0 +1,37 @@
+{
+  "runner": "aws",
+  "id": "011-false-non-timestamp-match",
+  "title": "matches a non-timestamp value when IsTimestamp is false",
+  "group": "Choice.IsTimestamp",
+  "hash": "5a733a36aecf5d06bddcccc419f77eb7dc6d93f1e9bd8603daba80b943575807",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsTimestamp": false,
+            "Next": "Matched0"
+          }
+        ]
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "not-a-timestamp"
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

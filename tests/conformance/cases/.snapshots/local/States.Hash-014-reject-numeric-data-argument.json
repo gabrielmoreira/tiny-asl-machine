@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "014-reject-numeric-data-argument",
+  "title": "rejects numeric data argument",
+  "group": "States.Hash",
+  "hash": "33f40c372a99f202856c5409b4cfa63af888e4c7f59308e241b5ec5d08d7e27a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash(123, 'SHA-256')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Hash(123, 'SHA-256'). Invalid arguments in States.Hash, caused by: States.Hash expected a string, got number"
+  }
+}

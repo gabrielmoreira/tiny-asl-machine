@@ -1,0 +1,43 @@
+{
+  "runner": "local",
+  "id": "008-round-up-chunk-size",
+  "title": "rounds 2.6 up to chunk size 3 before partitioning",
+  "group": "States.ArrayPartition",
+  "hash": "c6dd6c85b08079d72797bd928320e6b89f9c09cb3af203c49206ff559372ae43",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 2.6)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          4,
+          5
+        ]
+      ]
+    }
+  }
+}

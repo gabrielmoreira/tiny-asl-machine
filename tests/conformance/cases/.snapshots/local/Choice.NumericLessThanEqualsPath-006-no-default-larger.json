@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "006-no-default-larger",
+  "title": "fails with States.Runtime when the left numeric path resolves to a larger value and there is no Default",
+  "group": "Choice.NumericLessThanEqualsPath",
+  "hash": "127a7261af4fd6a0336a0e42e47865cdbba7349ba2f2a2150376a7ff0e9aa1db",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericLessThanEqualsPath": "$.right",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 9,
+    "right": 8
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

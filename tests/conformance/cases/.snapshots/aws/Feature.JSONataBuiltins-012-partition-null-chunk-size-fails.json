@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "012-partition-null-chunk-size-fails",
+  "title": "$partition rejects a null chunk size",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "d13cf084ca2484fc54c87e3381de574aaa0e0774d10aede3bb8899256744ab41",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $partition($states.input.arr, $states.input.size) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ],
+    "size": null
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$partition($states.input.arr, $states.input.size)' specified for the field 'Output' threw an error during evaluation. T0410: Argument 2 of function \"partition\" does not match function signature"
+  }
+}

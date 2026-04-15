@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "034-parse-empty-string-fails",
+  "title": "$parse rejects an empty string input",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "e61e53f0ab9fee2af0b0751c2c89a99b384aad5801efe4eda9a810a0fa254fe9",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $parse($states.input.json) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": ""
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $parse($states.input.json). Unexpected end of JSON input"
+  }
+}

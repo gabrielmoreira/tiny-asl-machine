@@ -1,0 +1,28 @@
+{
+  "runner": "local",
+  "id": "005-accept-template-from-input-path",
+  "title": "accepts the template from an input path",
+  "group": "States.Format",
+  "hash": "031713b953e37001498ef9ae15dc6e7bed525ac17f1d53e8205d4b7a08eb2efc",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format($.template, $.name)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "template": "Hello {}",
+    "name": "Ada"
+  },
+  "result": {
+    "output": {
+      "value": "Hello Ada"
+    }
+  }
+}

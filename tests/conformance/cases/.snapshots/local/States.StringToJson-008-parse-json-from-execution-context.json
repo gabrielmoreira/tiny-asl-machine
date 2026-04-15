@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "008-parse-json-from-execution-context",
+  "title": "parses JSON text sourced from execution input context",
+  "group": "States.StringToJson",
+  "hash": "db14c29f3af154a075e30ca716f1240a67575138fc65c32f37f3faf1fcadcea5",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($$.Execution.Input.payload)",
+          "raw.$": "$$.Execution.Input.payload"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "payload": "{\"from\":\"execution-input\"}"
+  },
+  "result": {
+    "output": {
+      "value": {
+        "from": "execution-input"
+      },
+      "raw": "{\"from\":\"execution-input\"}"
+    }
+  }
+}

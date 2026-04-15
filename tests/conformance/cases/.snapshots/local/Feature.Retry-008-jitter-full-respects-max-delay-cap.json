@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "008-jitter-full-respects-max-delay-cap",
+  "title": "JitterStrategy FULL applies after MaxDelaySeconds capping",
+  "group": "Feature.Retry",
+  "hash": "0fcfa4c03e0bb9f767c0e473b805371f4ff48b893aa9c3a9368908fb94caeb33",
+  "definition": {
+    "StartAt": "FlakyTask",
+    "States": {
+      "FlakyTask": {
+        "Type": "Task",
+        "Resource": "arn:local:retry:jitter-full-capped",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "BackoffRate": 2,
+            "MaxAttempts": 2,
+            "MaxDelaySeconds": 1,
+            "JitterStrategy": "FULL"
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "ok": true,
+      "attempts": 3
+    }
+  }
+}

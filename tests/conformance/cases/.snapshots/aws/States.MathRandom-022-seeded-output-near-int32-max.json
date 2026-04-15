@@ -1,0 +1,29 @@
+{
+  "runner": "aws",
+  "id": "022-seeded-output-near-int32-max",
+  "title": "maps seeded output near the int32 upper boundary",
+  "group": "States.MathRandom",
+  "hash": "34abf8a33a7c8dbc4df9f5ca013333776da3c73c95b5755977f1c889d2066cd5",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom($.start, $.end, $.seed)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "start": 2147483640,
+    "end": 2147483647,
+    "seed": 1
+  },
+  "result": {
+    "output": {
+      "value": 2147483644
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "004-default-on-earlier",
+  "title": "falls through to default when the variable timestamp is earlier than the comparison path",
+  "group": "Choice.TimestampGreaterThanPath",
+  "hash": "7e99fb3bae1c93a30606209c686b8a8c572136c99685513eff0e290e971ea275",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampGreaterThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "2025-01-01T00:00:00.000Z",
+    "right": "2025-01-01T12:00:00.000Z"
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

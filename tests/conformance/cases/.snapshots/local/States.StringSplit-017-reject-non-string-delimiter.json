@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "017-reject-non-string-delimiter",
+  "title": "rejects a non-string delimiter",
+  "group": "States.StringSplit",
+  "hash": "fdd64d51f13b16e04238066562560ceae277fefd3fd6e414bc6ba0447bb3c0da",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, $.d)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "a,b",
+    "d": 1
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.StringSplit($.str, $.d). Invalid arguments in States.StringSplit, caused by: States.StringSplit expected a string, got number"
+  }
+}

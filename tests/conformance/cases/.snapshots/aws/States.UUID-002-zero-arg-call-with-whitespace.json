@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "002-zero-arg-call-with-whitespace",
+  "title": "tolerates whitespace inside the zero-arg call",
+  "group": "States.UUID",
+  "hash": "8cd3d104af55d35bbadb804164ebfeacd5fefd14faa8debcd8b5c2bf90a2198a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID( )"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "831c8ff0-0348-4802-96d0-4c567c2e0225"
+    }
+  }
+}

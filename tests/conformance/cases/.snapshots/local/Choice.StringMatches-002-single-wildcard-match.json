@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "002-single-wildcard-match",
+  "title": "matches a pattern with a single wildcard",
+  "group": "Choice.StringMatches",
+  "hash": "356597995fe6718132b019e86632cde7796003ae20e6499c65677e30e4acfecf",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringMatches": "invoice-*.json",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "single-wildcard-pattern"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "no-pattern-match"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "invoice-2025.json"
+  },
+  "result": {
+    "output": {
+      "selected": "single-wildcard-pattern"
+    }
+  }
+}

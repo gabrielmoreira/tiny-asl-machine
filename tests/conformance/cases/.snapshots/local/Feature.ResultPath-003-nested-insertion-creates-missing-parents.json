@@ -1,0 +1,41 @@
+{
+  "runner": "local",
+  "id": "003-nested-insertion-creates-missing-parents",
+  "title": "ResultPath inserts the result at a nested path and creates missing parent objects",
+  "group": "Feature.ResultPath",
+  "hash": "769a9111d8eddbcaef64895b24098f0e850eae4267e27e08e797158ca50cf68a",
+  "definition": {
+    "StartAt": "InsertNested",
+    "States": {
+      "InsertNested": {
+        "Type": "Pass",
+        "Result": {
+          "approved": true,
+          "reviewer": "sam"
+        },
+        "ResultPath": "$.audit.review.final",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-13",
+    "audit": {
+      "started": true
+    }
+  },
+  "result": {
+    "output": {
+      "requestId": "req-13",
+      "audit": {
+        "started": true,
+        "review": {
+          "final": {
+            "approved": true,
+            "reviewer": "sam"
+          }
+        }
+      }
+    }
+  }
+}

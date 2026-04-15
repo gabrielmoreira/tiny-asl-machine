@@ -1,0 +1,51 @@
+{
+  "runner": "local",
+  "id": "016-mixed-contained-values",
+  "title": "Preserve mixed contained values from input paths",
+  "group": "States.Array",
+  "hash": "2afff56f16f835deee85aa9421de62f522f65c22e1f044f1685520f6dfc435d6",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array($.nil, $.empty, $.space, $.zero, $.one, $.yes, $.no, $.nested)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "nil": null,
+    "empty": "",
+    "space": " ",
+    "zero": 0,
+    "one": 1,
+    "yes": true,
+    "no": false,
+    "nested": [
+      0,
+      1,
+      false
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        null,
+        "",
+        " ",
+        0,
+        1,
+        true,
+        false,
+        [
+          0,
+          1,
+          false
+        ]
+      ]
+    }
+  }
+}

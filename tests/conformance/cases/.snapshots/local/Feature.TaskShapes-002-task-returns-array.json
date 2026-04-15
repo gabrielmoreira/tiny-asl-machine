@@ -1,0 +1,29 @@
+{
+  "runner": "local",
+  "id": "002-task-returns-array",
+  "title": "task can return an array result without wrapper normalization",
+  "group": "Feature.TaskShapes",
+  "hash": "299f1606a7e8dfa7df2a5a674d0c5c73943a234a89fa88f67dabe236af7de232",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:task-shapes:array",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-32"
+  },
+  "result": {
+    "output": [
+      "alpha",
+      {
+        "code": 2
+      },
+      false
+    ]
+  }
+}

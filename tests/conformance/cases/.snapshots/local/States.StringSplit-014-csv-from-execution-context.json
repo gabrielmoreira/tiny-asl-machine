@@ -1,0 +1,33 @@
+{
+  "runner": "local",
+  "id": "014-csv-from-execution-context",
+  "title": "splits a CSV string sourced from execution input context",
+  "group": "States.StringSplit",
+  "hash": "46a0286dca1e99af60bf231d52a58adcd6c31ffdcbebf352be401b440c45c1f3",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($$.Execution.Input.csv, ',')",
+          "raw.$": "$$.Execution.Input.csv"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "csv": "x,y,z"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "x",
+        "y",
+        "z"
+      ],
+      "raw": "x,y,z"
+    }
+  }
+}

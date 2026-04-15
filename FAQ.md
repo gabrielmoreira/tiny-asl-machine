@@ -1,65 +1,55 @@
-# Frequently Asked Questions
+# FAQ
 
-## General Questions
+## What is Tiny ASL Machine?
 
-### Q: What is Tiny ASL Machine?
-**A:** Tiny ASL Machine is a lightweight, TypeScript-based interpreter for AWS Step Functions' Amazon States Language (ASL). It lets you run and test state machines locally without AWS Step Functions, making it perfect for unit testing and local development.
+A local interpreter for AWS Step Functions state machines.
 
-### Q: Is this a replacement for AWS Step Functions?
-**A:** No. This is **not** a production replacement. It's designed for:
-- Local testing and development
-- Unit testing with mocks
-- Validating state machine logic
+Use it to test workflow logic without deploying on every edit.
 
-For production workloads, use AWS Step Functions.
+## Is it a replacement for AWS Step Functions?
 
-### Q: When should I use Tiny ASL Machine?
-**Use it when you want to:**
-- Unit test state machines before deployment
-- Develop locally without AWS credentials
-- Mock external services easily
-- Test complex branching and error handling logic
+No.
 
-### Q: When should I NOT use it?
-- Production deployments → use AWS Step Functions
-- Long-running async workflows → use Step Functions Task Tokens
-- Need state persistence → use Step Functions
-- Require AWS service integration → use Step Functions
+Use this package for local testing.
+Use AWS Step Functions for production execution.
 
----
+## When should I use it?
 
-## Installation & Setup
+Use it when you want to:
 
-### Q: How do I install it?
-**A:**
-```bash
-npm install tiny-asl-machine
-# or
-pnpm add tiny-asl-machine
-# or  
-yarn add tiny-asl-machine
-```
+- test state-machine logic fast
+- mock `Task` resources in-process
+- reuse the same ASL JSON in tests and deployment
+- validate most behavior before a final AWS check
 
-### Q: What are the dependencies?
-**A:** Very few lightweight runtime dependencies (`jsonpath`, `debug`, `deep-iterator`, `p-limit`). No heavy AWS SDKs needed.
+## When should I not use it?
 
-### Q: Do I need AWS credentials?
-**A:** No! That's the whole point. You mock resources locally.
+Do not use it as:
 
-### Q: What Node.js versions are supported?
-**A:** Node.js 20+ (TypeScript 5+). Check package.json for exact versions.
+- a production runtime
+- a persistence layer
+- a full AWS emulator
+- a full callback/task-token engine
 
----
+## Do I need AWS credentials?
 
-## Usage Questions
+Not for normal local tests.
 
-### Q: How do I mock a Lambda function?
-**A:**
-```typescript
-const definition = {
-  StartAt: 'CallLambda',
+You only need AWS credentials when you intentionally run AWS-backed checks.
+
+## What Node version do I need?
+
+Node.js 20 or newer.
+
+## How do I type a machine definition?
+
+```ts
+import { run, type StateDefinition } from 'tiny-asl-machine';
+
+const definition: StateDefinition = {
+  StartAt: 'CallService',
   States: {
-    CallLambda: {
+    CallService: {
       Type: 'Task',
       Resource: 'arn:aws:lambda:us-east-1:123456789012:function:MyFunction',
       End: true,
@@ -67,527 +57,153 @@ const definition = {
   },
 };
 
-const mockFunction = async (input) => {
-  return { result: 'mocked response', ...input };
-};
+const result = await run({ definition }, { value: 1 });
+```
 
+## How do I mock a Task resource?
+
+Match the exact `Resource` string from the definition.
+
+```ts
 const result = await run(
   {
     definition,
     resourceContext: {
       invoke: async (resourceName, payload) => {
         if (resourceName === 'arn:aws:lambda:us-east-1:123456789012:function:MyFunction') {
-          return mockFunction(payload);
+          return { ok: true, payload };
         }
+
+        throw new Error(`Unexpected resource: ${resourceName}`);
       },
     },
   },
-  inputData
+  { input: 'data' }
 );
 ```
 
-### Q: How do I test error scenarios?
-**A:** Use Catch blocks and throw errors in mocks:
+## Can I use the same JSON in tests and production?
 
-```typescript
-const mockFunction = vi.fn()
-  .mockRejectedValueOnce(new Error('Connection timeout'))
-  .mockResolvedValueOnce({ data: 'success' });
+Usually yes.
 
-const definition = {
-  StartAt: 'MyTask',
-  States: {
-    MyTask: {
-      Type: 'Task',
-      Resource: 'arn:aws:lambda:function:MyFunction',
-      Catch: [
-        {
-          ErrorEquals: ['Error'],
-          Next: 'HandleError',
-        },
-      ],
-    },
-    HandleError: {
-      Type: 'Pass',
-      Result: 'Error handled',
-      End: true,
-    },
-  },
-};
+This package matches the exact `Resource` string in your ASL definition, so placeholder strings, internal names, and real ARNs can all work.
+
+## How do I test Choice, Map, and Parallel?
+
+Short answer:
+
+- `Choice`: run the same machine with different inputs
+- `Map`: pass a small but meaningful array
+- `Parallel`: assert the joined branch result
+
+For fuller examples, use:
+
+- [EXAMPLES.md](EXAMPLES.md)
+- `skills/write-local-state-machine-tests/SKILL.md`
+
+## How do I test error paths?
+
+Throw from your mock.
+
+Then assert either:
+
+- the recovered output, if your machine uses `Catch`
+- or a rejected run, if the error is not caught
+
+## How do I avoid real waiting in Wait states?
+
+Two common options:
+
+- fake timers from your test framework
+- a runtime adapter via `createTestRuntime()`
+
+```ts
+import { createTestRuntime, run } from 'tiny-asl-machine';
+
+const runtime = createTestRuntime();
+const result = await run({ definition, runtime }, input);
 ```
 
-### Q: How do I test Choice states?
-**A:** Run with different inputs and check which path is taken:
+## How do I control random, UUID, or time?
 
-```typescript
-const definition = {
-  StartAt: 'CheckStatus',
-  States: {
-    CheckStatus: {
-      Type: 'Choice',
-      Choices: [
-        {
-          Variable: '$.status',
-          StringEquals: 'active',
-          Next: 'ProcessActive',
-        },
-        {
-          Variable: '$.status',
-          StringEquals: 'inactive',
-          Next: 'ProcessInactive',
-        },
-      ],
-    },
-    ProcessActive: { Type: 'Pass', Result: 'Active', End: true },
-    ProcessInactive: { Type: 'Pass', Result: 'Inactive', End: true },
-  },
-};
+Use a runtime adapter.
 
-// Test active path
-let result = await run({ definition }, { status: 'active' });
-expect(result).toBe('Active');
+### Fixed random value
 
-// Test inactive path
-result = await run({ definition }, { status: 'inactive' });
-expect(result).toBe('Inactive');
-```
-
-### Q: How do I test Wait states without actually waiting?
-**A:** Use fake timers with your test framework (vitest, jest, etc.):
-
-```typescript
-import { vi } from 'vitest';
-
-it('should wait the correct duration', async () => {
-  vi.useFakeTimers();
-  
-  const definition = {
-    StartAt: 'WaitState',
-    States: {
-      WaitState: {
-        Type: 'Wait',
-        Seconds: 300,
-        Next: 'Done',
-      },
-      Done: { Type: 'Succeed' },
-    },
-  };
-  
-  const promise = run({ definition }, {});
-  
-  // Fast-forward time
-  vi.advanceTimersByTime(300000);
-  
-  const result = await promise;
-  expect(result).toBeDefined();
-  
-  vi.useRealTimers();
+```ts
+const runtime = createTestRuntime({
+  random: () => 7,
 });
 ```
 
-### Q: How do I test Map states?
-**A:**
-```typescript
-const definition = {
-  StartAt: 'ProcessAll',
-  States: {
-    ProcessAll: {
-      Type: 'Map',
-      ItemsPath: '$.items',
-      Iterator: {
-        StartAt: 'ProcessItem',
-        States: {
-          ProcessItem: {
-            Type: 'Pass',
-            Result: 'processed',
-            End: true,
-          },
-        },
-      },
-      End: true,
-    },
-  },
-};
+### Fixed UUID
 
-const result = await run(
-  { definition },
-  { items: ['item1', 'item2', 'item3'] }
-);
-
-// Result is array of results
-expect(result).toHaveLength(3);
-expect(result[0]).toBe('processed');
-```
-
-### Q: How do I use InputPath/OutputPath?
-**A:**
-```typescript
-const definition = {
-  StartAt: 'Transform',
-  States: {
-    Transform: {
-      Type: 'Pass',
-      InputPath: '$.user',  // Only pass user object
-      OutputPath: '$.name', // Only return name
-      End: true,
-    },
-  },
-};
-
-const result = await run(
-  { definition },
-  {
-    user: { name: 'Alice', age: 30 },
-    meta: { timestamp: '2024-01-01' },
-  }
-);
-
-expect(result).toBe('Alice'); // Only the name
-```
-
-### Q: How do I use ResultPath?
-**A:**
-```typescript
-const definition = {
-  StartAt: 'Task1',
-  States: {
-    Task1: {
-      Type: 'Pass',
-      Result: { computed: true },
-      ResultPath: '$.result',  // Place at $.result
-      Next: 'Done',
-    },
-    Done: { Type: 'Succeed' },
-  },
-};
-
-const result = await run(
-  { definition },
-  { original: 'data' }
-);
-
-// Result merges original input with computed result
-expect(result).toEqual({
-  original: 'data',
-  result: { computed: true },
+```ts
+const runtime = createTestRuntime({
+  randomUUID: () => '11111111-1111-4111-8111-111111111111',
 });
 ```
 
-### Q: How do I use Parameters?
-**A:**
-```typescript
-const definition = {
-  StartAt: 'Task1',
-  States: {
-    Task1: {
-      Type: 'Task',
-      Resource: 'arn:aws:lambda:function:MyFunction',
-      Parameters: {
-        'name.$': '$.user.name',      // Copy from input
-        'age.$': '$.user.age',
-        'timestamp': '2024-01-01',    // Static value
-        'custom.$': "States.Format('User: {}', $.user.name)",
-      },
-      End: true,
-    },
-  },
-};
+### Fixed current time
 
-const result = await run(
-  {
-    definition,
-    resourceContext: {
-      invoke: async (_, params) => params,
-    },
-  },
-  { user: { name: 'Bob', age: 25 } }
-);
-
-expect(result.custom).toBe('User: Bob');
-```
-
----
-
-## Features & Compatibility
-
-### Q: Which ASL features are supported?
-**A:** See [ASL_COMPATIBILITY.md](ASL_COMPATIBILITY.md) for a detailed breakdown.
-
-**Fully supported:**
-- ✅ All 8 state types
-- ✅ 30+ choice operators
-- ✅ InputPath/OutputPath/ResultPath
-- ✅ Parameters with intrinsic functions
-- ✅ Catch blocks
-- ✅ 4 intrinsic functions (Format, JsonToString, StringToJson, Array)
-
-**Coming soon:**
-- ⏳ Retry logic (exponential backoff)
-- ⏳ More intrinsic functions (Hash, UUID, Date operations)
-- ⏳ Task Token pattern
-- ⏳ Execution snapshots
-
-### Q: Is Retry logic supported?
-**A:** The structure is defined but logic not yet implemented. You can already define Retry blocks, but they won't execute yet.
-
-### Q: What intrinsic functions are available?
-**A:**
-- ✅ `States.Format(template, value1, value2, ...)`
-- ✅ `States.JsonToString(value)`
-- ✅ `States.StringToJson(jsonString)`
-- ✅ `States.Array(item1, item2, ...)`
-
-Coming soon:
-- ⏳ `States.Hash.SHA256(input)`
-- ⏳ `States.UUID()`
-- ⏳ `States.Now()`
-
-
-### Q: Can I use heartbeat/timeout?
-**A:** TimeoutSeconds and HeartbeatSeconds fields are parsed but not enforced at runtime. They won't interrupt execution. For testing, use fake timers.
-
-### Q: Does it support Task Tokens?
-**A:** Not yet. This is planned for future versions. For now, mocks must respond synchronously.
-
----
-
-## Testing Questions
-
-### Q: What testing framework should I use?
-**A:** Any framework that supports async tests:
-- **Vitest** (recommended) - Fast, lightweight, great for AWS projects
-- **Jest** - Popular, feature-rich
-- **Mocha** - Simple, flexible
-- **Node test runner** - Built-in (Node 18+)
-
-### Q: How do I use it with Vitest?
-**A:**
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { run } from 'tiny-asl-machine';
-
-describe('my state machine', () => {
-  it('should process data correctly', async () => {
-    const mock = vi.fn().mockResolvedValue({ result: 'ok' });
-    
-    const definition = { /* ... */ };
-    
-    const result = await run(
-      {
-        definition,
-        resourceContext: {
-          invoke: mock,
-        },
-      },
-      { input: 'data' }
-    );
-    
-    expect(mock).toHaveBeenCalled();
-    expect(result.result).toBe('ok');
-  });
+```ts
+const runtime = createTestRuntime({
+  now: () => '2025-01-01T12:00:00.000Z',
 });
 ```
 
-### Q: How do I handle multiple sequential calls?
-**A:**
-```typescript
-const mock = vi.fn()
-  .mockResolvedValueOnce({ step: 1 })
-  .mockResolvedValueOnce({ step: 2 })
-  .mockResolvedValueOnce({ step: 3 });
+You can also use your framework timers when that fits better.
 
-// Or with implementation
-const mock = vi.fn().mockImplementation(async (input) => {
-  if (input.action === 'validate') return { valid: true };
-  if (input.action === 'process') return { processed: true };
-  if (input.action === 'finalize') return { done: true };
-});
-```
+## Is Retry supported?
 
-### Q: How do I test all branches?
-**A:**
-```typescript
-const testCases = [
-  { input: { value: 10 }, expected: 'Low' },
-  { input: { value: 100 }, expected: 'Medium' },
-  { input: { value: 1000 }, expected: 'High' },
-];
+Yes, for normal orchestration scenarios.
 
-for (const { input, expected } of testCases) {
-  it(`handles ${expected}`, async () => {
-    const result = await run({ definition }, input);
-    expect(result).toBe(expected);
-  });
-}
-```
+For parity-sensitive edge cases, use AWS as the final check.
 
-### Q: How do I debug failing tests?
-**A:**
+## Is JSONata supported?
 
-1. **Enable debug output:**
-```typescript
-import Debug from 'debug';
-Debug.enable('tiny-asl-machine:*');
-```
+Yes.
 
-2. **Add logging:**
-```typescript
-const mock = vi.fn().mockImplementation(async (input) => {
-  console.log('Mock called with:', input);
-  return { result: 'ok' };
-});
-```
+JSONata is one of the stronger areas of the project today.
 
-3. **Check state machine definition:**
-```typescript
-console.log(JSON.stringify(definition, null, 2));
-```
+## Are intrinsic functions supported?
 
-4. **Validate the definition:**
-- Make sure all Next states exist
-- Make sure InputPath/OutputPath are valid JSONPath
-- Make sure Parameters syntax is correct
+Yes.
 
----
+Coverage is broad, but if you need exact status by function, check:
 
-## Performance Questions
+- [README.md](README.md)
+- [ASL_COMPATIBILITY.md](ASL_COMPATIBILITY.md)
+- `tests/conformance/cases/States.*.ts`
 
-### Q: How fast is it?
-**A:** Very! Unit tests typically run in milliseconds. The library is optimized for testing, not production workloads.
+## Is advanced ItemReader support complete?
 
-### Q: Can it handle large state machines?
-**A:** Yes, but complexity matters more than size:
-- Simple sequential states: very fast
-- Complex nested Parallel/Map: slower
-- Number of mock calls: affects performance
+No.
 
-### Q: Can I run many tests in parallel?
-**A:** Yes, since each test creates fresh mocks and context. No shared state.
+Important local support exists, but advanced manifest-driven and service-coupled cases still have gaps.
 
----
+Parquet local decoding is intentionally deferred.
 
-## Troubleshooting
+## Where should I look for support details?
 
-### Q: I get "State '...' not found"
-**A:** Check your Next/Default state names match exactly.
+Start here:
 
-```typescript
-// ❌ WRONG - state name is 'NextState'
-{ Type: 'Pass', Next: 'Next' }
+- [README.md](README.md)
+- [EXAMPLES.md](EXAMPLES.md)
+- [ASL_COMPATIBILITY.md](ASL_COMPATIBILITY.md)
+- `skills/write-local-state-machine-tests/SKILL.md`
 
-// ✅ CORRECT
-{ Type: 'Pass', Next: 'NextState' }
-States: {
-  NextState: { /* ... */ }
-}
-```
+## Where is contributor or internal workflow documentation?
 
-### Q: My Choice rule isn't matching
-**A:** Debug step by step:
-```typescript
-const debug = Debug('test');
-debug('Input:', input);
-debug('Variable value:', selectPath('$.status', input));
-debug('Expected:', 'active');
-```
+Use:
 
-Check:
-1. Variable path is correct
-2. Input actually contains the path
-3. Operator name is spelled right
-4. Type matches (string vs number)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [ENGINEERING_PLAYBOOK.md](ENGINEERING_PLAYBOOK.md)
 
-### Q: My mock isn't being called
-**A:** Ensure resource name matches exactly:
+Those files are for development workflow.
+This FAQ is for package users.
 
-```typescript
-// In definition
-Resource: 'arn:aws:lambda:us-east-1:123456789012:function:MyFunc'
+## Where do I report bugs or ask for help?
 
-// In mock
-invoke: async (resourceName, payload) => {
-  console.log('Called with:', resourceName); // Debug this
-  if (resourceName === 'arn:aws:lambda:us-east-1:123456789012:function:MyFunc') {
-    return mockFunc(payload);
-  }
-}
-```
-
-### Q: ResultPath isn't merging correctly
-**A:** ResultPath syntax is important:
-
-```typescript
-// Merge at path
-ResultPath: '$.result'
-
-// Append to root (works like $ root object merge)
-ResultPath: '$'
-
-// Discard result
-ResultPath: null
-ResultPath: undefined
-
-// ❌ DON'T use both:
-// ResultPath: '$.result'
-// AND next statement expects result at root
-```
-
-### Q: Catch isn't catching my error
-**A:** Error type matching matters:
-
-```typescript
-// Thrown error
-throw new Error('message') // name is 'Error'
-
-// Catch must match
-Catch: [
-  {
-    ErrorEquals: ['Error'],  // Matches
-    Next: 'Handler',
-  },
-  {
-    ErrorEquals: ['CustomError'],  // Doesn't match
-    Next: 'Other',
-  },
-]
-```
-
----
-
-## Contributing Questions
-
-### Q: How can I help?
-**A:** See [CONTRIBUTING.md](CONTRIBUTING.md) for details. Most needed:
-- Retry logic implementation
-- More intrinsic functions
-- Better error messages
-- More tests
-- Documentation improvements
-
-### Q: Is there a roadmap?
-**A:** Check the GitHub issues for current priorities.
-
-### Q: How do I report bugs?
-**A:** Create a GitHub issue with:
-1. What you tried
-2. What happened
-3. What you expected
-4. Your state machine (sanitized)
-5. Versions (Node, npm, tiny-asl-machine)
-
----
-
-## Getting More Help
-
-- 📖 [README.md](README.md) - Usage guide
-- 🔍 [ASL_COMPATIBILITY.md](ASL_COMPATIBILITY.md) - Technical details
-- 🤝 [CONTRIBUTING.md](CONTRIBUTING.md) - Development guide
-- 📚 [EXAMPLES.md](EXAMPLES.md) - Code examples
-- 💬 [GitHub Discussions](https://github.com/gabrielmoreira/tiny-asl-machine/discussions)
-- 🐛 [GitHub Issues](https://github.com/gabrielmoreira/tiny-asl-machine/issues)
-
----
-
-**Last Updated**: February 2026
-
-Can't find your answer? [Open an issue](https://github.com/gabrielmoreira/tiny-asl-machine/issues) or [start a discussion](https://github.com/gabrielmoreira/tiny-asl-machine/discussions)!
+- [GitHub Issues](https://github.com/gabrielmoreira/tiny-asl-machine/issues)
+- [GitHub Discussions](https://github.com/gabrielmoreira/tiny-asl-machine/discussions)

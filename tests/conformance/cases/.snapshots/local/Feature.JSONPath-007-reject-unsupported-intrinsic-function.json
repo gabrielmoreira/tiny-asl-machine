@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "007-reject-unsupported-intrinsic-function",
+  "title": "fails for an unsupported intrinsic function name",
+  "group": "Feature.JSONPath",
+  "hash": "b5b167bcd3557deaf0187f80dad00468713562f29ad1415fe79e05e941df228a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.NoSuchIntrinsic($.value)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "x"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Function 'States.NoSuchIntrinsic' is not supported"
+  }
+}

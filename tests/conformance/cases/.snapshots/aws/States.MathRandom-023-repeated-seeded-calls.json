@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "023-repeated-seeded-calls",
+  "title": "repeats identical seeded calls in one expression",
+  "group": "States.MathRandom",
+  "hash": "c56a1670fb3a21e9781e9269cd60b706395c7c28a15cb44434d26808c1dffb24",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "first.$": "States.MathRandom(1, 10, 42)",
+          "second.$": "States.MathRandom(1, 10, 42)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "first": 9,
+      "second": 9
+    }
+  }
+}

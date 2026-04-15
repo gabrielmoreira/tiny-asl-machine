@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "001-format-single-placeholder-from-input-path",
+  "title": "formats a single placeholder from an input path",
+  "group": "States.Format",
+  "hash": "c32035cb8c381f2a315dc53477793b701be5d95884a3c1e657badeaf14034dd4",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('Hello {}', $.name)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "name": "Ada"
+  },
+  "result": {
+    "output": {
+      "value": "Hello Ada"
+    }
+  }
+}

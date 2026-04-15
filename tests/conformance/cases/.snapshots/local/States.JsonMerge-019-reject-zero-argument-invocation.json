@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "019-reject-zero-argument-invocation",
+  "title": "rejects zero-argument invocation",
+  "group": "States.JsonMerge",
+  "hash": "d264cfbf882d517f0af811638ac632a515e5be6c7fbb22e05942704f8bb96646",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.JsonMerge expects 3 argument(s) but received 0."
+  }
+}

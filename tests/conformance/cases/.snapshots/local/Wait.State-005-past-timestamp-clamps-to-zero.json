@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "005-past-timestamp-clamps-to-zero",
+  "title": "does not wait when the target timestamp is already in the past",
+  "group": "Wait.State",
+  "hash": "6eab88e2406f8a0c34453f8894ec1f9dfc0133f7a19919a4535eb35d1c081b7d",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "Timestamp": "2025-01-01T00:00:05.000Z",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "checkpoint": "already-open"
+  },
+  "result": {
+    "output": {
+      "checkpoint": "already-open"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "runner": "local",
+  "id": "013-missing-parenthesis",
+  "title": "Reject malformed missing parenthesis",
+  "group": "States.ArrayLength",
+  "hash": "79a3bda971dfe48dea364c3633cbb2c113a2adf0d6493e2378453b797331c624",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength($.arr"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: unexpected end of string at index 24 in \"States.ArrayLength($.arr\""
+  }
+}

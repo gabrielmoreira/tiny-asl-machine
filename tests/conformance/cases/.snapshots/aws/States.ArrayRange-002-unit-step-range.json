@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "002-unit-step-range",
+  "title": "includes every integer with unit step",
+  "group": "States.ArrayRange",
+  "hash": "846663f947994eb25dbb2b7576273af1d983ec5df78268cff0108cef977dd267",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(1, 5, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  }
+}

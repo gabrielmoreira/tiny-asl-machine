@@ -1,0 +1,39 @@
+{
+  "runner": "aws",
+  "id": "006-malformed-nested-or-under-not-fails-validation",
+  "title": "fails validation when a nested logical Choice structure is malformed",
+  "group": "Feature.ChoiceValidation",
+  "hash": "5e55e85ca87cda870d827d96135b6c7fc8b49dde3458d14452b43f98793742dc",
+  "definition": {
+    "StartAt": "Dispatch",
+    "States": {
+      "Dispatch": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Not": {
+              "Or": []
+            },
+            "Next": "Matched"
+          }
+        ],
+        "Default": "Fallback"
+      },
+      "Matched": {
+        "Type": "Pass",
+        "End": true
+      },
+      "Fallback": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "status": "READY"
+  },
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Value cannot be empty"
+  }
+}

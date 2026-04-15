@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "005-aws-sts-getcalleridentity-smoke",
+  "title": "executes the AWS SDK STS GetCallerIdentity task integration",
+  "group": "Task.State",
+  "hash": "031cffb74f171f43392252d0cf964ba6fc8198556f66467ab2516fcfaeff3f0b",
+  "definition": {
+    "StartAt": "GetCallerIdentity",
+    "States": {
+      "GetCallerIdentity": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:sts:getCallerIdentity",
+        "Parameters": {},
+        "ResultSelector": {
+          "accountId.$": "$.Account",
+          "callerArn.$": "$.Arn",
+          "principalId.$": "$.UserId"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "accountId": "<REDACTED_VAR:ACCOUNT_ID>",
+      "principalId": "AROAVJDMKWYTL2ATS3ACQ:EkSmiUiaCzQXoMXaekcepChxLHTKQdlU",
+      "callerArn": "arn:aws:sts::<REDACTED_VAR:ACCOUNT_ID>:assumed-role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role/EkSmiUiaCzQXoMXaekcepChxLHTKQdlU"
+    }
+  }
+}

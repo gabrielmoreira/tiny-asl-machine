@@ -1,0 +1,29 @@
+{
+  "runner": "aws",
+  "id": "001-parse-object-json-from-input",
+  "title": "parses object JSON text from an input path",
+  "group": "States.StringToJson",
+  "hash": "2aa108f5c7c2dfc7316668cbe2b56169173caf23ca69f3e0dcdb935f616d498c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "{\"a\":1}"
+  },
+  "result": {
+    "output": {
+      "value": {
+        "a": 1
+      }
+    }
+  }
+}

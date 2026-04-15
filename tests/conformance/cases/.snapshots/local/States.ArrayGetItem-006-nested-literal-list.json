@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "006-nested-literal-list",
+  "title": "Read item from nested States.Array literal list",
+  "group": "States.ArrayGetItem",
+  "hash": "53422b4784f3dcf095dd3a0754b4f854a8faff8a2683c400c5a4cc13fe313dae",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem(States.Array('x', 'y', 'z'), 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "y"
+    }
+  }
+}

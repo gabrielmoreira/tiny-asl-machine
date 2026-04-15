@@ -1,0 +1,57 @@
+{
+  "runner": "local",
+  "id": "002-catch-resultpath-injects-error-and-cause",
+  "title": "Catch ResultPath injects the { Error, Cause } object into the selected path",
+  "group": "Feature.Catch",
+  "hash": "2a81fedaaa336f8f2654b1812b42ebebb1418cea325547f2b01d309c803ca7f8",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:catch:inject-error",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "ValidationError"
+            ],
+            "ResultPath": "$.taskError",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "recovered": true
+        },
+        "ResultPath": "$.status",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-22",
+    "payload": {
+      "customerId": null,
+      "amount": 25
+    }
+  },
+  "result": {
+    "output": {
+      "requestId": "req-22",
+      "payload": {
+        "customerId": null,
+        "amount": 25
+      },
+      "taskError": {
+        "Error": "ValidationError",
+        "Cause": "payload missing customerId"
+      },
+      "status": {
+        "recovered": true
+      }
+    }
+  }
+}

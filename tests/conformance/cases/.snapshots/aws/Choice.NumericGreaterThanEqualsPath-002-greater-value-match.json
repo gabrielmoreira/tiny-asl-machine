@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "002-greater-value-match",
+  "title": "matches when the left numeric path resolves to a larger value",
+  "group": "Choice.NumericGreaterThanEqualsPath",
+  "hash": "ec25ee63cdbdd815a966db020b1c16ca27a64976740fb952b73f63b5dcd65e3c",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericGreaterThanEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 9,
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

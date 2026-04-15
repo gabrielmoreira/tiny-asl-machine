@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "011-negative-index",
+  "title": "Reject negative index",
+  "group": "States.ArrayGetItem",
+  "hash": "23fe77b98db5bec1b9994e125553e9aa64ecf8ac3d7a2b951af34aec0711a393",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($.arr, -1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      10,
+      20,
+      30
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayGetItem($.arr, -1). Invalid arguments in States.ArrayGetItem, caused by: ArrayGetItem index -1 out of bounds for array of length 3"
+  }
+}

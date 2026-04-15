@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "026-reject-positive-non-finite-literal",
+  "title": "rejects a positive non-finite numeric literal",
+  "group": "States.MathAdd",
+  "hash": "9ecc2f2031af82b5b32b55fdd1cb2ced8e015be381fc28c60fede0ac97bac27c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(1e309, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: expected , or ) at index 16 in \"States.MathAdd(1e309, 1)\""
+  }
+}

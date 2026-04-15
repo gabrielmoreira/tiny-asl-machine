@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "015-reject-missing-path-value",
+  "title": "rejects a missing path value",
+  "group": "States.JsonToString",
+  "hash": "9fc3b22eca126c783b57e6a1097735a8bfc379e2f2144e1bcc80c6bafa93579f",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.missing)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {}
+  }
+}

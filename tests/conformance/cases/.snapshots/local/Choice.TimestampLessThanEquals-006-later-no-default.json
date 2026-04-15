@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "006-later-no-default",
+  "title": "fails with States.Runtime when the variable timestamp is later than the rule timestamp and no default is configured",
+  "group": "Choice.TimestampLessThanEquals",
+  "hash": "3c52f42573f8ec35ce97ace766abd1656ab3f30b3f1c266488a223cc346e99b2",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampLessThanEquals": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "2025-01-02T00:00:00.000Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

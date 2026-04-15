@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "008-no-default-missing-path",
+  "title": "fails with States.NoChoiceMatched when no rule matches and no Default is present",
+  "group": "Choice.IsPresent",
+  "hash": "8f5ee91dc5f99669fa8fb9a717bd9752144714bb9a38bca36cc1021bd7b2839b",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.missing",
+            "IsPresent": true,
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 1
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

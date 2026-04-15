@@ -1,0 +1,38 @@
+{
+  "runner": "local",
+  "id": "007-overwrite-nested-key-with-null",
+  "title": "overwrites a nested key with null in shallow mode",
+  "group": "States.JsonMerge",
+  "hash": "473b0db679fbd2c01af04bf250340e983ea66d62fcf945a87d51e36abb9cccbb",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "nested": {
+        "left": true
+      },
+      "keep": 1
+    },
+    "b": {
+      "nested": null
+    }
+  },
+  "result": {
+    "output": {
+      "value": {
+        "nested": null,
+        "keep": 1
+      }
+    }
+  }
+}

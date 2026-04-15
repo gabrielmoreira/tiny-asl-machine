@@ -1,0 +1,37 @@
+{
+  "runner": "aws",
+  "id": "006-equal-no-default",
+  "title": "fails with States.Runtime when the compared timestamps are equal and no default is configured",
+  "group": "Choice.TimestampLessThanPath",
+  "hash": "674256b3e7bb289f535179b0029d7dfd04bb81b1a364dfc6aa40cdf506785a25",
+  "definition": {
+    "StartAt": "CheckTimestamp",
+    "States": {
+      "CheckTimestamp": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampLessThanPath": "$.right",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "2025-01-01T12:00:00.000Z",
+    "right": "2025-01-01T12:00:00.000Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'CheckTimestamp' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "024-reject-missing-path-result",
+  "title": "rejects missing path result",
+  "group": "States.Base64Decode",
+  "hash": "edc45a45be4ef86242eadc4877c8cf64de0a22d5490dc6ede70920d33b6f7254",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode($.missing)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Base64Decode($.missing). The JsonPath argument for the field '$.missing' could not be found in the input '{}'"
+  }
+}

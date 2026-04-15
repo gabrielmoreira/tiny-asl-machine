@@ -1,0 +1,32 @@
+{
+  "runner": "local",
+  "id": "002-null-inputpath-preserves-input-locally",
+  "title": "documents the current local behavior where InputPath null preserves the incoming input",
+  "group": "Feature.InputPath",
+  "hash": "fb6957b28fb017dc6af2e3bb717b0c885e43945936d823d8470b52f0036c5675",
+  "definition": {
+    "StartAt": "InvokeNull",
+    "States": {
+      "InvokeNull": {
+        "Type": "Task",
+        "Resource": "local:feature:input-path:echo",
+        "InputPath": null,
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-2",
+    "payload": {
+      "ignored": true
+    }
+  },
+  "result": {
+    "output": {
+      "requestId": "req-2",
+      "payload": {
+        "ignored": true
+      }
+    }
+  }
+}

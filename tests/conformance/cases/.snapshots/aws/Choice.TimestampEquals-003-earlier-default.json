@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "003-earlier-default",
+  "title": "uses the default branch when the runtime timestamp is earlier than the rule timestamp",
+  "group": "Choice.TimestampEquals",
+  "hash": "99f165b20757640a5ba67b8e3a10c40ede170ad825b4b3680e57ed9c9cc8078b",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampEquals": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "2025-01-01T00:00:00.000Z"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

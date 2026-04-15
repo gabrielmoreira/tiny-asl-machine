@@ -1,0 +1,33 @@
+{
+  "runner": "aws",
+  "id": "002-ordered-paths",
+  "title": "Construct array from multiple ordered paths",
+  "group": "States.Array",
+  "hash": "dc73347d87dbe48305a5891b9007b182b6f604e67e2a7b56df4c0469363448cc",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array($.a, $.b, $.c)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": 1,
+    "b": "2",
+    "c": true
+  },
+  "result": {
+    "output": {
+      "value": [
+        1,
+        "2",
+        true
+      ]
+    }
+  }
+}

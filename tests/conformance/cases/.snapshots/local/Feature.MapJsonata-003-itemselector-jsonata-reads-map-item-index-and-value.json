@@ -1,0 +1,57 @@
+{
+  "runner": "local",
+  "id": "003-itemselector-jsonata-reads-map-item-index-and-value",
+  "title": "Map state JSONata ItemSelector can access $states.context.Map.Item.Index and Value",
+  "group": "Feature.MapJsonata",
+  "hash": "952244151a08ead107dcdfde351d018be8ee3ec482c531bb2e170c9172591f7d",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Annotate",
+    "States": {
+      "Annotate": {
+        "Type": "Map",
+        "Items": "{% $states.input.fruits %}",
+        "ItemSelector": {
+          "idx": "{% $states.context.Map.Item.Index %}",
+          "val": "{% $states.context.Map.Item.Value %}"
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "INLINE"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "fruits": [
+      "apple",
+      "banana",
+      "cherry"
+    ]
+  },
+  "result": {
+    "output": [
+      {
+        "idx": 0,
+        "val": "apple"
+      },
+      {
+        "idx": 1,
+        "val": "banana"
+      },
+      {
+        "idx": 2,
+        "val": "cherry"
+      }
+    ]
+  }
+}

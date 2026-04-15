@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "023-nested-mathadd",
+  "title": "consumes nested MathAdd results as arguments",
+  "group": "States.ArrayRange",
+  "hash": "98ae978f654bdf0435940b3303d5d892474f136db8bcc2e2c8c4df80397b0cab",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(States.MathAdd($.base, 1), States.MathAdd($.base, 5), 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "base": 0
+  },
+  "result": {
+    "output": {
+      "value": [
+        1,
+        3,
+        5
+      ]
+    }
+  }
+}

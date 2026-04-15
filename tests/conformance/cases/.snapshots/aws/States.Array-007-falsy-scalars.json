@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "007-falsy-scalars",
+  "title": "Preserve falsy scalar literals",
+  "group": "States.Array",
+  "hash": "448a9d801a680f6e3357f55239a60fa049cad4f77ee3f078be21b1f903e63a59",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array(false, '', 0, null)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        false,
+        "",
+        0,
+        null
+      ]
+    }
+  }
+}

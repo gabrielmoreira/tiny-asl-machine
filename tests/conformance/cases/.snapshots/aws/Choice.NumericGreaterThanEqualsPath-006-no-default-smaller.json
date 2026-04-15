@@ -1,0 +1,37 @@
+{
+  "runner": "aws",
+  "id": "006-no-default-smaller",
+  "title": "fails with States.Runtime when the left numeric path resolves to a smaller value and there is no Default",
+  "group": "Choice.NumericGreaterThanEqualsPath",
+  "hash": "81210b065fa2978a9c0fb7f067d18f180ffdc0ea62315cd13741060ef2f40983",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericGreaterThanEqualsPath": "$.right",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 7,
+    "right": 8
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

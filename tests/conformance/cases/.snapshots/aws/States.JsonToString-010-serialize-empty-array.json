@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "010-serialize-empty-array",
+  "title": "serializes an empty array",
+  "group": "States.JsonToString",
+  "hash": "75398038930368d50391ee9d118de346170203777670ef03e0c7e04b77b3e49d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": []
+  },
+  "result": {
+    "output": {
+      "value": "[]"
+    }
+  }
+}

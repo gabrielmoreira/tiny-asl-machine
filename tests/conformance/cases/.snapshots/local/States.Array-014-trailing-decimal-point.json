@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "014-trailing-decimal-point",
+  "title": "Reject a numeric literal with a trailing decimal point",
+  "group": "States.Array",
+  "hash": "4f6dd4d331ac82893b699dad0ec916655aa12d565aee6381eff612ddb63b81cf",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array(1.)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: expected digit after decimal point at index 15 in \"States.Array(1.)\""
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "021-reject-single-argument-invocation",
+  "title": "rejects single-argument invocation",
+  "group": "States.StringSplit",
+  "hash": "584e18fdcc4c8f2daad6dc6e88bab71f6be442b104a571c960bb81fd9569b82a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "a,b"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.StringSplit expects 2 argument(s) but received 1."
+  }
+}

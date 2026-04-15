@@ -1,0 +1,22 @@
+{
+  "runner": "aws",
+  "id": "003-hash-computes-sha256-of-string",
+  "title": "$hash(\"hello\", \"SHA-256\") returns the known SHA-256 digest",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "325ac4fdeccbff824d2f8ecbb6d6e6ac4a28843c7d0baf10f1c4b50d5f67adbd",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $hash(\"hello\", \"SHA-256\") %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+  }
+}

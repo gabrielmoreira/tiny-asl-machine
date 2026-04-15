@@ -1,0 +1,37 @@
+{
+  "runner": "aws",
+  "id": "004-oversized-chunk",
+  "title": "oversized chunk returns the full array as one chunk",
+  "group": "States.ArrayPartition",
+  "hash": "ca0b8124f04b143ad8acf2df98ff342ac1feb866fd8fd041d7ac08295f17267a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 10)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        [
+          1,
+          2,
+          3
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "runner": "local",
+  "id": "006-random-no-seed-returns-float-in-unit-interval",
+  "title": "$random() returns a float n where 0 <= n < 1",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "e9988797473df424e99e25ff92ff1a74dfda6d64d797953517721b5452df31ba",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $random() %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": 0.2864649016994404
+  }
+}

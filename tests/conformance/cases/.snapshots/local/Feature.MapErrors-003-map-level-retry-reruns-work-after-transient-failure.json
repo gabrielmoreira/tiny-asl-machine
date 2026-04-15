@@ -1,0 +1,60 @@
+{
+  "runner": "local",
+  "id": "003-map-level-retry-reruns-work-after-transient-failure",
+  "title": "map-level Retry reruns map work after a transient processor failure",
+  "group": "Feature.MapErrors",
+  "hash": "15a37c90ead60aa8c772c26036e23d5630962a3365fe2af0458f911df715b93a",
+  "definition": {
+    "StartAt": "ProcessItems",
+    "States": {
+      "ProcessItems": {
+        "Type": "Map",
+        "ItemsPath": "$.items",
+        "Iterator": {
+          "StartAt": "DoWork",
+          "States": {
+            "DoWork": {
+              "Type": "Task",
+              "Resource": "arn:local:feature:map-errors:retry",
+              "End": true
+            }
+          }
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 1,
+            "BackoffRate": 2
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "items": [
+      {
+        "id": "stable"
+      },
+      {
+        "id": "flaky",
+        "failOnce": true
+      }
+    ]
+  },
+  "result": {
+    "output": [
+      {
+        "id": "stable",
+        "attemptsSeen": 2
+      },
+      {
+        "id": "flaky",
+        "attemptsSeen": 2
+      }
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "runner": "local",
+  "id": "007-local-map-item-context-projection",
+  "title": "projects Map item context, execution input, and task token in a local iterator task",
+  "group": "Map.State",
+  "hash": "78887357c16f32861aa6d79606445e179f082f4fa1a80d9d4d6ca621da99fde3",
+  "definition": {
+    "StartAt": "Iterate",
+    "States": {
+      "Iterate": {
+        "Type": "Map",
+        "ItemsPath": "$.items",
+        "Parameters": {
+          "index.$": "$$.Map.Item.Index",
+          "value.$": "$$.Map.Item.Value",
+          "executionInput.$": "$$.Execution.Input"
+        },
+        "Iterator": {
+          "StartAt": "Probe",
+          "States": {
+            "Probe": {
+              "Type": "Task",
+              "Resource": "arn:local:map:context-probe",
+              "Parameters": {
+                "payload.$": "$",
+                "taskToken.$": "$$.Task.Token"
+              },
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "items": [
+      {
+        "color": "red",
+        "weight": 1
+      },
+      {
+        "color": "blue",
+        "weight": 2
+      }
+    ]
+  },
+  "result": {
+    "output": [
+      {
+        "payload": {
+          "index": 0,
+          "value": {
+            "color": "red",
+            "weight": 1
+          },
+          "executionInput": {
+            "items": [
+              {
+                "color": "red",
+                "weight": 1
+              },
+              {
+                "color": "blue",
+                "weight": 2
+              }
+            ]
+          }
+        },
+        "taskToken": "TaskToken-6d4bd35f-7d6c-43f3-9211-8df3e1b8c988"
+      },
+      {
+        "payload": {
+          "index": 1,
+          "value": {
+            "color": "blue",
+            "weight": 2
+          },
+          "executionInput": {
+            "items": [
+              {
+                "color": "red",
+                "weight": 1
+              },
+              {
+                "color": "blue",
+                "weight": 2
+              }
+            ]
+          }
+        },
+        "taskToken": "TaskToken-98fd72e3-9aa5-4fc5-9067-796e7924f0be"
+      }
+    ]
+  }
+}

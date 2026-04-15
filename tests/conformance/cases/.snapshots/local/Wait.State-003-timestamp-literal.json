@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "003-timestamp-literal",
+  "title": "waits until a literal timestamp using the runtime clock",
+  "group": "Wait.State",
+  "hash": "3f65b0b732a0b280adf1369c80cef4af0977ac1207fd4b5e3212ddc5a88ba73c",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "Timestamp": "2025-01-01T00:00:10.000Z",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "ticketId": "T-100"
+  },
+  "result": {
+    "output": {
+      "ticketId": "T-100"
+    }
+  }
+}

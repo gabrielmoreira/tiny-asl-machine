@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "extends": ["config:recommended"],
+  "plugins": ["typescript", "unicorn", "oxc", "vitest", "node", "promise", "import"],
+  "ignorePatterns": ["lib/**/*", "node_modules/**/*"],
+  "options": {
+    "typeAware": true,
+    "typeCheck": false
+  },
+  "rules": {
+    "vitest/no-conditional-tests": "off",
+    "vitest/require-mock-type-parameters": "off",
+    "jest/no-standalone-expect": "off",
+    "jest/expect-expect": "off",
+    "jest/valid-title": "off",
+    "jest/require-to-throw-message": "off"
+  }
+}

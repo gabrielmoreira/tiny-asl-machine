@@ -1,0 +1,49 @@
+{
+  "runner": "local",
+  "id": "004-catch-transition-on-local-failure",
+  "title": "transitions via Catch when a local task resource fails",
+  "group": "Task.State",
+  "hash": "beb86ae0f5043e31ad03e8689c58e7c0f7845356eefbf8cd8853885e31fb7ff2",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:task:fail",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "TransientError"
+            ],
+            "ResultPath": "$.taskError",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "recovered": true
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "jobId": "job-9"
+  },
+  "result": {
+    "output": {
+      "jobId": "job-9",
+      "taskError": {
+        "Error": "TransientError",
+        "Cause": "temporary outage"
+      },
+      "recovery": {
+        "recovered": true
+      }
+    }
+  }
+}

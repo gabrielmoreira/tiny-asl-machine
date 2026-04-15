@@ -1,0 +1,34 @@
+{
+  "runner": "local",
+  "id": "007-nested-object-paths",
+  "title": "Read object item from nested States.Array paths",
+  "group": "States.ArrayGetItem",
+  "hash": "95c0391a1968de84fcf0eac124f5dec7425af0fe9e1dcbec133790d64de98d2b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem(States.Array($.a, $.b), 0)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "k": 1
+    },
+    "b": {
+      "k": 2
+    }
+  },
+  "result": {
+    "output": {
+      "value": {
+        "k": 1
+      }
+    }
+  }
+}

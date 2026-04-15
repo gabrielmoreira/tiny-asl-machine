@@ -1,0 +1,40 @@
+{
+  "runner": "aws",
+  "id": "035-reject-string-plus-mixed-array-probe",
+  "title": "rejects a string operand when the other operand is a mixed-value array probe",
+  "group": "States.MathAdd",
+  "hash": "6cf5a4708675963e0f3538d025ececfe46858b8205d0cdf69ad4e5f50a6eebb1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd($.text, $.probe)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "text": "1",
+    "probe": [
+      null,
+      "",
+      " ",
+      0,
+      1,
+      true,
+      false,
+      [
+        0,
+        1,
+        false
+      ]
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathAdd($.text, $.probe). Invalid arguments in States.MathAdd"
+  }
+}

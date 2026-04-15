@@ -1,0 +1,54 @@
+{
+  "runner": "local",
+  "id": "006-aws-observe-catch-resultpath-null",
+  "title": "observes AWS behavior for Catch ResultPath set to null",
+  "group": "Feature.Catch",
+  "hash": "eeb31f6ed2be98e79ef41d6062fba6419f4816d48c70d3c364b3939d3c10dcdd",
+  "definition": {
+    "StartAt": "InvokeMissingService",
+    "States": {
+      "InvokeMissingService": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:s3:headBucket",
+        "Parameters": {
+          "Bucket": "tiny-asl-machine-observation-bucket-should-not-exist"
+        },
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": null,
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "recovered": true
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-catch-null",
+    "keep": {
+      "marker": "original"
+    }
+  },
+  "result": {
+    "output": {
+      "requestId": "req-catch-null",
+      "keep": {
+        "marker": "original"
+      },
+      "recovery": {
+        "recovered": true
+      }
+    }
+  }
+}

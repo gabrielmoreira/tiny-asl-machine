@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "015-zero-step",
+  "title": "rejects literal zero step",
+  "group": "States.ArrayRange",
+  "hash": "0b2e4131f578c86d2d34ee5b5cae30448d8759a6c2241d3884739ea8f59e5add",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(1, 10, 0)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayRange(1, 10, 0). Invalid arguments in States.ArrayRange, caused by: ArrayRange step must not be zero"
+  }
+}

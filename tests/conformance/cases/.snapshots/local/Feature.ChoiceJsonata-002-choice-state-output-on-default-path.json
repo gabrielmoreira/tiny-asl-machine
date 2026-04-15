@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "002-choice-state-output-on-default-path",
+  "title": "uses Choice state Output when no JSONata rule matches",
+  "group": "Feature.ChoiceJsonata",
+  "hash": "a1750fe8519c57389246eefd88139a20c727163e491117abd36d87b02dad6739",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Dispatch",
+    "States": {
+      "Dispatch": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Condition": "{% $states.input.type = \"Private\" %}",
+            "Next": "Private"
+          }
+        ],
+        "Output": {
+          "route": "default",
+          "requestId": "{% $states.input.requestId %}"
+        },
+        "Default": "Fallback"
+      },
+      "Private": {
+        "Type": "Pass",
+        "End": true
+      },
+      "Fallback": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "type": "Public",
+    "requestId": "req-choice-default"
+  },
+  "result": {
+    "output": {
+      "route": "default",
+      "requestId": "req-choice-default"
+    }
+  }
+}

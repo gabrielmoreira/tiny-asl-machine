@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "007-null-left-default",
+  "title": "falls through to Default when the variable path resolves to null",
+  "group": "Choice.NumericGreaterThanPath",
+  "hash": "df9c987b0aa854e4a313d881b10f3e0d667ba7745f0eac4a2fa73fd88b33a416",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericGreaterThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": null,
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

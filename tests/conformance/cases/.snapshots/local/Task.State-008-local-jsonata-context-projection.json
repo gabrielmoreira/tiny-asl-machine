@@ -1,0 +1,80 @@
+{
+  "runner": "local",
+  "id": "008-local-jsonata-context-projection",
+  "title": "projects $states.input and $states.context in a local task Arguments payload",
+  "group": "Task.State",
+  "hash": "7260be9bee86212f0de40ae881d02f5317a364d847184f502242fab10517b89b",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:task:jsonata-context",
+        "Arguments": {
+          "input": "{% $states.input %}",
+          "context": "{% $states.context %}",
+          "inputString": "{% $string($states.input) %}",
+          "contextString": "{% $string($states.context) %}",
+          "taskToken": "{% $states.context.Task.Token %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "hello": "world",
+    "nested": {
+      "answer": 42
+    }
+  },
+  "result": {
+    "output": {
+      "input": {
+        "hello": "world",
+        "nested": {
+          "answer": 42
+        }
+      },
+      "context": {
+        "Resources": {},
+        "Runtime": {},
+        "StateMachine": {
+          "Id": "machine-6620e964-c9e6-45fd-afcc-01da6b82ada7",
+          "Name": "machine",
+          "QueryLanguage": "JSONPath"
+        },
+        "Execution": {
+          "StartTime": "2026-04-16T00:06:40.979Z",
+          "Id": "execution-0c6ee19b-a63e-4b35-be48-c4e308c71ede",
+          "Name": "execution",
+          "RoleArn": "machine-role",
+          "Input": {
+            "hello": "world",
+            "nested": {
+              "answer": 42
+            }
+          },
+          "RedriveCount": 0
+        },
+        "VariableScopes": [
+          {}
+        ],
+        "State": {
+          "Name": "Invoke",
+          "EnteredTime": "2026-04-16T00:06:40.979Z",
+          "RetryCount": 0
+        },
+        "Task": {
+          "Token": "TaskToken-2cbbba71-41d6-4639-ae57-9908b157a148"
+        },
+        "StateEntryVariables": {},
+        "Transition": {
+          "End": true
+        }
+      },
+      "inputString": "{\"hello\":\"world\",\"nested\":{\"answer\":42}}",
+      "contextString": "{\"Resources\":{\"invoke\":\"\"},\"Runtime\":{\"now\":\"\",\"sleep\":\"\",\"randomUUID\":\"\",\"random\":\"\",\"hash\":\"\",\"base64Encode\":\"\",\"base64Decode\":\"\"},\"StateMachine\":{\"Id\":\"machine-6620e964-c9e6-45fd-afcc-01da6b82ada7\",\"Name\":\"machine\",\"QueryLanguage\":\"JSONPath\"},\"Execution\":{\"StartTime\":\"2026-04-16T00:06:40.979Z\",\"Id\":\"execution-0c6ee19b-a63e-4b35-be48-c4e308c71ede\",\"Name\":\"execution\",\"RoleArn\":\"machine-role\",\"Input\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"RedriveCount\":0},\"VariableScopes\":[{}],\"State\":{\"Name\":\"Invoke\",\"EnteredTime\":\"2026-04-16T00:06:40.979Z\",\"RetryCount\":0},\"Task\":{\"Token\":\"TaskToken-2cbbba71-41d6-4639-ae57-9908b157a148\"},\"StateEntryVariables\":{}}",
+      "taskToken": "TaskToken-2cbbba71-41d6-4639-ae57-9908b157a148"
+    }
+  }
+}

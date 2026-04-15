@@ -1,0 +1,38 @@
+{
+  "runner": "aws",
+  "id": "022-overwrite-array-with-fractional-number",
+  "title": "overwrites an array with a fractional number in shallow mode",
+  "group": "States.JsonMerge",
+  "hash": "cd12364907253dc9755ef7009ac17d627bd2444adcc0c52e5ef69e98d22ba717",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "payload": [
+        1,
+        2,
+        3
+      ]
+    },
+    "b": {
+      "payload": -123.456
+    }
+  },
+  "result": {
+    "output": {
+      "value": {
+        "payload": -123.456
+      }
+    }
+  }
+}

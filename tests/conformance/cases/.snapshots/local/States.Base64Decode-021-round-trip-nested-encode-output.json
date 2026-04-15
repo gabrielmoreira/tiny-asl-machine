@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "021-round-trip-nested-encode-output",
+  "title": "round-trips nested Base64Encode output",
+  "group": "States.Base64Decode",
+  "hash": "14cd2e9268d6546fa318af7a3763bd2f2d82d99d505adf2fc33657bdd8c073a6",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode(States.Base64Encode($.s))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "hello"
+  },
+  "result": {
+    "output": {
+      "value": "hello"
+    }
+  }
+}

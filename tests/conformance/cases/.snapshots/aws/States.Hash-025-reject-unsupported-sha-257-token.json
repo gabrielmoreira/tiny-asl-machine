@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "025-reject-unsupported-sha-257-token",
+  "title": "rejects unsupported SHA-257 token",
+  "group": "States.Hash",
+  "hash": "de0dd2a03db776e170757236f246fcf735c88b4cc2ed65978a1c2dfe2392676e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('data', 'SHA-257')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.Hash('data', 'SHA-257'). Invalid arguments in States.Hash"
+  }
+}

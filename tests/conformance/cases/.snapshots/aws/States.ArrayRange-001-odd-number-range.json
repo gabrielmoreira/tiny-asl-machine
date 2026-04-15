@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "001-odd-number-range",
+  "title": "builds the documented odd-number range",
+  "group": "States.ArrayRange",
+  "hash": "7913d1c81f089edf05c492e5391637254b8e1c1f527732917d9568110d06823c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(1, 9, 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        1,
+        3,
+        5,
+        7,
+        9
+      ]
+    }
+  }
+}

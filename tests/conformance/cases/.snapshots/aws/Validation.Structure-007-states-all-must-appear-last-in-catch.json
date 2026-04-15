@@ -1,0 +1,41 @@
+{
+  "runner": "aws",
+  "id": "007-states-all-must-appear-last-in-catch",
+  "title": "fails validation when States.ALL is not the last Catch entry",
+  "group": "Validation.Structure",
+  "hash": "0a53394efd05ec86db89441d864e9e50c658abe55da8681fc207d81d06adb637",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:sts:getCallerIdentity",
+        "Parameters": {},
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "Recovered"
+          },
+          {
+            "ErrorEquals": [
+              "CustomError"
+            ],
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "States.ALL must appear alone and at end of list"
+  }
+}

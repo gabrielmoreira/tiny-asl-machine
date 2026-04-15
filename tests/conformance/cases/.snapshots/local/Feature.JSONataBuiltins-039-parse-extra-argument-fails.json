@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "039-parse-extra-argument-fails",
+  "title": "$parse rejects an extra second argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "20010254d14d72bf422d645e0114da7746fb3a3fb6cc4f204e8a9bc3111e313a",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $parse($states.input.json, 1) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "{\"a\":1}"
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $parse($states.input.json, 1). [object Object]"
+  }
+}

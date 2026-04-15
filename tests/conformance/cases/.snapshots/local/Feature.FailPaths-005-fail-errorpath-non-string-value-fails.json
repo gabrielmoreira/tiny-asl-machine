@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "005-fail-errorpath-non-string-value-fails",
+  "title": "JSONPath Fail.ErrorPath fails when the selected value is not a string",
+  "group": "Feature.FailPaths",
+  "hash": "7987f211d29b4309d58ec28db7c40c1754fcb1df2f3972b9a7f012521594e2b8",
+  "definition": {
+    "StartAt": "FailState",
+    "States": {
+      "FailState": {
+        "Type": "Fail",
+        "ErrorPath": "$.Error"
+      }
+    }
+  },
+  "input": {
+    "Error": 123
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Expected string value at path '$.Error'."
+  }
+}

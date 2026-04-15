@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "007-null-default",
+  "title": "routes to Default for a null value",
+  "group": "Choice.IsTimestamp",
+  "hash": "13bc797281e70e430eb1be8cb5646bbefbb617113e2884f6ae6f1fe78bd5b2b5",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsTimestamp": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": null
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

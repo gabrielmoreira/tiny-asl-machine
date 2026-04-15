@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "001-seconds-literal",
+  "title": "waits for a literal number of seconds and then returns the original input",
+  "group": "Wait.State",
+  "hash": "c9144ab9b94508640799fa2e30ee5288cb6f622fc8d36139b3bb7ceff6747df8",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "Seconds": 1,
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "orderId": "A-100",
+    "status": "QUEUED"
+  },
+  "result": {
+    "output": {
+      "orderId": "A-100",
+      "status": "QUEUED"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "004-select-execution-context-paths",
+  "title": "selects values from execution input and execution metadata context",
+  "group": "Feature.JSONPath",
+  "hash": "fe5aa2b81107618621fbff44188d9be7892e05577426afb9400b615a397fdfd0",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "executionInputCustomerId.$": "$$.Execution.Input.order.customerId",
+          "executionId.$": "$$.Execution.Id"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "order": {
+      "customerId": "cust-9"
+    }
+  },
+  "result": {
+    "output": {
+      "executionId": "arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:execution:tam-conf-Feature-JSONPath-004-select-execution-context-paths-99df1a34:exec-conf-Feature-JSONPath-004-select-execution-context-paths-55ac8377",
+      "executionInputCustomerId": "cust-9"
+    }
+  }
+}

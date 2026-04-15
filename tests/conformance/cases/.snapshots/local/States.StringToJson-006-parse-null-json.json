@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "006-parse-null-json",
+  "title": "parses null JSON text",
+  "group": "States.StringToJson",
+  "hash": "cd2e59b9c8f1c86487c6ec630503d9cb3eb08450f7e3aa1c25dd3b4ef0173092",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "null"
+  },
+  "result": {
+    "output": {
+      "value": null
+    }
+  }
+}

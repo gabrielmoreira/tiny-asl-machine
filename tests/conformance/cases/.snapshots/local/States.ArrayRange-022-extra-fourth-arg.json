@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "022-extra-fourth-arg",
+  "title": "extra fourth argument fails exact arity validation",
+  "group": "States.ArrayRange",
+  "hash": "8f67380e88e454d40e606a7ac14ea8cd707df58642e8ba9dde41e0a7ed1459b8",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(1, 5, 1, 99)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.ArrayRange expects 3 argument(s) but received 4."
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "032-parse-whitespace-wrapped-object",
+  "title": "$parse parses JSON with surrounding whitespace",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "d2c5c0151ff686f140f475cdeefe333f7752189f7eb9b6f7eb969054676fcdf4",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $parse($states.input.json) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": " {\"a\":1} "
+  },
+  "result": {
+    "output": {
+      "a": 1
+    }
+  }
+}

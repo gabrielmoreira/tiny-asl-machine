@@ -1,0 +1,114 @@
+{
+  "runner": "local",
+  "id": "009-local-jsonata-result-projection",
+  "title": "projects $states.result metadata and payload in a local task Output object",
+  "group": "Task.State",
+  "hash": "3dba1eb053b159773f8cb7b7338ba79d8f624010f6480304c1ca24229ec6fa3f",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:task:jsonata-result",
+        "Arguments": {
+          "input": "{% $states.input %}"
+        },
+        "Output": {
+          "rawResult": "{% $states.result %}",
+          "resultString": "{% $string($states.result) %}",
+          "payload": "{% $states.result.Payload %}",
+          "payloadString": "{% $string($states.result.Payload) %}",
+          "statusCode": "{% $states.result.StatusCode %}",
+          "executedVersion": "{% $states.result.ExecutedVersion %}",
+          "context": "{% $states.context %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "hello": "world",
+    "nested": {
+      "answer": 42
+    }
+  },
+  "result": {
+    "output": {
+      "rawResult": {
+        "ExecutedVersion": "$LATEST",
+        "Payload": {
+          "fromLambda": true,
+          "echoed": {
+            "hello": "world",
+            "nested": {
+              "answer": 42
+            }
+          },
+          "requestId": "req-local-123"
+        },
+        "SdkHttpMetadata": {
+          "HttpHeaders": {
+            "X-Amz-Executed-Version": "$LATEST",
+            "Content-Type": "application/json"
+          },
+          "HttpStatusCode": 200
+        },
+        "SdkResponseMetadata": {
+          "RequestId": "req-local-123"
+        },
+        "StatusCode": 200
+      },
+      "resultString": "{\"ExecutedVersion\":\"$LATEST\",\"Payload\":{\"fromLambda\":true,\"echoed\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"requestId\":\"req-local-123\"},\"SdkHttpMetadata\":{\"HttpHeaders\":{\"X-Amz-Executed-Version\":\"$LATEST\",\"Content-Type\":\"application/json\"},\"HttpStatusCode\":200},\"SdkResponseMetadata\":{\"RequestId\":\"req-local-123\"},\"StatusCode\":200}",
+      "payload": {
+        "fromLambda": true,
+        "echoed": {
+          "hello": "world",
+          "nested": {
+            "answer": 42
+          }
+        },
+        "requestId": "req-local-123"
+      },
+      "payloadString": "{\"fromLambda\":true,\"echoed\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"requestId\":\"req-local-123\"}",
+      "statusCode": 200,
+      "executedVersion": "$LATEST",
+      "context": {
+        "Resources": {},
+        "Runtime": {},
+        "StateMachine": {
+          "Id": "machine-f8037b55-1e53-4d85-af1f-643044952a93",
+          "Name": "machine",
+          "QueryLanguage": "JSONPath"
+        },
+        "Execution": {
+          "StartTime": "2026-04-16T00:06:40.982Z",
+          "Id": "execution-d609a752-6cf7-475f-8254-b1d013dea2fe",
+          "Name": "execution",
+          "RoleArn": "machine-role",
+          "Input": {
+            "hello": "world",
+            "nested": {
+              "answer": 42
+            }
+          },
+          "RedriveCount": 0
+        },
+        "VariableScopes": [
+          {}
+        ],
+        "State": {
+          "Name": "Invoke",
+          "EnteredTime": "2026-04-16T00:06:40.982Z",
+          "RetryCount": 0
+        },
+        "Task": {
+          "Token": "TaskToken-8e43ebbb-dae9-45f5-ba7e-1d5b4cc87de5"
+        },
+        "StateEntryVariables": {},
+        "Transition": {
+          "End": true
+        }
+      }
+    }
+  }
+}
