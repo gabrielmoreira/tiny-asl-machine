@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "006-repeated-uuid-calls",
+  "title": "evaluates repeated UUID calls independently in one expression",
+  "group": "States.UUID",
+  "hash": "7d98baadb5603ff75525d78d2182a62b6bf6f728c19b35b1f050f3b15fbe8bd1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "first.$": "States.UUID()",
+          "second.$": "States.UUID()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "first": "4ce072f1-a620-491b-a5ec-b75745c59685",
+      "second": "4ce072f1-a620-491b-a5ec-b75745c59685"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "029-reject-boolean-plus-string-numeral",
+  "title": "rejects boolean plus string even when the string looks numeric",
+  "group": "States.MathAdd",
+  "hash": "d839c629aeb8bcc6d56bb3510dcf096eee29eb2348b4b0dfe27810b7c2b56f12",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(false, '2')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathAdd(false, '2'). Invalid arguments in States.MathAdd"
+  }
+}

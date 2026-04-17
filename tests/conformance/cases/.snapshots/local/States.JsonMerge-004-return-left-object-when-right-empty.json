@@ -1,0 +1,32 @@
+{
+  "runner": "local",
+  "id": "004-return-left-object-when-right-empty",
+  "title": "returns the left object when the right object is empty",
+  "group": "States.JsonMerge",
+  "hash": "4421a21cf34280c00a68fe88cdba48adf1f4773992733978fe3e526cd57fd274",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "x": 1
+    },
+    "b": {}
+  },
+  "result": {
+    "output": {
+      "value": {
+        "x": 1
+      }
+    }
+  }
+}

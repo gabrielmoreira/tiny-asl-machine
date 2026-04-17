@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "030-reject-missing-algorithm-path",
+  "title": "rejects missing algorithm path",
+  "group": "States.Hash",
+  "hash": "4d1a530642af3416cb77706a0b57e04fed0335e6c342d2cb81f94b7df46bf3bb",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('hello', $.missingAlgo)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Hash('hello', $.missingAlgo). The JsonPath argument for the field '$.missingAlgo' could not be found in the input '{}'"
+  }
+}

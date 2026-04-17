@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "006-round-tiny-decimals-to-zero",
+  "title": "rounds tiny decimals to zero before addition",
+  "group": "States.MathAdd",
+  "hash": "d2f17cb5a6e0741ebd85c098022768960e347e386868a4225a8cfbc8f44ebaea",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd($.a, $.b)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": 0.1,
+    "b": 0.2
+  },
+  "result": {
+    "output": {
+      "value": 0
+    }
+  }
+}

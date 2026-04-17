@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "012-false-escaped-shape-match",
+  "title": "matches when IsTimestamp is false and the escaped timestamp shape is not accepted",
+  "group": "Choice.IsTimestamp",
+  "hash": "41bccbf9f414ea3e9f2c814f9e5096a2853817ff6ccf4c2ee13b1d439fc6bfb2",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsTimestamp": false,
+            "Next": "Matched0"
+          }
+        ]
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "2025-01-01T00%3A00%3A00Z"
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

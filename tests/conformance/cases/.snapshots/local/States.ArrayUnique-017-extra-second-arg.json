@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "017-extra-second-arg",
+  "title": "Reject extra second argument",
+  "group": "States.ArrayUnique",
+  "hash": "51b7b0193f472901549cb139b98a6120ddf1935ace2d751e63cd798c85b7b71c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.arr, $.extra)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      1
+    ],
+    "extra": 123
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.ArrayUnique expects 1 argument(s) but received 2."
+  }
+}

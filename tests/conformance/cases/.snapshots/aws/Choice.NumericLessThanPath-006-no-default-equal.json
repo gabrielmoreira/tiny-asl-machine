@@ -1,0 +1,37 @@
+{
+  "runner": "aws",
+  "id": "006-no-default-equal",
+  "title": "fails with States.Runtime when the numeric paths resolve to the same value and there is no Default",
+  "group": "Choice.NumericLessThanPath",
+  "hash": "cf8c75a864c86cc5487cb0f81a75d16e682a8ceed2923390209e25bce771ce32",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericLessThanPath": "$.right",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 8,
+    "right": 8
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

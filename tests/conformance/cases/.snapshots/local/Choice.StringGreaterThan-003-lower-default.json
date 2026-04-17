@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "003-lower-default",
+  "title": "StringGreaterThan falls through to Default when the input sorts before the comparison string",
+  "group": "Choice.StringGreaterThan",
+  "hash": "d932a543337295fd703a652536de3b1ba930036a1db218c9f2fbe7a74fbe65f6",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringGreaterThan": "bravo",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "alpha"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

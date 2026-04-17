@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "007-null-nonmatch",
+  "title": "does not match a null runtime value",
+  "group": "Choice.NumericLessThan",
+  "hash": "1df6cc9acebed00a4df4dae4bdea0213a59b53020c763acad9f00a9fac0a985f",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericLessThan": 10,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": null
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

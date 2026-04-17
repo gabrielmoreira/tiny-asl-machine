@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "020-reject-boolean-first-operand",
+  "title": "rejects a boolean first operand",
+  "group": "States.MathAdd",
+  "hash": "0b3eed8561ed4ed4e1a25c4cf593cd54e0fd687b8bed5bea2fe267237fcb388b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(true, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.MathAdd(true, 1). Invalid arguments in States.MathAdd, caused by: States.MathAdd expected a number, got boolean"
+  }
+}

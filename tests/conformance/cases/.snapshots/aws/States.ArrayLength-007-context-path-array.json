@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "007-context-path-array",
+  "title": "Count array from execution-input context path",
+  "group": "States.ArrayLength",
+  "hash": "d2f94cefee0b55b7790f0c99c668cfe793a500efcd22721db1bb2ec9e0612c94",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength($$.Execution.Input.items)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "items": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "output": {
+      "value": 3
+    }
+  }
+}

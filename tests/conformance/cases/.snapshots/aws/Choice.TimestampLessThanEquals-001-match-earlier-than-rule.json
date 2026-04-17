@@ -1,0 +1,47 @@
+{
+  "runner": "aws",
+  "id": "001-match-earlier-than-rule",
+  "title": "matches when the variable timestamp is earlier than the rule timestamp",
+  "group": "Choice.TimestampLessThanEquals",
+  "hash": "2ae567fcd696febe473cf212326ec2cb09fe345617ccfe144997659eb0e5557e",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.detail.timestamp",
+            "TimestampLessThanEquals": "2025-01-02T00:00:00.000Z",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "detail": {
+      "timestamp": "2025-01-01T12:00:00.000Z"
+    }
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

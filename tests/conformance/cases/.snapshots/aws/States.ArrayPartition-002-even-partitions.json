@@ -1,0 +1,41 @@
+{
+  "runner": "aws",
+  "id": "002-even-partitions",
+  "title": "evenly partitions an exactly divisible array",
+  "group": "States.ArrayPartition",
+  "hash": "7f43a56121073790613283a16a71b609872b34c0f86d7186883f03d6300d9b65",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "runner": "aws",
+  "id": "002-scalar-result-inserted-into-nested-resultpath",
+  "title": "inserts a scalar Result into a nested ResultPath under an existing object branch",
+  "group": "Feature.PassEdgeCases",
+  "hash": "0721c68ef4ba9de694380172e7cc25e0dc85acfb8020f0a86a7d0710ced90412",
+  "definition": {
+    "StartAt": "SetCurrentStatus",
+    "States": {
+      "SetCurrentStatus": {
+        "Type": "Pass",
+        "Result": "complete",
+        "ResultPath": "$.workflow.audit.status.current",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-32",
+    "workflow": {
+      "audit": {
+        "status": {
+          "previous": "pending"
+        }
+      }
+    },
+    "untouched": true
+  },
+  "result": {
+    "output": {
+      "requestId": "req-32",
+      "workflow": {
+        "audit": {
+          "status": {
+            "previous": "pending",
+            "current": "complete"
+          }
+        }
+      },
+      "untouched": true
+    }
+  }
+}

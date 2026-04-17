@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "002-parse-array-json-from-input",
+  "title": "parses array JSON text from an input path",
+  "group": "States.StringToJson",
+  "hash": "093d0c2ef297ff1aaa68d2acbda3fb2bf6e8829215353d98f9558525fd1a90d7",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "[1,2,3]"
+  },
+  "result": {
+    "output": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    }
+  }
+}

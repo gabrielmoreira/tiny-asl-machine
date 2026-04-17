@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "004-task-arguments-cannot-access-states-erroroutput-outside-catch",
+  "title": "Task Arguments cannot access $states.errorOutput outside a Catch context",
+  "group": "Feature.JSONataValidation",
+  "hash": "0d980a9944776b0092df6e6b5610bef5a34667c76b3f5d9ce345c99d018a3e7a",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "InvalidTask",
+    "States": {
+      "InvalidTask": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Arguments": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": "{% $states.errorOutput %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Field '$states.errorOutput' does not exist."
+  }
+}

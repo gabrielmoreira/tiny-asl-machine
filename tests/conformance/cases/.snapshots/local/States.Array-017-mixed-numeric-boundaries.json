@@ -1,0 +1,47 @@
+{
+  "runner": "local",
+  "id": "017-mixed-numeric-boundaries",
+  "title": "Mix numeric boundary values with strings and arrays",
+  "group": "States.Array",
+  "hash": "dcf7676d1d4584f2b7cc9188716c29b6aaf16f67652857b5e7dbaeeaac6138f2",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array($.label, $.neg, $.frac, $.hugeNeg, $.hugePos, $.nested)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "label": "numbers",
+    "neg": -1,
+    "frac": 1.5,
+    "hugeNeg": -9007199254740991,
+    "hugePos": 9007199254740991,
+    "nested": [
+      0,
+      1,
+      false
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        "numbers",
+        -1,
+        1.5,
+        -9007199254740991,
+        9007199254740991,
+        [
+          0,
+          1,
+          false
+        ]
+      ]
+    }
+  }
+}

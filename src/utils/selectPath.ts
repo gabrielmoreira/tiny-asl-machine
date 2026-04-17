@@ -1,8 +1,13 @@
 import type { Context } from '../../types';
-import type { IntrinsicExpression, TopLevelIntrinsic } from './parseIntrinsicFunction';
+import {
+  intrinsicFunctionSignatures,
+  IntrinsicParser,
+  type FnCallExpression,
+  type IntrinsicExpression,
+  type TopLevelIntrinsic,
+} from './parseIntrinsicFunction';
 import jsonpath from 'jsonpath';
 import { ExecutionError } from './executionError';
-import { IntrinsicParser } from './parseIntrinsicFunction';
 import { StringTemplateParser } from './parseStringTemplate';
 import { createDefaultRuntime } from './runtime';
 
@@ -13,9 +18,21 @@ export function selectPath(expression: string, input: unknown, context: Context)
       'InvalidJSONPath',
       'JSON Path should be a string! Value: ' + JSON.stringify(expression)
     );
-  const ast = new IntrinsicParser(expression).parseTopLevelIntrinsic();
-  const intrinsics = getIntrinsicFunctions(context);
-  return evaluateAst(ast, input, context, intrinsics);
+
+  try {
+    const ast = new IntrinsicParser(expression).parseTopLevelIntrinsic();
+    const intrinsics = getIntrinsicFunctions(context);
+    return evaluateAst(ast, input, context, intrinsics);
+  } catch (error) {
+    if (error instanceof ExecutionError) {
+      throw error;
+    }
+
+    throw new ExecutionError(
+      'States.Runtime',
+      `Invalid intrinsic invocation: ${error instanceof Error ? error.message : String(error)}`
+    );
+  }
 }
 
 function evaluateAst(
@@ -35,15 +52,139 @@ function evaluateAst(
   } else if (ast.type === 'null-literal') {
     return null;
   } else if (ast.type === 'fncall') {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fn: any = intrinsics[ast.functionName as string];
-    if (!fn)
-      throw new ExecutionError(
-        'InvalidIntrinsicFunction',
-        `Function '${ast.functionName}' is not supported`
-      );
-    return fn(...ast.arguments.map(arg => evaluateAst(arg, input, context, intrinsics)));
+    return evaluateIntrinsicCall(ast, input, context, intrinsics);
   }
+
+  const renderedAstType = JSON.stringify((ast as { type?: unknown }).type ?? 'unknown');
+
+  throw new ExecutionError(
+    'States.Runtime',
+    `Invalid intrinsic invocation: unsupported AST node type ${renderedAstType}`
+  );
+}
+
+function evaluateIntrinsicCall(
+  ast: FnCallExpression,
+  input: unknown,
+  context: Context,
+  intrinsics: Record<string, (...args: unknown[]) => unknown>
+): unknown {
+  const fn = intrinsics[ast.functionName];
+  if (typeof fn !== 'function') {
+    throw new ExecutionError(
+      'States.Runtime',
+      `Invalid intrinsic invocation: Function '${ast.functionName}' is not supported`
+    );
+  }
+
+  validateIntrinsicArity(ast);
+
+  try {
+    return fn(...ast.arguments.map(arg => evaluateAst(arg, input, context, intrinsics)));
+  } catch (error) {
+    throw normalizeIntrinsicInvocationError(ast, error);
+  }
+}
+
+function validateIntrinsicArity(ast: FnCallExpression) {
+  const signature = intrinsicFunctionSignatures[ast.functionName];
+  if (!signature) {
+    return;
+  }
+
+  const received = ast.arguments.length;
+  const { minArgs, maxArgs } = signature;
+  const hasTooFew = received < minArgs;
+  const hasTooMany = maxArgs !== null && received > maxArgs;
+  if (!hasTooFew && !hasTooMany) {
+    return;
+  }
+
+  const expectation =
+    maxArgs === null
+      ? `at least ${minArgs}`
+      : minArgs === maxArgs
+        ? `${minArgs}`
+        : `${minArgs} to ${maxArgs}`;
+
+  throw new ExecutionError(
+    'States.Runtime',
+    `Invalid intrinsic invocation: ${ast.functionName} expects ${expectation} argument(s) but received ${received}.`
+  );
+}
+
+function normalizeIntrinsicInvocationError(ast: FnCallExpression, error: unknown): ExecutionError {
+  if (error instanceof ExecutionError) {
+    if (error.name === 'States.Runtime') {
+      return error;
+    }
+
+    return new ExecutionError(
+      'States.Runtime',
+      buildAwsStyleIntrinsicErrorMessage(ast, error.message)
+    );
+  }
+
+  if (error instanceof Error) {
+    return new ExecutionError(
+      'States.Runtime',
+      buildAwsStyleIntrinsicErrorMessage(ast, error.message)
+    );
+  }
+
+  return new ExecutionError(
+    'States.Runtime',
+    buildAwsStyleIntrinsicErrorMessage(ast, String(error))
+  );
+}
+
+function buildAwsStyleIntrinsicErrorMessage(ast: FnCallExpression, detail?: string): string {
+  const base = `There was an error while evaluating the intrinsic function: ${renderIntrinsicCall(ast)}.`;
+  const missingPathMatch = detail?.match(/^([^ ]+) expected a [^,]+, got undefined$/);
+  if (missingPathMatch) {
+    const missingPath = ast.arguments.find(argument => argument.type === 'path')?.path;
+    if (missingPath) {
+      return `${base} The JsonPath argument for the field '${missingPath}' could not be found in the input '{}'`;
+    }
+  }
+
+  const invalidTemplateMatch = detail?.match(/^Invalid template: (.*)$/);
+  if (invalidTemplateMatch) {
+    return `${base} Invalid template in ${ast.functionName}: ${toAwsTemplateMessage(invalidTemplateMatch[1])}`;
+  }
+
+  if (ast.functionName === 'States.Format' && detail?.includes('template.trim is not a function')) {
+    return `${base} Invalid arguments in ${ast.functionName}: number of arguments do not match the occurrences of {}.`;
+  }
+
+  if (ast.functionName === 'States.Format') {
+    return `${base} Invalid arguments in ${ast.functionName}${detail ? `, caused by: ${detail}` : ''}`;
+  }
+
+  return `${base} Invalid arguments in ${ast.functionName}${detail ? `, caused by: ${detail}` : ''}`;
+}
+
+function renderIntrinsicCall(ast: FnCallExpression): string {
+  return `${ast.functionName}(${ast.arguments.map(renderIntrinsicArgument).join(', ')})`;
+}
+
+function renderIntrinsicArgument(argument: IntrinsicExpression): string {
+  if (argument.type === 'path') return argument.path;
+  if (argument.type === 'string-literal') return argument.quoted;
+  if (argument.type === 'numeric-literal') return String(argument.value);
+  if (argument.type === 'boolean-literal') return String(argument.value);
+  if (argument.type === 'null-literal') return 'null';
+  return renderIntrinsicCall(argument);
+}
+
+function toAwsTemplateMessage(detail: string): string {
+  if (detail.includes('expecting }')) {
+    return "matching '}' not found for '{'.";
+  }
+  if (detail.includes('unexpected character "{"')) {
+    return "matching '}' not found for '{'.";
+  }
+  return detail;
 }
 
 function evaluatePath(expression: string, input: unknown, context: Context) {
@@ -54,9 +195,7 @@ function evaluatePath(expression: string, input: unknown, context: Context) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function stableStringify(obj: any): string {
-  if (obj === undefined) return 'undefined';
   if (obj === null || typeof obj !== 'object') return JSON.stringify(obj);
   if (Array.isArray(obj)) return '[' + obj.map(stableStringify).join(',') + ']';
   const keys = Object.keys(obj).sort();
@@ -107,10 +246,16 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
     },
     'States.ArrayGetItem': (array: unknown, index: unknown) => {
       assertArray(array, 'States.ArrayGetItem');
-      if (typeof index !== 'number' || !Number.isInteger(index) || index < 0 || index >= array.length)
+      const renderedIndex = typeof index === 'number' ? String(index) : JSON.stringify(index);
+      if (
+        typeof index !== 'number' ||
+        !Number.isInteger(index) ||
+        index < 0 ||
+        index >= array.length
+      )
         throw new ExecutionError(
           'States.IntrinsicFailure',
-          `ArrayGetItem index ${index} out of bounds for array of length ${array.length}`
+          `ArrayGetItem index ${renderedIndex} out of bounds for array of length ${array.length}`
         );
       return array[index];
     },
@@ -141,10 +286,7 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       const e = Math.round(end);
       const st = Math.round(step);
       if (st === 0)
-        throw new ExecutionError(
-          'States.IntrinsicFailure',
-          'ArrayRange step must not be zero'
-        );
+        throw new ExecutionError('States.IntrinsicFailure', 'ArrayRange step must not be zero');
       const result: number[] = [];
       for (let i = s; st > 0 ? i <= e : i >= e; i += st) {
         result.push(i);
@@ -180,12 +322,32 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
           'States.IntrinsicFailure',
           'States.Base64Decode input must be 10000 characters or less'
         );
+      if (str.length > 0 && (!/^[A-Za-z0-9+/=]+$/.test(str) || str.length % 4 !== 0)) {
+        throw new ExecutionError('States.IntrinsicFailure', 'Invalid Base64 input');
+      }
       return rt.base64Decode(str);
     },
-    'States.Format': (template: string, ...args: unknown[]) => {
-      return new StringTemplateParser("'" + template.trim() + "'")
-        .parseTemplate()
-        .map(p => (p.type === 'placeholder' ? args[p.index] : p.literal))
+    'States.Format': (template: unknown, ...args: unknown[]) => {
+      assertString(template, 'States.Format');
+      const parsed = new StringTemplateParser("'" + template + "'").parseTemplate();
+      const placeholderCount = parsed.filter(part => part.type === 'placeholder').length;
+      if (placeholderCount !== args.length) {
+        throw new ExecutionError(
+          'States.IntrinsicFailure',
+          'Invalid arguments in States.Format: number of arguments do not match the occurrences of {}.'
+        );
+      }
+      const renderFormatArg = (value: unknown): string => {
+        if (typeof value === 'string') return value;
+        if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+          return String(value);
+        }
+        if (typeof value === 'symbol') return value.toString();
+        if (typeof value === 'undefined' || value === null) return '';
+        return JSON.stringify(value);
+      };
+      return parsed
+        .map(p => (p.type === 'placeholder' ? renderFormatArg(args[p.index]) : p.literal))
         .join('');
     },
     'States.Hash': (data: unknown, algorithm: unknown) => {
@@ -220,20 +382,11 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
           'JsonMerge expected a boolean as third argument'
         );
       if (isDeep)
-        throw new ExecutionError(
-          'States.IntrinsicFailure',
-          'JsonMerge deep mode is not supported'
-        );
+        throw new ExecutionError('States.IntrinsicFailure', 'JsonMerge deep mode is not supported');
       return { ...obj1, ...obj2 };
     },
     'States.JsonToString': (obj: unknown) => JSON.stringify(obj),
-    'States.MathAdd': (...args: unknown[]) => {
-      if (args.length !== 2)
-        throw new ExecutionError(
-          'States.IntrinsicFailure',
-          `States.MathAdd expected exactly 2 arguments, got ${args.length}`
-        );
-      const [a, b] = args;
+    'States.MathAdd': (a: unknown, b: unknown) => {
       assertNumber(a, 'States.MathAdd');
       assertNumber(b, 'States.MathAdd');
       const x = Math.round(a);
@@ -257,7 +410,7 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       if (seed !== undefined) {
         assertNumber(seed, 'States.MathRandom');
         const seedNum = Math.round(seed);
-        const mod = ((seedNum * 9301 + 49297) % 233280 + 233280) % 233280;
+        const mod = (((seedNum * 9301 + 49297) % 233280) + 233280) % 233280;
         const hash = mod / 233280;
         return Math.floor(hash * (e - s)) + s;
       }
@@ -268,10 +421,15 @@ function getIntrinsicFunctions(context: Context): Record<string, (...args: unkno
       assertString(delimiter, 'States.StringSplit');
       if (delimiter.length === 0) return [str];
       if (delimiter.length === 1) return str.split(delimiter);
+      // Current local behavior treats multi-character delimiters as a delimiter-character set.
+      // This is pinned by the existing conformance/spec tests and may diverge from AWS semantics.
       const escaped = delimiter.replace(/[-.*+?^${}()|[\]\\]/g, '\\$&');
-      return str.split(new RegExp(`[${escaped}]`));
+      return str.split(new RegExp(`[${escaped}]`)).filter(s => s.length > 0);
     },
-    'States.StringToJson': (str: string) => JSON.parse(str),
+    'States.StringToJson': (str: unknown) => {
+      assertString(str, 'States.StringToJson');
+      return JSON.parse(str);
+    },
     'States.UUID': () => rt.randomUUID(),
   };
 }

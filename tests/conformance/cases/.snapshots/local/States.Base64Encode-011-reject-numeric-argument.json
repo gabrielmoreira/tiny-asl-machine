@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "011-reject-numeric-argument",
+  "title": "rejects numeric argument",
+  "group": "States.Base64Encode",
+  "hash": "fe4b8c9673c556235c0fa8052e8fa849b6b0827da4c3493cf8a7b80a823a0550",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode(123)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Base64Encode(123). Invalid arguments in States.Base64Encode, caused by: States.Base64Encode expected a string, got number"
+  }
+}

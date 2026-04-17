@@ -1,0 +1,36 @@
+{
+  "runner": "aws",
+  "id": "008-no-default-nonmatch",
+  "title": "fails with States.NoChoiceMatched when no branch matches and there is no default",
+  "group": "Choice.NumericGreaterThanEquals",
+  "hash": "43b130aa4f298d312a60f3d31493d5a88d41632ce908d6370c7994ba1caa9c7d",
+  "definition": {
+    "StartAt": "CheckValue",
+    "States": {
+      "CheckValue": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericGreaterThanEquals": 10,
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 9
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'CheckValue' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

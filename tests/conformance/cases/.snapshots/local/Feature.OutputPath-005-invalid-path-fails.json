@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "005-invalid-path-fails",
+  "title": "OutputPath fails when given an invalid JSONPath string",
+  "group": "Feature.OutputPath",
+  "hash": "294cbad52d4d82132053e7837fb277478251dd8516604419993e9a88d310df49",
+  "definition": {
+    "StartAt": "InvalidOutputPath",
+    "States": {
+      "InvalidOutputPath": {
+        "Type": "Pass",
+        "Result": {
+          "visible": true
+        },
+        "OutputPath": "not-a-path",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-23"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: unexpected end of string at index 10 in \"not-a-path\""
+  }
+}

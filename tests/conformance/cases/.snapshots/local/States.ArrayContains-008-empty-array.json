@@ -1,0 +1,28 @@
+{
+  "runner": "local",
+  "id": "008-empty-array",
+  "title": "Return false for empty arrays",
+  "group": "States.ArrayContains",
+  "hash": "8b6be43f24fafc9b0114bc0e75b2c4d912ff9911f2b437c5438ac20f6a846fef",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, $.target)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [],
+    "target": 1
+  },
+  "result": {
+    "output": {
+      "value": false
+    }
+  }
+}

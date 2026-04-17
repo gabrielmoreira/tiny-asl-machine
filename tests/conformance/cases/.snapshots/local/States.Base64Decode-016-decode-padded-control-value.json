@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "016-decode-padded-control-value",
+  "title": "decodes properly padded control value",
+  "group": "States.Base64Decode",
+  "hash": "70cd67b63ae666125a016367f5c6ee911d1045f2ae0948e7dbe9451402128590",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode('YWJjZA==')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "abcd"
+    }
+  }
+}

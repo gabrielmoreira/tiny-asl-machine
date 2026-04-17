@@ -1,0 +1,44 @@
+{
+  "runner": "local",
+  "id": "006-missing-right-path",
+  "title": "fails with States.Runtime when the right-hand comparison path is missing",
+  "group": "Choice.BooleanEqualsPath",
+  "hash": "ea534fe9f566f5b6ed0359f043239bdad2e8255b7db8e49dd379bc8328ce4063",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "BooleanEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": true
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid path '$.right': The choice state's condition path references an invalid value."
+  }
+}

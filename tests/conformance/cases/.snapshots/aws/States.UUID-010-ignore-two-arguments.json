@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "010-ignore-two-arguments",
+  "title": "still returns a UUID when given two arguments",
+  "group": "States.UUID",
+  "hash": "7d1f1ee3b270b6938971ef21c46288cd8bd4ae3d7c3931323711a4e63630a322",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID(1, 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "f4abbbd3-d7e7-4298-ba6e-4e35cc632649"
+    }
+  }
+}

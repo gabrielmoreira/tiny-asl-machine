@@ -1,0 +1,28 @@
+{
+  "runner": "local",
+  "id": "015-reject-non-boolean-deep-flag",
+  "title": "rejects a non-boolean deep flag",
+  "group": "States.JsonMerge",
+  "hash": "446b2e75ff8a6c4a0a4920b5cf937fd74d9fe23e75a9713a2131325cb77ff870",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, $.deep)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {},
+    "b": {},
+    "deep": "false"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.JsonMerge($.a, $.b, $.deep). Invalid arguments in States.JsonMerge, caused by: JsonMerge expected a boolean as third argument"
+  }
+}

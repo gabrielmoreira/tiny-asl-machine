@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "003-timestamp-like-string-match",
+  "title": "matches a timestamp-looking value because it is still a string",
+  "group": "Choice.IsString",
+  "hash": "8cee5cb33b30ccf2501e0a2a3adba6875eae5f5d66bffac6790f6fd1262f5578",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsString": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "2025-01-01T00:00:00Z"
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "runner": "aws",
+  "id": "004-nested-descending-match",
+  "title": "matches when nested decimal paths resolve in descending order",
+  "group": "Choice.NumericGreaterThanPath",
+  "hash": "8fab32ed90fbe526fe71c9ee6f0dc4f2a2240f09f10ac12e1bfa6a06fd490bb2",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.payload.range.upper",
+            "NumericGreaterThanPath": "$.payload.range.lower",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "payload": {
+      "range": {
+        "lower": -1.5,
+        "upper": -1.25
+      }
+    }
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

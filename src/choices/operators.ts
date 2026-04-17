@@ -6,47 +6,48 @@ import type {
   StateData,
 } from '../../types';
 import { selectPath } from '../utils/selectPath';
+import { ExecutionError } from '../utils/executionError';
 import Debug from 'debug';
 const debug = Debug('tiny-asl-machine:operator');
 
-function isLeapYear(year: number): boolean {
-  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+function selectRequiredChoicePath(path: string, input: StateData, context: Context) {
+  const value = selectPath(path, input, context);
+  if (typeof value === 'undefined') {
+    throw new ExecutionError(
+      'States.Runtime',
+      `Invalid path '${path}': The choice state's condition path references an invalid value.`
+    );
+  }
+
+  return value;
 }
 
-function daysInMonth(year: number, month: number): number {
-  return [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
+const rfc3339TimestampPattern =
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
+
+function isNumberChoiceValue(value: unknown): value is number {
+  return typeof value === 'number';
 }
 
-function isValidRfc3339TimestampString(value: unknown): boolean {
-  if (typeof value !== 'string') return false;
-  const match = value.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:\.([0-9]+))?(Z|[+-]([0-9]{2}):([0-9]{2}))$/);
-  if (!match) return false;
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-  const hour = Number(match[4]);
-  const minute = Number(match[5]);
-  const second = Number(match[6]);
-  const offsetHour = match[9] === undefined ? undefined : Number(match[9]);
-  const offsetMinute = match[10] === undefined ? undefined : Number(match[10]);
-  if (month < 1 || month > 12) return false;
-  if (day < 1 || day > daysInMonth(year, month)) return false;
-  if (hour < 0 || hour > 23) return false;
-  if (minute < 0 || minute > 59) return false;
-  if (second < 0 || second > 59) return false;
-  if (offsetHour !== undefined && (offsetHour < 0 || offsetHour > 23)) return false;
-  if (offsetMinute !== undefined && (offsetMinute < 0 || offsetMinute > 59)) return false;
-  return true;
+function isStringChoiceValue(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
+function isBooleanChoiceValue(value: unknown): value is boolean {
+  return typeof value === 'boolean';
+}
+
+function isTimestampChoiceValue(value: unknown): value is string {
+  return isStringChoiceValue(value) && rfc3339TimestampPattern.test(value);
 }
 
 export function processChoices(context: Context, choices: TopLevelChoiceRule[], input: StateData) {
-  const operatorKeys = Object.keys(Operators) as Operator[];
   for (const choice of choices) {
-    for (const key of operatorKeys) {
-      if (key in choice && key in Operators) {
+    for (const key of getOperatorKeys()) {
+      if (key in choice) {
         const operator = Operators[key];
         const evaluated = operator(context, input, choice);
-        debug(`Operator (${key}) for choice`, choice, `evaluated to (${evaluated})`);
+        debug(`Operator (${key}) for choice`, choice, `evaluated to (${String(evaluated)})`);
         if (evaluated) {
           return choice.Next;
         } else {
@@ -91,14 +92,14 @@ export const Operators: ChoiceOperators = {
   StringEquals: (context, input, choice) => {
     if ('StringEquals' in choice && typeof choice.StringEquals !== 'undefined') {
       const value = choice.StringEquals;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
       return variable === value;
     }
   },
   NumericEquals: (context, input, choice) => {
     if ('NumericEquals' in choice && typeof choice.NumericEquals !== 'undefined') {
       const value = choice.NumericEquals;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
       return variable === value;
     }
   },
@@ -108,14 +109,16 @@ export const Operators: ChoiceOperators = {
       typeof choice.NumericGreaterThanEquals !== 'undefined'
     ) {
       const value = choice.NumericGreaterThanEquals;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isNumberChoiceValue(variable)) return false;
       return variable >= value;
     }
   },
   NumericLessThan: (context, input, choice) => {
     if ('NumericLessThan' in choice && typeof choice.NumericLessThan !== 'undefined') {
       const value = choice.NumericLessThan;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isNumberChoiceValue(variable)) return false;
       return variable < value;
     }
   },
@@ -162,29 +165,32 @@ export const Operators: ChoiceOperators = {
   IsTimestamp: (context, input, choice) => {
     if ('IsTimestamp' in choice && typeof choice.IsTimestamp !== 'undefined') {
       const value = choice.IsTimestamp;
-      const variable = selectPath(choice.Variable, input, context);
-      const result = isValidRfc3339TimestampString(variable);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      const result = isStringChoiceValue(variable) && rfc3339TimestampPattern.test(variable);
       return value ? result : !result;
     }
   },
   StringLessThan: (context, input, choice) => {
     if ('StringLessThan' in choice && typeof choice.StringLessThan !== 'undefined') {
       const value = choice.StringLessThan;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isStringChoiceValue(variable)) return false;
       return variable < value;
     }
   },
   StringGreaterThan: (context, input, choice) => {
     if ('StringGreaterThan' in choice && typeof choice.StringGreaterThan !== 'undefined') {
       const value = choice.StringGreaterThan;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isStringChoiceValue(variable)) return false;
       return variable > value;
     }
   },
   StringLessThanEquals: (context, input, choice) => {
     if ('StringLessThanEquals' in choice && typeof choice.StringLessThanEquals !== 'undefined') {
       const value = choice.StringLessThanEquals;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isStringChoiceValue(variable)) return false;
       return variable <= value;
     }
   },
@@ -194,42 +200,48 @@ export const Operators: ChoiceOperators = {
       typeof choice.StringGreaterThanEquals !== 'undefined'
     ) {
       const value = choice.StringGreaterThanEquals;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isStringChoiceValue(variable)) return false;
       return variable >= value;
     }
   },
   StringMatches: (context, input, choice) => {
     if ('StringMatches' in choice && typeof choice.StringMatches !== 'undefined') {
       const value = choice.StringMatches;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isStringChoiceValue(variable)) return false;
       return stringMatches(variable, value);
     }
   },
   NumericGreaterThan: (context, input, choice) => {
     if ('NumericGreaterThan' in choice && typeof choice.NumericGreaterThan !== 'undefined') {
       const value = choice.NumericGreaterThan;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isNumberChoiceValue(variable)) return false;
       return variable > value;
     }
   },
   NumericLessThanEquals: (context, input, choice) => {
     if ('NumericLessThanEquals' in choice && typeof choice.NumericLessThanEquals !== 'undefined') {
       const value = choice.NumericLessThanEquals;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isNumberChoiceValue(variable)) return false;
       return variable <= value;
     }
   },
   NumericEqualsPath: (context, input, choice) => {
     if ('NumericEqualsPath' in choice && typeof choice.NumericEqualsPath !== 'undefined') {
-      const value = selectPath(choice.NumericEqualsPath, input, context);
-      const variable = selectPath(choice.Variable, input, context);
+      const value = selectRequiredChoicePath(choice.NumericEqualsPath, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isNumberChoiceValue(variable) || !isNumberChoiceValue(value)) return false;
       return variable === value;
     }
   },
   NumericLessThanPath: (context, input, choice) => {
     if ('NumericLessThanPath' in choice && typeof choice.NumericLessThanPath !== 'undefined') {
-      const value = selectPath(choice.NumericLessThanPath, input, context);
-      const variable = selectPath(choice.Variable, input, context);
+      const value = selectRequiredChoicePath(choice.NumericLessThanPath, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isNumberChoiceValue(variable) || !isNumberChoiceValue(value)) return false;
       return variable < value;
     }
   },
@@ -238,8 +250,9 @@ export const Operators: ChoiceOperators = {
       'NumericGreaterThanPath' in choice &&
       typeof choice.NumericGreaterThanPath !== 'undefined'
     ) {
-      const value = selectPath(choice.NumericGreaterThanPath, input, context);
-      const variable = selectPath(choice.Variable, input, context);
+      const value = selectRequiredChoicePath(choice.NumericGreaterThanPath, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isNumberChoiceValue(variable) || !isNumberChoiceValue(value)) return false;
       return variable > value;
     }
   },
@@ -248,8 +261,9 @@ export const Operators: ChoiceOperators = {
       'NumericLessThanEqualsPath' in choice &&
       typeof choice.NumericLessThanEqualsPath !== 'undefined'
     ) {
-      const value = selectPath(choice.NumericLessThanEqualsPath, input, context);
-      const variable = selectPath(choice.Variable, input, context);
+      const value = selectRequiredChoicePath(choice.NumericLessThanEqualsPath, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isNumberChoiceValue(variable) || !isNumberChoiceValue(value)) return false;
       return variable <= value;
     }
   },
@@ -258,43 +272,48 @@ export const Operators: ChoiceOperators = {
       'NumericGreaterThanEqualsPath' in choice &&
       typeof choice.NumericGreaterThanEqualsPath !== 'undefined'
     ) {
-      const value = selectPath(choice.NumericGreaterThanEqualsPath, input, context);
-      const variable = selectPath(choice.Variable, input, context);
+      const value = selectRequiredChoicePath(choice.NumericGreaterThanEqualsPath, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isNumberChoiceValue(variable) || !isNumberChoiceValue(value)) return false;
       return variable >= value;
     }
   },
   BooleanEquals: (context, input, choice) => {
     if ('BooleanEquals' in choice && typeof choice.BooleanEquals !== 'undefined') {
       const value = choice.BooleanEquals;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
       return variable === value;
     }
   },
   BooleanEqualsPath: (context, input, choice) => {
     if ('BooleanEqualsPath' in choice && typeof choice.BooleanEqualsPath !== 'undefined') {
-      const value = selectPath(choice.BooleanEqualsPath, input, context);
-      const variable = selectPath(choice.Variable, input, context);
+      const value = selectRequiredChoicePath(choice.BooleanEqualsPath, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isBooleanChoiceValue(variable) || !isBooleanChoiceValue(value)) return false;
       return variable === value;
     }
   },
   TimestampEquals: (context, input, choice) => {
     if ('TimestampEquals' in choice && typeof choice.TimestampEquals !== 'undefined') {
       const value = choice.TimestampEquals;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isTimestampChoiceValue(variable) || !isTimestampChoiceValue(value)) return false;
       return Date.parse(variable) === Date.parse(value);
     }
   },
   TimestampLessThan: (context, input, choice) => {
     if ('TimestampLessThan' in choice && typeof choice.TimestampLessThan !== 'undefined') {
       const value = choice.TimestampLessThan;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isTimestampChoiceValue(variable) || !isTimestampChoiceValue(value)) return false;
       return Date.parse(variable) < Date.parse(value);
     }
   },
   TimestampGreaterThan: (context, input, choice) => {
     if ('TimestampGreaterThan' in choice && typeof choice.TimestampGreaterThan !== 'undefined') {
       const value = choice.TimestampGreaterThan;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isTimestampChoiceValue(variable) || !isTimestampChoiceValue(value)) return false;
       return Date.parse(variable) > Date.parse(value);
     }
   },
@@ -304,7 +323,8 @@ export const Operators: ChoiceOperators = {
       typeof choice.TimestampLessThanEquals !== 'undefined'
     ) {
       const value = choice.TimestampLessThanEquals;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isTimestampChoiceValue(variable) || !isTimestampChoiceValue(value)) return false;
       return Date.parse(variable) <= Date.parse(value);
     }
   },
@@ -314,21 +334,24 @@ export const Operators: ChoiceOperators = {
       typeof choice.TimestampGreaterThanEquals !== 'undefined'
     ) {
       const value = choice.TimestampGreaterThanEquals;
-      const variable = selectPath(choice.Variable, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isTimestampChoiceValue(variable) || !isTimestampChoiceValue(value)) return false;
       return Date.parse(variable) >= Date.parse(value);
     }
   },
   TimestampEqualsPath: (context, input, choice) => {
     if ('TimestampEqualsPath' in choice && typeof choice.TimestampEqualsPath !== 'undefined') {
-      const value = selectPath(choice.TimestampEqualsPath, input, context);
-      const variable = selectPath(choice.Variable, input, context);
+      const value = selectRequiredChoicePath(choice.TimestampEqualsPath, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isTimestampChoiceValue(variable) || !isTimestampChoiceValue(value)) return false;
       return Date.parse(variable) === Date.parse(value);
     }
   },
   TimestampLessThanPath: (context, input, choice) => {
     if ('TimestampLessThanPath' in choice && typeof choice.TimestampLessThanPath !== 'undefined') {
-      const value = selectPath(choice.TimestampLessThanPath, input, context);
-      const variable = selectPath(choice.Variable, input, context);
+      const value = selectRequiredChoicePath(choice.TimestampLessThanPath, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isTimestampChoiceValue(variable) || !isTimestampChoiceValue(value)) return false;
       return Date.parse(variable) < Date.parse(value);
     }
   },
@@ -337,8 +360,9 @@ export const Operators: ChoiceOperators = {
       'TimestampGreaterThanPath' in choice &&
       typeof choice.TimestampGreaterThanPath !== 'undefined'
     ) {
-      const value = selectPath(choice.TimestampGreaterThanPath, input, context);
-      const variable = selectPath(choice.Variable, input, context);
+      const value = selectRequiredChoicePath(choice.TimestampGreaterThanPath, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isTimestampChoiceValue(variable) || !isTimestampChoiceValue(value)) return false;
       return Date.parse(variable) > Date.parse(value);
     }
   },
@@ -347,8 +371,9 @@ export const Operators: ChoiceOperators = {
       'TimestampLessThanEqualsPath' in choice &&
       typeof choice.TimestampLessThanEqualsPath !== 'undefined'
     ) {
-      const value = selectPath(choice.TimestampLessThanEqualsPath, input, context);
-      const variable = selectPath(choice.Variable, input, context);
+      const value = selectRequiredChoicePath(choice.TimestampLessThanEqualsPath, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isTimestampChoiceValue(variable) || !isTimestampChoiceValue(value)) return false;
       return Date.parse(variable) <= Date.parse(value);
     }
   },
@@ -357,8 +382,9 @@ export const Operators: ChoiceOperators = {
       'TimestampGreaterThanEqualsPath' in choice &&
       typeof choice.TimestampGreaterThanEqualsPath !== 'undefined'
     ) {
-      const value = selectPath(choice.TimestampGreaterThanEqualsPath, input, context);
-      const variable = selectPath(choice.Variable, input, context);
+      const value = selectRequiredChoicePath(choice.TimestampGreaterThanEqualsPath, input, context);
+      const variable = selectRequiredChoicePath(choice.Variable, input, context);
+      if (!isTimestampChoiceValue(variable) || !isTimestampChoiceValue(value)) return false;
       return Date.parse(variable) >= Date.parse(value);
     }
   },
@@ -374,3 +400,11 @@ const stringMatches = (value: string, rule: string): boolean => {
   const testMask = rule.split(/\\\\/).map(replaceAsterisk).join('\\\\');
   return new RegExp(`^${testMask}$`).test(value);
 };
+
+function getOperatorKeys(): Operator[] {
+  return Object.keys(Operators).filter(isOperator);
+}
+
+function isOperator(value: string): value is Operator {
+  return value in Operators;
+}

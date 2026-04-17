@@ -1,0 +1,37 @@
+{
+  "runner": "aws",
+  "id": "004-overwrites-existing-branch",
+  "title": "ResultPath overwrites an existing branch value with the new result",
+  "group": "Feature.ResultPath",
+  "hash": "425ab828f03e88fd6ba0c98115ca11caf0a236d1f150e6a7b647ab1ac2bb7792",
+  "definition": {
+    "StartAt": "OverwriteBranch",
+    "States": {
+      "OverwriteBranch": {
+        "Type": "Pass",
+        "Result": {
+          "status": "replaced"
+        },
+        "ResultPath": "$.detail",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-14",
+    "detail": {
+      "status": "old",
+      "attempts": 2
+    },
+    "untouched": true
+  },
+  "result": {
+    "output": {
+      "requestId": "req-14",
+      "detail": {
+        "status": "replaced"
+      },
+      "untouched": true
+    }
+  }
+}

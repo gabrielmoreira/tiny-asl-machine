@@ -1,0 +1,26 @@
+{
+  "runner": "aws",
+  "id": "011-reject-malformed-object-json",
+  "title": "rejects malformed object JSON syntax",
+  "group": "States.StringToJson",
+  "hash": "0e5db130ddea7c9fca6a5c9dc5da1538f3a76b43da9d926d1d016cb2b62059af",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "{bad json}"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.StringToJson($.json). Cannot convert String to Json in States.StringToJson, caused by: Unexpected character ('b' (code 98)): was expecting double-quote to start field name\n at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 2]"
+  }
+}

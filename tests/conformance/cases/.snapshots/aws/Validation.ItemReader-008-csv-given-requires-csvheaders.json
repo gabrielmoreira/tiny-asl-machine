@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "008-csv-given-requires-csvheaders",
+  "title": "fails validation when CSVHeaderLocation GIVEN is used without CSVHeaders",
+  "group": "Validation.ItemReader",
+  "hash": "baae41e87e06c5c52e008d87fdab2c83e7c609392f2519d8a93f7f9014c5087d",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "CSV",
+            "CSVHeaderLocation": "GIVEN"
+          },
+          "Parameters": {
+            "Bucket": "amzn-s3-demo-bucket",
+            "Key": "dataset/file.csv"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "These fields are required: [CSVHeaders]"
+  }
+}

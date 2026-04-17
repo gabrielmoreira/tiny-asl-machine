@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "003-preserve-empty-between-adjacent-delimiters",
+  "title": "preserves an empty segment between adjacent delimiters",
+  "group": "States.StringSplit",
+  "hash": "8bd29181b1acb831127b0f5b704bf24c53c9a64d938d5b5a866eee6924dc85e8",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, ',')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "a,,b"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "a",
+        "",
+        "b"
+      ]
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "runner": "aws",
+  "id": "007-array-nonmatch",
+  "title": "does not match an array runtime value",
+  "group": "Choice.NumericLessThanEquals",
+  "hash": "fb5c77a6c3edc2a5fa4179b360d99918028b1baaa754caefeaa8cbd19b983d91",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericLessThanEquals": 10,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": [
+      9
+    ]
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

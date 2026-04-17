@@ -1,0 +1,37 @@
+{
+  "runner": "aws",
+  "id": "004-no-default-nonmatch",
+  "title": "fails with States.Runtime when no path comparison matches and no default exists",
+  "group": "Choice.BooleanEqualsPath",
+  "hash": "a2c53893ea702498caa23ffc52bdf19f9866de5f559a2454dc608cadd9febd9b",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "BooleanEqualsPath": "$.right",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": true,
+    "right": false
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

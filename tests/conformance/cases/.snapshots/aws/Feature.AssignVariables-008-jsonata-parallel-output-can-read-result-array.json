@@ -1,0 +1,54 @@
+{
+  "runner": "aws",
+  "id": "008-jsonata-parallel-output-can-read-result-array",
+  "title": "JSONata Parallel Output can read the branch result array",
+  "group": "Feature.AssignVariables",
+  "hash": "21b766b0292fb5d47987934e08cf75d7fc1a4895df14a198f8ba5cde600b4e74",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "FanOut",
+    "States": {
+      "FanOut": {
+        "Type": "Parallel",
+        "Branches": [
+          {
+            "StartAt": "EmitA",
+            "States": {
+              "EmitA": {
+                "Type": "Pass",
+                "Output": "{% {\"branch\": \"A\"} %}",
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "EmitB",
+            "States": {
+              "EmitB": {
+                "Type": "Pass",
+                "Output": "{% {\"branch\": \"B\"} %}",
+                "End": true
+              }
+            }
+          }
+        ],
+        "Output": "{% {\"count\": $count($states.result), \"results\": $states.result} %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "count": 2,
+      "results": [
+        {
+          "branch": "A"
+        },
+        {
+          "branch": "B"
+        }
+      ]
+    }
+  }
+}

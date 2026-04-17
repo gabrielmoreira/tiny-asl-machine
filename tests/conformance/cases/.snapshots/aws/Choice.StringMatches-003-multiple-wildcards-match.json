@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "003-multiple-wildcards-match",
+  "title": "matches a pattern with multiple wildcards",
+  "group": "Choice.StringMatches",
+  "hash": "36c98861829424ddcb768b6e150568f744e8c296a230921ce7e2c85c73ee79e2",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringMatches": "logs-*-*-done",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "multi-wildcard-pattern"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "no-pattern-match"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "logs-2025-04-done"
+  },
+  "result": {
+    "output": {
+      "selected": "multi-wildcard-pattern"
+    }
+  }
+}

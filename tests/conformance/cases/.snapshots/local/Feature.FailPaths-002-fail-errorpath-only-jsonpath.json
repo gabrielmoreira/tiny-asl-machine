@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "002-fail-errorpath-only-jsonpath",
+  "title": "JSONPath Fail can read ErrorPath and still use the default Cause",
+  "group": "Feature.FailPaths",
+  "hash": "b62c32af923db3df7c348fabcb6403f9baf4959fee65896af5a69824e9a95c97",
+  "definition": {
+    "StartAt": "FailState",
+    "States": {
+      "FailState": {
+        "Type": "Fail",
+        "ErrorPath": "$.Error"
+      }
+    }
+  },
+  "input": {
+    "Error": "PathOnlyError"
+  },
+  "result": {
+    "error": "PathOnlyError",
+    "cause": "FAILED"
+  }
+}

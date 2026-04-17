@@ -1,0 +1,38 @@
+{
+  "runner": "aws",
+  "id": "004-choice-rule-empty-string-output-is-honored",
+  "title": "uses explicit empty-string Choice rule Output when a JSONata Condition matches",
+  "group": "Feature.ChoiceJsonata",
+  "hash": "30f5c26fd36cfb1eabc92c3eee2f56150d4b54e1031f9163395f3e6929c8c4b1",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Dispatch",
+    "States": {
+      "Dispatch": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Condition": "{% true %}",
+            "Output": "",
+            "Next": "Done"
+          }
+        ],
+        "Default": "Fallback"
+      },
+      "Done": {
+        "Type": "Pass",
+        "End": true
+      },
+      "Fallback": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-choice-empty-output"
+  },
+  "result": {
+    "output": ""
+  }
+}

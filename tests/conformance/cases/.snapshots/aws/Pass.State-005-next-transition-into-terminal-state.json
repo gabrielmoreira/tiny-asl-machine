@@ -1,0 +1,40 @@
+{
+  "runner": "aws",
+  "id": "005-next-transition-into-terminal-state",
+  "title": "transitions from Pass into a terminal Succeed state",
+  "group": "Pass.State",
+  "hash": "fc1570e3d34e79ec8713f965393f7fd5d77edca97e7fd42423906e167f84b24c",
+  "definition": {
+    "StartAt": "Annotate",
+    "States": {
+      "Annotate": {
+        "Type": "Pass",
+        "Result": {
+          "state": "prepared"
+        },
+        "ResultPath": "$.status",
+        "Next": "Done"
+      },
+      "Done": {
+        "Type": "Succeed"
+      }
+    }
+  },
+  "input": {
+    "jobId": "job-42",
+    "payload": {
+      "step": 1
+    }
+  },
+  "result": {
+    "output": {
+      "jobId": "job-42",
+      "payload": {
+        "step": 1
+      },
+      "status": {
+        "state": "prepared"
+      }
+    }
+  }
+}

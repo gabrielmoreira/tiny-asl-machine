@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "002-smaller-match",
+  "title": "matches when the input is smaller than the rule value",
+  "group": "Choice.NumericLessThanEquals",
+  "hash": "08c9c3bb2994d50012d0614ea0ebc4ae759f579d24e9ee87a79347c2e16882e3",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericLessThanEquals": 10,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 9
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

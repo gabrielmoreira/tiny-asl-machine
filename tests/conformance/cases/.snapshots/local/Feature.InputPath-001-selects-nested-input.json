@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "001-selects-nested-input",
+  "title": "selects a nested branch as the effective state input",
+  "group": "Feature.InputPath",
+  "hash": "c44f9ba4b0505b0a718f1a9080608b9e2c2574e40e5d66982b44babc0f5336b2",
+  "definition": {
+    "StartAt": "InvokeSelected",
+    "States": {
+      "InvokeSelected": {
+        "Type": "Task",
+        "Resource": "local:feature:input-path:echo",
+        "InputPath": "$.payload.order",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-1",
+    "payload": {
+      "order": {
+        "id": "ord-9",
+        "quantity": 2
+      }
+    },
+    "ignored": {
+      "id": "wrong-order"
+    }
+  },
+  "result": {
+    "output": {
+      "id": "ord-9",
+      "quantity": 2
+    }
+  }
+}

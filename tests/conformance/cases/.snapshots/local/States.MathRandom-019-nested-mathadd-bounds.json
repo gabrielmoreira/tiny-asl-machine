@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "019-nested-mathadd-bounds",
+  "title": "uses nested MathAdd calls for both bounds",
+  "group": "States.MathRandom",
+  "hash": "9633495723d391c3fe6f1f74cb6da2c00f98b59fc7dfc4ff66f9fb5fbfaff65a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(States.MathAdd($.base, 1), States.MathAdd($.base, 5), 42)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "base": 0
+  },
+  "result": {
+    "output": {
+      "value": 4
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "023-nested-mathadd-composition",
+  "title": "supports nested MathAdd composition",
+  "group": "States.MathAdd",
+  "hash": "b77a646bf240c7e30487bf10aba6bc5d6105fd495c6e07c3bc29a06f6f7e18cb",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(States.MathAdd($.x, 1), 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "x": 5
+  },
+  "result": {
+    "output": {
+      "value": 8
+    }
+  }
+}

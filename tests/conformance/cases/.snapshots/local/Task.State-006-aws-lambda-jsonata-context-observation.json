@@ -1,0 +1,142 @@
+{
+  "runner": "local",
+  "id": "006-aws-lambda-jsonata-context-observation",
+  "title": "projects JSONata $states.input and $states.context through a task callback payload",
+  "group": "Task.State",
+  "hash": "edce7d410107864cbc5a7238258f57d5b331ee31f50cd9c29a7d76789aa71499",
+  "definition": {
+    "Comment": "Project JSONata Step Functions runtime state through a task callback payload",
+    "QueryLanguage": "JSONata",
+    "StartAt": "Probe",
+    "States": {
+      "Probe": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+        "Arguments": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "const sfn = new aws.sfn.SFNClient({}); await sfn.send(new aws.sfn.SendTaskSuccessCommand({ taskToken, output: JSON.stringify({ payload, event, taskTokenVar: taskToken, contextRequestId: context.awsRequestId }) })); return { callbackSent: true };"
+            },
+            "payload": {
+              "input": "{% $states.input %}",
+              "context": "{% $states.context %}",
+              "inputString": "{% $string($states.input) %}",
+              "contextString": "{% $string($states.context) %}"
+            },
+            "taskToken": "{% $states.context.Task.Token %}"
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "hello": "world",
+    "nested": {
+      "answer": 42
+    }
+  },
+  "result": {
+    "output": {
+      "payload": {
+        "input": {
+          "hello": "world",
+          "nested": {
+            "answer": 42
+          }
+        },
+        "context": {
+          "Resources": {},
+          "Runtime": {},
+          "StateMachine": {
+            "Id": "machine-fc32fb9e-39c7-465e-9943-2fdcbed9075e",
+            "Name": "machine",
+            "QueryLanguage": "JSONata"
+          },
+          "Execution": {
+            "StartTime": "2026-04-16T21:12:10.055Z",
+            "Id": "execution-eb3a6b0d-e68d-4ab7-8db2-432a1eb16027",
+            "Name": "execution",
+            "RoleArn": "machine-role",
+            "Input": {
+              "hello": "world",
+              "nested": {
+                "answer": 42
+              }
+            },
+            "RedriveCount": 0
+          },
+          "VariableScopes": [
+            {}
+          ],
+          "State": {
+            "Name": "Probe",
+            "EnteredTime": "2026-04-16T21:12:10.055Z",
+            "RetryCount": 0
+          },
+          "Task": {
+            "Token": "TaskToken-dc2eb7b1-6c2c-4762-823d-ffa9f5324432"
+          },
+          "StateEntryVariables": {},
+          "Transition": {
+            "End": true
+          }
+        },
+        "inputString": "{\"hello\":\"world\",\"nested\":{\"answer\":42}}",
+        "contextString": "{\"Resources\":{\"invoke\":\"\"},\"Runtime\":{\"now\":\"\",\"sleep\":\"\",\"randomUUID\":\"\",\"random\":\"\",\"hash\":\"\",\"base64Encode\":\"\",\"base64Decode\":\"\"},\"StateMachine\":{\"Id\":\"machine-fc32fb9e-39c7-465e-9943-2fdcbed9075e\",\"Name\":\"machine\",\"QueryLanguage\":\"JSONata\"},\"Execution\":{\"StartTime\":\"2026-04-16T21:12:10.055Z\",\"Id\":\"execution-eb3a6b0d-e68d-4ab7-8db2-432a1eb16027\",\"Name\":\"execution\",\"RoleArn\":\"machine-role\",\"Input\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"RedriveCount\":0},\"VariableScopes\":[{}],\"State\":{\"Name\":\"Probe\",\"EnteredTime\":\"2026-04-16T21:12:10.055Z\",\"RetryCount\":0},\"Task\":{\"Token\":\"TaskToken-dc2eb7b1-6c2c-4762-823d-ffa9f5324432\"},\"StateEntryVariables\":{}}"
+      },
+      "event": {
+        "payload": {
+          "input": {
+            "hello": "world",
+            "nested": {
+              "answer": 42
+            }
+          },
+          "context": {
+            "Resources": {},
+            "Runtime": {},
+            "StateMachine": {
+              "Id": "machine-fc32fb9e-39c7-465e-9943-2fdcbed9075e",
+              "Name": "machine",
+              "QueryLanguage": "JSONata"
+            },
+            "Execution": {
+              "StartTime": "2026-04-16T21:12:10.055Z",
+              "Id": "execution-eb3a6b0d-e68d-4ab7-8db2-432a1eb16027",
+              "Name": "execution",
+              "RoleArn": "machine-role",
+              "Input": {
+                "hello": "world",
+                "nested": {
+                  "answer": 42
+                }
+              },
+              "RedriveCount": 0
+            },
+            "VariableScopes": [
+              {}
+            ],
+            "State": {
+              "Name": "Probe",
+              "EnteredTime": "2026-04-16T21:12:10.055Z",
+              "RetryCount": 0
+            },
+            "Task": {
+              "Token": "TaskToken-dc2eb7b1-6c2c-4762-823d-ffa9f5324432"
+            },
+            "StateEntryVariables": {},
+            "Transition": {
+              "End": true
+            }
+          },
+          "inputString": "{\"hello\":\"world\",\"nested\":{\"answer\":42}}",
+          "contextString": "{\"Resources\":{\"invoke\":\"\"},\"Runtime\":{\"now\":\"\",\"sleep\":\"\",\"randomUUID\":\"\",\"random\":\"\",\"hash\":\"\",\"base64Encode\":\"\",\"base64Decode\":\"\"},\"StateMachine\":{\"Id\":\"machine-fc32fb9e-39c7-465e-9943-2fdcbed9075e\",\"Name\":\"machine\",\"QueryLanguage\":\"JSONata\"},\"Execution\":{\"StartTime\":\"2026-04-16T21:12:10.055Z\",\"Id\":\"execution-eb3a6b0d-e68d-4ab7-8db2-432a1eb16027\",\"Name\":\"execution\",\"RoleArn\":\"machine-role\",\"Input\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"RedriveCount\":0},\"VariableScopes\":[{}],\"State\":{\"Name\":\"Probe\",\"EnteredTime\":\"2026-04-16T21:12:10.055Z\",\"RetryCount\":0},\"Task\":{\"Token\":\"TaskToken-dc2eb7b1-6c2c-4762-823d-ffa9f5324432\"},\"StateEntryVariables\":{}}"
+        },
+        "taskToken": "TaskToken-dc2eb7b1-6c2c-4762-823d-ffa9f5324432"
+      },
+      "taskTokenVar": "TaskToken-dc2eb7b1-6c2c-4762-823d-ffa9f5324432"
+    }
+  }
+}

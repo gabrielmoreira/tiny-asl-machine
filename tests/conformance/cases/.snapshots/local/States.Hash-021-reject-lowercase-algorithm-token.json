@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "021-reject-lowercase-algorithm-token",
+  "title": "rejects lowercase algorithm normalization",
+  "group": "States.Hash",
+  "hash": "552799d72e08647ccf9bd2eac8af2fa735627460c953d98b76b766e19d9e6ec5",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('data', 'sha-256')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Hash('data', 'sha-256'). Invalid arguments in States.Hash, caused by: Unsupported hash algorithm: sha-256"
+  }
+}

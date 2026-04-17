@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "001-empty-array",
+  "title": "Return zero for empty array",
+  "group": "States.ArrayLength",
+  "hash": "e1a1e58e5fe64edb4bad3bdce12cceaa216a744cdcbca6c5d4b50d552765604c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": []
+  },
+  "result": {
+    "output": {
+      "value": 0
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "runner": "aws",
+  "id": "006-csv-pipe-delimiter-materializes-string-records",
+  "title": "ItemReader CSV with PIPE delimiter materializes row objects with string values",
+  "group": "Observation.ItemReader",
+  "hash": "948bdce7cd759dbc31facd7fb35d94a2bc55232a17a36cfb34b1a580dd5df832",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "CSV",
+            "CSVHeaderLocation": "FIRST_ROW",
+            "CSVDelimiter": "PIPE"
+          },
+          "Parameters": {
+            "Bucket": "<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+            "Key": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/csv/pipe.csv"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": [
+      {
+        "name": "Alice",
+        "id": "1"
+      },
+      {
+        "name": "Bob",
+        "id": "2"
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "runner": "local",
+  "id": "005-non-array-map-input-fails",
+  "title": "Map state fails when ItemsPath resolves to a non-array value",
+  "group": "Map.State",
+  "hash": "01e6470222beef1ff8cbe3eec0cbdb38b0f9d56202190d53a3aecb01c679c77c",
+  "definition": {
+    "StartAt": "IterateInvalid",
+    "States": {
+      "IterateInvalid": {
+        "Type": "Map",
+        "ItemsPath": "$.notAList",
+        "Iterator": {
+          "StartAt": "ReturnItem",
+          "States": {
+            "ReturnItem": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "notAList": {
+      "sku": "only-one"
+    }
+  },
+  "result": {
+    "error": "InvalidMapInput",
+    "cause": "Map state input must be an array."
+  }
+}

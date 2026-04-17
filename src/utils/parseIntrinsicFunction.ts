@@ -39,6 +39,32 @@ export interface FnCallExpression {
   readonly arguments: IntrinsicExpression[];
 }
 
+export type IntrinsicFunctionSignature = {
+  minArgs: number;
+  maxArgs: number | null;
+};
+
+export const intrinsicFunctionSignatures: Record<string, IntrinsicFunctionSignature> = {
+  'States.Array': { minArgs: 0, maxArgs: null },
+  'States.ArrayContains': { minArgs: 2, maxArgs: 2 },
+  'States.ArrayGetItem': { minArgs: 2, maxArgs: 2 },
+  'States.ArrayLength': { minArgs: 1, maxArgs: 1 },
+  'States.ArrayPartition': { minArgs: 2, maxArgs: 2 },
+  'States.ArrayRange': { minArgs: 3, maxArgs: 3 },
+  'States.ArrayUnique': { minArgs: 1, maxArgs: 1 },
+  'States.Base64Encode': { minArgs: 1, maxArgs: 1 },
+  'States.Base64Decode': { minArgs: 1, maxArgs: 1 },
+  'States.Format': { minArgs: 1, maxArgs: null },
+  'States.Hash': { minArgs: 2, maxArgs: 2 },
+  'States.JsonMerge': { minArgs: 3, maxArgs: 3 },
+  'States.JsonToString': { minArgs: 1, maxArgs: 1 },
+  'States.MathAdd': { minArgs: 2, maxArgs: 2 },
+  'States.MathRandom': { minArgs: 2, maxArgs: 3 },
+  'States.StringSplit': { minArgs: 2, maxArgs: 2 },
+  'States.StringToJson': { minArgs: 1, maxArgs: 1 },
+  'States.UUID': { minArgs: 0, maxArgs: null },
+};
+
 /**
  * LL(1) parser for StepFunctions intrinsics
  *
@@ -58,7 +84,7 @@ export class IntrinsicParser {
   public parseTopLevelIntrinsic(): TopLevelIntrinsic {
     this.ws();
 
-    let ret;
+    let ret: PathExpression | FnCallExpression;
     if (this.char() === '$') {
       ret = this.parsePath();
     } else if (isAlphaNum(this.char())) {
@@ -213,21 +239,30 @@ export class IntrinsicParser {
     this.ws();
 
     const args = [];
+    let expectingArgument = true;
     while (this.char() !== ')') {
+      if (!expectingArgument) {
+        this.raiseError('expected , or )');
+      }
+
       args.push(this.parseIntrinsic());
       this.ws();
+      expectingArgument = false;
 
       if (this.char() === ',') {
         this.next();
+        this.ws();
+        expectingArgument = true;
+        if (this.char() === ')') {
+          this.raiseError('expected argument after comma');
+        }
         continue;
       } else if (this.char() === ')') {
         continue;
-      } else {
-        this.raiseError('expected , or )');
       }
+      this.raiseError('expected , or )');
     }
     this.next(); // Consume ')'
-
     return {
       type: 'fncall',
       arguments: args,
@@ -338,7 +373,6 @@ export class IntrinsicParser {
 function isAlphaNum(x: string) {
   return x.match(/^[a-zA-Z0-9]$/);
 }
-
 
 function isDigit(x: string) {
   return x >= '0' && x <= '9';

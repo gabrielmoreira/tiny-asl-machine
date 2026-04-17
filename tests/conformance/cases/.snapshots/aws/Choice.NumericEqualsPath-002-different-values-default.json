@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "002-different-values-default",
+  "title": "falls through to Default when the numeric paths resolve to different values",
+  "group": "Choice.NumericEqualsPath",
+  "hash": "8af707752c4d9ffe76728d82ac0d1bd5df37e693c19c6570f6e2aaa958d936a2",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 7,
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

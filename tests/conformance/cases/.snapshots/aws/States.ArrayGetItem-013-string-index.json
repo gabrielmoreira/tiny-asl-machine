@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "013-string-index",
+  "title": "Reject string index type",
+  "group": "States.ArrayGetItem",
+  "hash": "4c649516e71408206398fd5635772164721f91e4f44ebe83b95a6dcf372b4873",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($.arr, '1')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      10,
+      20,
+      30
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.ArrayGetItem($.arr, '1'). Invalid arguments in States.ArrayGetItem"
+  }
+}

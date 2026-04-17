@@ -1,0 +1,63 @@
+{
+  "runner": "aws",
+  "id": "004-contained-or-rule",
+  "title": "supports an And rule that contains an Or rule",
+  "group": "Choice.And",
+  "hash": "0ef61f883af1c7386b7ab36d2c19141da90710084ed8b92e600391c42c1588d5",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "And": [
+              {
+                "Or": [
+                  {
+                    "Variable": "$.tier",
+                    "StringEquals": "gold"
+                  },
+                  {
+                    "Variable": "$.expedited",
+                    "BooleanEquals": true
+                  }
+                ]
+              },
+              {
+                "Variable": "$.amount",
+                "NumericGreaterThan": 50
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "fast-track"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "standard-track"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "tier": "silver",
+    "expedited": true,
+    "amount": 75
+  },
+  "result": {
+    "output": {
+      "selected": "fast-track"
+    }
+  }
+}

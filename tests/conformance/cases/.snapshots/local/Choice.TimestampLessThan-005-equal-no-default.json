@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "005-equal-no-default",
+  "title": "fails with States.Runtime when the timestamps are equal and no default exists",
+  "group": "Choice.TimestampLessThan",
+  "hash": "29b9b962c28bebd8c5f121fcfc982d7233c3235aed14670d9bfa4e911a694a55",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampLessThan": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "2025-01-01T12:00:00.000Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

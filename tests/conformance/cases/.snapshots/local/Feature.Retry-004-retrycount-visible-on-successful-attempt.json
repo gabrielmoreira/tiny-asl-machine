@@ -1,0 +1,47 @@
+{
+  "runner": "local",
+  "id": "004-retrycount-visible-on-successful-attempt",
+  "title": "observes State.RetryCount on the successful retry attempt",
+  "group": "Feature.Retry",
+  "hash": "ad54dff34ff3781d675b73188fb48c3ff8aa7f9659b6c777349b2a3399737e74",
+  "definition": {
+    "StartAt": "InvokeLambdaLikeTask",
+    "States": {
+      "InvokeLambdaLikeTask": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "if (payload.retryCount < 2) throw new Error(`retry-count-${payload.retryCount}`); return { observedRetryCount: payload.retryCount };"
+            },
+            "payload": {
+              "retryCount.$": "$$.State.RetryCount"
+            }
+          }
+        },
+        "ResultSelector": {
+          "observedRetryCount.$": "$.Payload.observedRetryCount"
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 2,
+            "BackoffRate": 2
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "observedRetryCount": 2
+    }
+  }
+}

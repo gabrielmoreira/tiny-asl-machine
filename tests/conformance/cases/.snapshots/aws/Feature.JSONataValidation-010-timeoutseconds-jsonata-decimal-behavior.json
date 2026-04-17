@@ -1,0 +1,26 @@
+{
+  "runner": "aws",
+  "id": "010-timeoutseconds-jsonata-decimal-behavior",
+  "title": "Task TimeoutSeconds with a decimal JSONata value follows the AWS-observed behavior",
+  "group": "Feature.JSONataValidation",
+  "hash": "a72cdba8538368cd0e171416103062e70190da98e14c1e9d595f2eec85b4016f",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:sts:getCallerIdentity",
+        "TimeoutSeconds": "{% 1.6 %}",
+        "Arguments": {},
+        "Output": "{% {\"ok\": true} %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Invoke' (entered at the event id #2). The TimeoutSeconds field cannot be parsed as an integer: 1.6"
+  }
+}

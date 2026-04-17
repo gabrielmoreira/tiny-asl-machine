@@ -1,0 +1,29 @@
+{
+  "runner": "local",
+  "id": "014-uuid-beside-state-input",
+  "title": "composes UUID beside ordinary state input",
+  "group": "States.UUID",
+  "hash": "00530b85f63db72a31f52a2cecfde5f477475223a8e3b4f30b589cde97369e94",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "prefix.$": "$.prefix",
+          "generated.$": "States.UUID()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "prefix": "id"
+  },
+  "result": {
+    "output": {
+      "prefix": "id",
+      "generated": "a2e2cd9c-943a-4ac7-ab77-e176586dd8ae"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "037-parse-object-input-fails",
+  "title": "$parse rejects an object input",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "621e658e554821756b1aae3592b59759d7c1cbe3df95ba69d8c8a62e6de35b52",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $parse($states.input.json) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": {
+      "a": 1
+    }
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $parse($states.input.json). [object Object]"
+  }
+}

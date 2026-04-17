@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "012-non-numeric-start",
+  "title": "rejects a non-numeric start argument",
+  "group": "States.ArrayRange",
+  "hash": "c289d9f7a0e6389b5e23e977fd2e906e879680990c450d78cb7f069676b9abb4",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange('a', 5, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayRange('a', 5, 1). Invalid arguments in States.ArrayRange, caused by: States.ArrayRange expected a number, got string"
+  }
+}

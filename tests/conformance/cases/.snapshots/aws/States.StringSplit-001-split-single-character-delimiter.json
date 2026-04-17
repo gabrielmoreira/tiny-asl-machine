@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "001-split-single-character-delimiter",
+  "title": "splits with a single-character delimiter",
+  "group": "States.StringSplit",
+  "hash": "32d3e056fbd2c3e4e85b21ba5af3767cf22e7b93b36177a12f819446b60ee46b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, ',')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "a,b,c"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "a",
+        "b",
+        "c"
+      ]
+    }
+  }
+}

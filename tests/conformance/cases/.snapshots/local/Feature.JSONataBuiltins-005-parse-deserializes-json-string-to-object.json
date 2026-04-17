@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "005-parse-deserializes-json-string-to-object",
+  "title": "$parse(jsonString) deserializes to its JSON value",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "5af4230ef8e4e3e8f5ab52e0705f2b029c5d9653c0a3546df843fb47ca84672c",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $parse($states.input.json) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "{\"answer\":42,\"items\":[1,2]}"
+  },
+  "result": {
+    "output": {
+      "answer": 42,
+      "items": [
+        1,
+        2
+      ]
+    }
+  }
+}

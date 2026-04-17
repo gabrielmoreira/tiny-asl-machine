@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "021-no-string-bool-coercion",
+  "title": "does not coerce booleans to matching string values",
+  "group": "States.ArrayContains",
+  "hash": "65e02cc35c932afe458d52dee73f6f53774f764f5a1582279ee49d17fbdb1f27",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, true)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      "true",
+      "false",
+      "maybe"
+    ]
+  },
+  "result": {
+    "output": {
+      "value": false
+    }
+  }
+}

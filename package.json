@@ -1,6 +1,6 @@
 {
   "name": "tiny-asl-machine",
-  "version": "0.0.11",
+  "version": "1.0.0",
   "description": "Tiny Amazon State Language machine",
   "author": "Gabriel Moreira",
   "homepage": "https://github.com/gabrielmoreira/tiny-asl-machine",
@@ -23,91 +23,79 @@
     "serverless"
   ],
   "main": "lib/index.js",
-  "module": "lib/index.js",
+  "module": "lib/index.mjs",
   "types": "lib/index.d.ts",
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",
       "require": "./lib/index.js",
-      "import": "./lib/index.js"
+      "import": "./lib/index.mjs"
     }
   },
   "sideEffects": false,
   "files": [
     "lib",
+    "types",
+    "skills",
     "LICENSE"
   ],
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "test": "vitest --no-watch",
-    "test:watch": "vitest --watch",
-    "test:ci": "vitest run",
+    "test": "node --max-old-space-size=8192 --experimental-transform-types ./scripts/run-vitest.ts --suite=all --aws-mode=auto",
+    "test:local": "node --max-old-space-size=8192 --experimental-transform-types ./scripts/run-vitest.ts --suite=all --aws-mode=off",
+    "test:aws": "node --max-old-space-size=8192 --experimental-transform-types ./scripts/run-vitest.ts --suite=all --aws-mode=required",
+    "test:conformance": "node --max-old-space-size=8192 --experimental-transform-types ./scripts/run-vitest.ts --suite=conformance --aws-mode=warn",
+    "test:conformance:local": "node --max-old-space-size=8192 --experimental-transform-types ./scripts/run-vitest.ts --suite=conformance --aws-mode=off",
+    "test:conformance:aws": "node --max-old-space-size=8192 --experimental-transform-types ./scripts/run-vitest.ts --suite=conformance --aws-mode=required",
+    "test:watch": "node --max-old-space-size=8192 --experimental-transform-types ./scripts/run-vitest.ts --suite=all --aws-mode=off --watch",
+    "test:ci": "node --max-old-space-size=8192 --experimental-transform-types ./scripts/run-vitest.ts run --suite=all --aws-mode=off",
+    "aws:create-deployment-config": "node --experimental-transform-types ./scripts/aws-create-deployment-config.ts",
+    "aws:deploy-stack": "node --experimental-transform-types ./scripts/aws-deploy-stack.ts",
+    "aws:remove-stack": "node --experimental-transform-types ./scripts/aws-remove-stack.ts",
     "clean": "rimraf ./lib",
-    "format": "prettier --write .",
-    "lint": "eslint .",
-    "lint:staged": "lint-staged",
-    "build": "pnpm run -s clean && tsc",
+    "format": "vp fmt",
+    "format:check": "vp fmt --check",
+    "lint": "vp lint",
+    "lint:fix": "vp lint --fix",
+    "typecheck": "tsgo -p tsconfig.type-tests.json",
+    "staged": "vp staged",
+    "build": "pnpm run -s clean && node --max-old-space-size=8192 ./node_modules/typescript/bin/tsc && node --max-old-space-size=8192 --experimental-transform-types ./scripts/build-package-exports.ts",
     "prepublishOnly": "pnpm run build && pnpm run test",
-    "prepare": "pnpm simple-git-hooks"
+    "prepare": "vp config"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudformation": "^3.1031.0",
+    "@aws-sdk/client-cloudwatch-logs": "^3.1031.0",
+    "@aws-sdk/client-iam": "^3.1031.0",
+    "@aws-sdk/client-lambda": "^3.1031.0",
+    "@aws-sdk/client-s3": "^3.1031.0",
+    "@aws-sdk/client-sfn": "^3.1031.0",
+    "@aws-sdk/client-sts": "^3.1031.0",
     "@types/debug": "^4.1.12",
     "@types/jsonpath": "^0.2.4",
     "@types/node": "^25.6.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^6.20.0",
-    "eslint": "^8.56.0",
-    "lint-staged": "^16.3.1",
-    "prettier": "^3.2.4",
+    "@types/yazl": "^3.3.0",
+    "@typescript/native-preview": "7.0.0-dev.20260416.2",
+    "liqe": "^3.8.5",
     "rimraf": "^6.1.3",
-    "simple-git-hooks": "^2.9.0",
-    "typescript": "^5.3.3",
-    "vitest": "^4.0.18"
+    "typescript": "^6.0.3",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:",
+    "yazl": "^3.3.1"
   },
   "dependencies": {
     "debug": "^4.3.4",
     "deep-iterator": "^1.1.0",
+    "jsonata": "^2.1.0",
     "jsonpath": "^1.1.1",
     "p-limit": "^7.3.0"
-  },
-  "eslintConfig": {
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/eslint-recommended",
-      "plugin:@typescript-eslint/recommended"
-    ]
-  },
-  "eslintIgnore": [
-    "lib/**/*",
-    "node_modules/**/*"
-  ],
-  "prettier": {
-    "trailingComma": "es5",
-    "tabWidth": 2,
-    "semi": true,
-    "singleQuote": true,
-    "printWidth": 100,
-    "arrowParens": "avoid"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "eslint",
-      "prettier --write"
-    ]
-  },
-  "simple-git-hooks": {
-    "pre-commit": "pnpm run lint:staged"
   },
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=10.0.0"
   },
-  "engineStrict": true
+  "engineStrict": true,
+  "packageManager": "pnpm@10.33.0"
 }

@@ -1,0 +1,47 @@
+{
+  "runner": "local",
+  "id": "001-processor-failure-fails-whole-map",
+  "title": "processor failure causes the whole Map state to fail",
+  "group": "Feature.MapErrors",
+  "hash": "a4b3c4f8f7710383f83e1e4fc6828d8e34a3fc8d77d122845a532906ac9e293e",
+  "definition": {
+    "StartAt": "ProcessItems",
+    "States": {
+      "ProcessItems": {
+        "Type": "Map",
+        "ItemsPath": "$.items",
+        "ResultPath": "$.processed",
+        "Iterator": {
+          "StartAt": "DoWork",
+          "States": {
+            "DoWork": {
+              "Type": "Task",
+              "Resource": "arn:local:feature:map-errors:failure",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "batchId": "batch-map-errors-1",
+    "items": [
+      {
+        "id": "ok-1"
+      },
+      {
+        "id": "broken",
+        "fail": true
+      },
+      {
+        "id": "ok-2"
+      }
+    ]
+  },
+  "result": {
+    "error": "SyntheticMapItemError",
+    "cause": "processor failed for broken"
+  }
+}

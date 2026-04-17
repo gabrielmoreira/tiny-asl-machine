@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "018-reject-single-hash-argument",
+  "title": "rejects single hash argument",
+  "group": "States.Hash",
+  "hash": "557001732034025eac1de1457415b2e67ef87790291461a6d2ac96f83e93742c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('hello')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.Hash('hello'). Invalid arguments in States.Hash"
+  }
+}

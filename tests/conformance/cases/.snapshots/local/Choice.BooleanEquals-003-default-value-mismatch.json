@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "003-default-value-mismatch",
+  "title": "uses the default branch when the boolean value does not match",
+  "group": "Choice.BooleanEquals",
+  "hash": "253bdecb6c3b926e6eab4cbc701b9a76fe209ee779fafc78bf2e753080df6f9d",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.approved",
+            "BooleanEquals": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "approved": false
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

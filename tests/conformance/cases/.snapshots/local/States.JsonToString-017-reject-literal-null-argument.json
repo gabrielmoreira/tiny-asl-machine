@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "017-reject-literal-null-argument",
+  "title": "rejects a literal null argument that is not a path or intrinsic result",
+  "group": "States.JsonToString",
+  "hash": "f729ccc16b19cb689c0f52ccb61c8742da7432063be8c36cacc00191d81144c9",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString(null)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "null"
+    }
+  }
+}

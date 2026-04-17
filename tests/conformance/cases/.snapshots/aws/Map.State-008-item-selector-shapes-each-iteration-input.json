@@ -1,0 +1,58 @@
+{
+  "runner": "aws",
+  "id": "008-item-selector-shapes-each-iteration-input",
+  "title": "ItemSelector shapes each iteration input before entering the iterator",
+  "group": "Map.State",
+  "hash": "7ab2a83f6b5694d346544c6e2ac0e358b7f961b998b344bd0e556b9f06c70a55",
+  "definition": {
+    "StartAt": "AnnotateItems",
+    "States": {
+      "AnnotateItems": {
+        "Type": "Map",
+        "ItemsPath": "$.colors",
+        "ItemSelector": {
+          "position.$": "$$.Map.Item.Index",
+          "color.$": "$$.Map.Item.Value",
+          "region.$": "$.region"
+        },
+        "Iterator": {
+          "StartAt": "EchoAnnotatedItem",
+          "States": {
+            "EchoAnnotatedItem": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "region": "<REDACTED_VAR:REGION>",
+    "colors": [
+      "red",
+      "blue",
+      "green"
+    ]
+  },
+  "result": {
+    "output": [
+      {
+        "color": "red",
+        "position": 0,
+        "region": "<REDACTED_VAR:REGION>"
+      },
+      {
+        "color": "blue",
+        "position": 1,
+        "region": "<REDACTED_VAR:REGION>"
+      },
+      {
+        "color": "green",
+        "position": 2,
+        "region": "<REDACTED_VAR:REGION>"
+      }
+    ]
+  }
+}

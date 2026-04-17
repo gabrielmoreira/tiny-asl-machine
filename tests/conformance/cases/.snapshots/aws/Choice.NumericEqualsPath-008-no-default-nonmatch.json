@@ -1,0 +1,37 @@
+{
+  "runner": "aws",
+  "id": "008-no-default-nonmatch",
+  "title": "fails with States.Runtime when the numeric paths resolve to different values and there is no Default",
+  "group": "Choice.NumericEqualsPath",
+  "hash": "8c3d9e6c7d9df45ac677390f5f46b13b2b07ddb67e34e06156032847f71e449b",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericEqualsPath": "$.right",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 7,
+    "right": 8
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

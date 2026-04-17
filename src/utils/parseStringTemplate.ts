@@ -23,6 +23,8 @@ export class StringTemplateParser {
     while (!this.eof) {
       if (this.char() === '{') {
         this.tokens.push(this.parsePlaceholder());
+      } else if (this.char() === '}') {
+        this.raiseError(`matching '{' not found for '}'`);
       } else if (this.char() === "'") {
         this.next();
         if (!this.eof)
@@ -54,7 +56,9 @@ export class StringTemplateParser {
    */
   private parsePlaceholder(): Placeholder {
     this.consume();
-    if (this.char() !== '}') this.raiseError(`unexpected characters "${this.char()}", expecting }`);
+    if (this.eof || this.char() !== '}') {
+      this.raiseError(`matching '}' not found for '{'`);
+    }
     this.consume();
     return { type: 'placeholder', index: this.placeholders++ };
   }
@@ -68,7 +72,7 @@ export class StringTemplateParser {
   private consumeString(): string {
     const string = new Array<string>();
 
-    while (this.char() !== '{' && this.char() !== "'") {
+    while (this.char() !== '{' && this.char() !== '}' && this.char() !== "'") {
       if (this.char() === '\\') {
         // Advance and add next character literally, whatever it is
         this.consume();

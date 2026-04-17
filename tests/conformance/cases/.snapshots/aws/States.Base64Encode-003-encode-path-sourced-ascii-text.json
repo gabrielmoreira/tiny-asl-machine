@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "003-encode-path-sourced-ascii-text",
+  "title": "encodes path-sourced ASCII text",
+  "group": "States.Base64Encode",
+  "hash": "0b0204af294c6b7eb7382debec4057e34d15076973719d8b4adbc9359acce1ba",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode($.s)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "Data to encode"
+  },
+  "result": {
+    "output": {
+      "value": "RGF0YSB0byBlbmNvZGU="
+    }
+  }
+}

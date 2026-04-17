@@ -1,0 +1,52 @@
+{
+  "runner": "aws",
+  "id": "003-compose-resultselector-resultpath-outputpath",
+  "title": "composes ResultSelector, ResultPath, and OutputPath after task invocation",
+  "group": "Task.State",
+  "hash": "d62148b596b10aa7225d952974d921ab60b998effa08fde8a91a1f4d84674112",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "InputPath": "$.job",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "return { rawId: `job-${payload.jobName}`, metrics: { score: payload.attempt * 10 }, debug: payload };"
+            },
+            "payload": {
+              "jobName.$": "$.name",
+              "attempt.$": "$.attempt"
+            }
+          }
+        },
+        "ResultSelector": {
+          "normalized": {
+            "id.$": "$.Payload.rawId",
+            "score.$": "$.Payload.metrics.score"
+          },
+          "source": "task"
+        },
+        "ResultPath": "$.task",
+        "OutputPath": "$.task.normalized",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "job": {
+      "name": "daily-report",
+      "attempt": 3
+    },
+    "ignored": true
+  },
+  "result": {
+    "output": {
+      "score": 30,
+      "id": "job-daily-report"
+    }
+  }
+}

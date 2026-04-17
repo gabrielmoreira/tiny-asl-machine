@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "003-larger-default",
+  "title": "takes the default branch when the input is larger than the rule value",
+  "group": "Choice.NumericLessThanEquals",
+  "hash": "3d98c35c6d3a2159838961692d81f6f2243460993cf4005e0b8337615f69a3b9",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericLessThanEquals": 10,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 11
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

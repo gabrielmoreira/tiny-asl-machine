@@ -1,0 +1,152 @@
+{
+  "runner": "aws",
+  "id": "006-aws-map-item-context-observation",
+  "title": "observes Map item context through Lambda callback",
+  "group": "Map.State",
+  "hash": "31f7c29a7ac879f135955fb7fbb2ec305a4ab4eb22bcc4b635134dec5c992a19",
+  "definition": {
+    "StartAt": "Iterate",
+    "States": {
+      "Iterate": {
+        "Type": "Map",
+        "ItemsPath": "$.items",
+        "Parameters": {
+          "index.$": "$$.Map.Item.Index",
+          "value.$": "$$.Map.Item.Value",
+          "executionInput.$": "$$.Execution.Input"
+        },
+        "Iterator": {
+          "StartAt": "Probe",
+          "States": {
+            "Probe": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+              "Parameters": {
+                "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+                "Payload": {
+                  "config": {
+                    "script": "const sfn = new aws.sfn.SFNClient({}); await sfn.send(new aws.sfn.SendTaskSuccessCommand({ taskToken, output: JSON.stringify({ payload, event, taskTokenVar: taskToken }) })); return { callbackSent: true };"
+                  },
+                  "payload.$": "$",
+                  "taskToken.$": "$$.Task.Token"
+                }
+              },
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "items": [
+      {
+        "color": "red",
+        "weight": 1
+      },
+      {
+        "color": "blue",
+        "weight": 2
+      }
+    ]
+  },
+  "result": {
+    "output": [
+      {
+        "payload": {
+          "executionInput": {
+            "items": [
+              {
+                "color": "red",
+                "weight": 1
+              },
+              {
+                "color": "blue",
+                "weight": 2
+              }
+            ]
+          },
+          "index": 0,
+          "value": {
+            "color": "red",
+            "weight": 1
+          }
+        },
+        "event": {
+          "config": {
+            "script": "const sfn = new aws.sfn.SFNClient({}); await sfn.send(new aws.sfn.SendTaskSuccessCommand({ taskToken, output: JSON.stringify({ payload, event, taskTokenVar: taskToken }) })); return { callbackSent: true };"
+          },
+          "payload": {
+            "executionInput": {
+              "items": [
+                {
+                  "color": "red",
+                  "weight": 1
+                },
+                {
+                  "color": "blue",
+                  "weight": 2
+                }
+              ]
+            },
+            "index": 0,
+            "value": {
+              "color": "red",
+              "weight": 1
+            }
+          },
+          "taskToken": "AQC4AAAAKgAAAAMAAAAAAAAAAe7xsaUQ72BzxQHPGEtkXaxTrqGRqCSzqDHNdCt35DyxnGamx9yO2LFrQOEU1Whbiw2xe+V/uE3Bpl1rYF89H8z1SkAs89KPd24y3/+ffJzPIly/VqjhJ7zt4JuORcF/HQ5LOo2SNDwWN3JakahmlSVUG9tqUBmqdg==MR/yd5tUEdvK4ulJdQn/MmeGpLQ33oDaYWCv0NXW5xqAYnzVvVrvn2F2hck9ilJahJiR9TMdiTxeXZBmM1MF9A3v6ULIpRFfGPjnlCJgJOI5ZGHZbyDWfRKIf2QZzwWWDkEulPOhpDDuLFyxZZxswCh/6Jm+KS4bdfNZLWhEWqkigrwk+mOew0O+MIVwPJTjbD58nUXDgdpE2JOlq/kgpNJ4RE88pPvGWso/Jc77rHMkRTIAatHoWdWMp0t8CpqtH+gkGd2Duoh9aro5lYSL7ZBy+ldWaQDU+3c+8fFvKpeCrkkn+xJ6jHsEZtlzPSiv0Khz5uAtV5uyRFAVroyqYBx220qZDBcbmXvGaftOMIwaJVVeFX6j5/PRDDdLHHfBAWmAEnVqnUtFmtZjq9E17LX+GF9LRmDSFcfNEcg9VS1F6pXLsYW/JoBbLJW2NTyfA1Z0062jNpzYSvIyyAZYHrgPrb5KuDoG7IVz+bunXRFPQKKe7p6dZ4KIAIZ5oLTO+cKS8osFGKVUqj4t717U"
+        },
+        "taskTokenVar": "AQC4AAAAKgAAAAMAAAAAAAAAAe7xsaUQ72BzxQHPGEtkXaxTrqGRqCSzqDHNdCt35DyxnGamx9yO2LFrQOEU1Whbiw2xe+V/uE3Bpl1rYF89H8z1SkAs89KPd24y3/+ffJzPIly/VqjhJ7zt4JuORcF/HQ5LOo2SNDwWN3JakahmlSVUG9tqUBmqdg==MR/yd5tUEdvK4ulJdQn/MmeGpLQ33oDaYWCv0NXW5xqAYnzVvVrvn2F2hck9ilJahJiR9TMdiTxeXZBmM1MF9A3v6ULIpRFfGPjnlCJgJOI5ZGHZbyDWfRKIf2QZzwWWDkEulPOhpDDuLFyxZZxswCh/6Jm+KS4bdfNZLWhEWqkigrwk+mOew0O+MIVwPJTjbD58nUXDgdpE2JOlq/kgpNJ4RE88pPvGWso/Jc77rHMkRTIAatHoWdWMp0t8CpqtH+gkGd2Duoh9aro5lYSL7ZBy+ldWaQDU+3c+8fFvKpeCrkkn+xJ6jHsEZtlzPSiv0Khz5uAtV5uyRFAVroyqYBx220qZDBcbmXvGaftOMIwaJVVeFX6j5/PRDDdLHHfBAWmAEnVqnUtFmtZjq9E17LX+GF9LRmDSFcfNEcg9VS1F6pXLsYW/JoBbLJW2NTyfA1Z0062jNpzYSvIyyAZYHrgPrb5KuDoG7IVz+bunXRFPQKKe7p6dZ4KIAIZ5oLTO+cKS8osFGKVUqj4t717U"
+      },
+      {
+        "payload": {
+          "executionInput": {
+            "items": [
+              {
+                "color": "red",
+                "weight": 1
+              },
+              {
+                "color": "blue",
+                "weight": 2
+              }
+            ]
+          },
+          "index": 1,
+          "value": {
+            "color": "blue",
+            "weight": 2
+          }
+        },
+        "event": {
+          "config": {
+            "script": "const sfn = new aws.sfn.SFNClient({}); await sfn.send(new aws.sfn.SendTaskSuccessCommand({ taskToken, output: JSON.stringify({ payload, event, taskTokenVar: taskToken }) })); return { callbackSent: true };"
+          },
+          "payload": {
+            "executionInput": {
+              "items": [
+                {
+                  "color": "red",
+                  "weight": 1
+                },
+                {
+                  "color": "blue",
+                  "weight": 2
+                }
+              ]
+            },
+            "index": 1,
+            "value": {
+              "color": "blue",
+              "weight": 2
+            }
+          },
+          "taskToken": "AQC4AAAAKgAAAAMAAAAAAAAAAcjSUB6mHNpJtD7NBtO0Jwyshod6YSsb0kBP8c8dDkgvudliVSMhdsPaKy1u6kRawpP9WDOJJ3F5Qyuz/7QbzFkvYl8AyGQtRZRGTicA1qtpTsV9V9JopAS8q0idesrpuL5OizcXipRavfZOs/RArsutpcSVO+99+g==kZaKUkpTAp7VThMss+4wdq8t+ZKw9kxPOtmc9PDXvqm+dv6dmgvqIjlx4PFtytocsKOmitaiv3QfCMV+rFI4FzVWK++dBJSYfRJLR9kcE3ailMeGQJuyBE+cIw42SCKeycpf8hm5hSedX9y4PvGFG133irKf+sOEsMHokXp5KlwZYd3yoIui6DFp/MoAh/iNoU7215BbaYHMAPQSTS9ORPAUMaBfVvG6RsyDIKNaZEPKMJwFqRnn9/kyZw4mwv8hux03ajqiL7oB5USQE0jHcOPbKpuKqhxwU2GKswujAqEb36ryJVONpqaKQnFO5HHWYUhkMb1enbaOPAzS/O/FuwpEkjfXsTC6DajfnOHad9vTF9SfsAsSFoSKnGMd379w45ERIHwiOnMPZUE0/lm/feCzrp6kHQbRoqRYr9ePryNUp6vHxkUv43e62zCDqR0Lz2qudY872QC9Zk/AFyceC2lz9Vk+QGLWqslw6FhOe/gzWheHt7L/hJ9dYF1LgaTIlAxy6LW9u1cTA/E/YwYg"
+        },
+        "taskTokenVar": "AQC4AAAAKgAAAAMAAAAAAAAAAcjSUB6mHNpJtD7NBtO0Jwyshod6YSsb0kBP8c8dDkgvudliVSMhdsPaKy1u6kRawpP9WDOJJ3F5Qyuz/7QbzFkvYl8AyGQtRZRGTicA1qtpTsV9V9JopAS8q0idesrpuL5OizcXipRavfZOs/RArsutpcSVO+99+g==kZaKUkpTAp7VThMss+4wdq8t+ZKw9kxPOtmc9PDXvqm+dv6dmgvqIjlx4PFtytocsKOmitaiv3QfCMV+rFI4FzVWK++dBJSYfRJLR9kcE3ailMeGQJuyBE+cIw42SCKeycpf8hm5hSedX9y4PvGFG133irKf+sOEsMHokXp5KlwZYd3yoIui6DFp/MoAh/iNoU7215BbaYHMAPQSTS9ORPAUMaBfVvG6RsyDIKNaZEPKMJwFqRnn9/kyZw4mwv8hux03ajqiL7oB5USQE0jHcOPbKpuKqhxwU2GKswujAqEb36ryJVONpqaKQnFO5HHWYUhkMb1enbaOPAzS/O/FuwpEkjfXsTC6DajfnOHad9vTF9SfsAsSFoSKnGMd379w45ERIHwiOnMPZUE0/lm/feCzrp6kHQbRoqRYr9ePryNUp6vHxkUv43e62zCDqR0Lz2qudY872QC9Zk/AFyceC2lz9Vk+QGLWqslw6FhOe/gzWheHt7L/hJ9dYF1LgaTIlAxy6LW9u1cTA/E/YwYg"
+      }
+    ]
+  }
+}

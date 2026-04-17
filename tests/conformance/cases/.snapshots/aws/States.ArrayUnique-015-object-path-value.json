@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "015-object-path-value",
+  "title": "Reject an object value from input path",
+  "group": "States.ArrayUnique",
+  "hash": "45b17874c341f7b5cbe870c1210652adb3f88cd677c1878d907a51e0ffb71732",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.obj)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "obj": {
+      "a": 1
+    }
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.ArrayUnique($.obj). Invalid arguments in States.ArrayUnique"
+  }
+}

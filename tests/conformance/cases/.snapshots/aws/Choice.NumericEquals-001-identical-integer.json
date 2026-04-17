@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "001-identical-integer",
+  "title": "matches an identical integer value",
+  "group": "Choice.NumericEquals",
+  "hash": "6afd533636aa2e0a8cff1d3331b6c768d12dac474223e71abb620e1ad677528e",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericEquals": 42,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 42
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

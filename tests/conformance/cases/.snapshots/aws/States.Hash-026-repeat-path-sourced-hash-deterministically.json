@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "026-repeat-path-sourced-hash-deterministically",
+  "title": "repeats path-sourced hash deterministically",
+  "group": "States.Hash",
+  "hash": "db350a514d5b526f433ed799af2119c1b3c9330b2f38c739e538ed366615278a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash($.s, $.algo)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "Data to encode",
+    "algo": "MD5"
+  },
+  "result": {
+    "output": {
+      "value": "ca405671828a177e26947171bbe1e352"
+    }
+  }
+}

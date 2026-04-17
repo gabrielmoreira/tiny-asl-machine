@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "003-state-level-querylanguage-overrides-machine-default",
+  "title": "allows a Fail state to override the machine query language to JSONata",
+  "group": "Feature.SucceedFailJsonata",
+  "hash": "a0b5b33bd11b4ca9633364ca902c50bbccf2080e4ddf0019ac1b86f003875a23",
+  "definition": {
+    "QueryLanguage": "JSONPath",
+    "StartAt": "FailState",
+    "States": {
+      "FailState": {
+        "Type": "Fail",
+        "QueryLanguage": "JSONata",
+        "Error": "{% $states.input.Error %}",
+        "Cause": "{% $states.input.Cause %}"
+      }
+    }
+  },
+  "input": {
+    "Error": "OverrideJsonataError",
+    "Cause": "override fail cause"
+  },
+  "result": {
+    "error": "OverrideJsonataError",
+    "cause": "override fail cause"
+  }
+}

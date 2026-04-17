@@ -1,4 +1,11 @@
-import type { EndOrNextField, Operator, State, StateType, TopLevelChoiceRule } from './asl';
+import type {
+  EndOrNextField,
+  Operator,
+  QueryLanguage,
+  State,
+  StateType,
+  TopLevelChoiceRule,
+} from './asl';
 
 export type ResourceContext = {
   invoke: (resource: string, payload: unknown) => Promise<unknown>;
@@ -15,6 +22,7 @@ export type StateExecutor = (
 export type StateMachineContext = {
   Id: string;
   Name: string;
+  QueryLanguage?: QueryLanguage;
 };
 
 export type ExecutionContext = {
@@ -23,6 +31,7 @@ export type ExecutionContext = {
   StartTime: string;
   Name: string;
   RoleArn: string;
+  RedriveCount?: number;
 };
 
 export type StateExecutionContext = {
@@ -39,9 +48,9 @@ export type MapStateContext = {
   Item: {
     Index: number;
     Value: unknown;
+    Source?: string;
   };
 };
-
 
 export type RuntimeAdapter = {
   /** Returns current time as ISO 8601 string */
@@ -59,6 +68,7 @@ export type RuntimeAdapter = {
   /** Base64-decodes a string */
   base64Decode: (data: string) => string;
 };
+export type VariableScope = Record<string, unknown>;
 
 export type BaseContext = {
   StateMachine: StateMachineContext;
@@ -66,6 +76,7 @@ export type BaseContext = {
   Resources?: ResourceContext;
   Runtime?: RuntimeAdapter;
   Transition?: EndOrNextField;
+  VariableScopes?: VariableScope[];
 };
 
 export type Context = BaseContext & {
@@ -73,6 +84,7 @@ export type Context = BaseContext & {
   Task?: TaskStateContext;
   Map?: MapStateContext;
   ExecutionError?: ExecutionErrorContext;
+  StateEntryVariables?: VariableScope;
 };
 
 export type StateData = unknown;

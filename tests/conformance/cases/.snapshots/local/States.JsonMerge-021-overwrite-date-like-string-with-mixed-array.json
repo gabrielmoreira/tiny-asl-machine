@@ -1,0 +1,62 @@
+{
+  "runner": "local",
+  "id": "021-overwrite-date-like-string-with-mixed-array",
+  "title": "overwrites a date-like string with a mixed array value in shallow mode",
+  "group": "States.JsonMerge",
+  "hash": "8d36618da934dcaa1d01829bfa2185eab6ece07091dfddcfd53ba4d979cef34a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "payload": "2024-01-01T00:00:00Z",
+      "keep": "left"
+    },
+    "b": {
+      "payload": [
+        null,
+        "",
+        " ",
+        0,
+        1,
+        true,
+        false,
+        [
+          0,
+          1,
+          false
+        ]
+      ]
+    }
+  },
+  "result": {
+    "output": {
+      "value": {
+        "payload": [
+          null,
+          "",
+          " ",
+          0,
+          1,
+          true,
+          false,
+          [
+            0,
+            1,
+            false
+          ]
+        ],
+        "keep": "left"
+      }
+    }
+  }
+}

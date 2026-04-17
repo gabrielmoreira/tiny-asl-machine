@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "004-present-null",
+  "title": "Find present null value",
+  "group": "States.ArrayContains",
+  "hash": "87abefedb0f81b67d049c1c757773b0a91a7047391b654b29c266520fda4309a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, null)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      null,
+      3
+    ]
+  },
+  "result": {
+    "output": {
+      "value": true
+    }
+  }
+}

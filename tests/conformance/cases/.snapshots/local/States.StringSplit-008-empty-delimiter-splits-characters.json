@@ -1,0 +1,29 @@
+{
+  "runner": "local",
+  "id": "008-empty-delimiter-splits-characters",
+  "title": "splits into characters when the delimiter string is empty",
+  "group": "States.StringSplit",
+  "hash": "297ccb3f8cf44582fe035e64d35c09c38a156385d2ec4f430dfa472fa914d2f6",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, '')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "abc"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "abc"
+      ]
+    }
+  }
+}

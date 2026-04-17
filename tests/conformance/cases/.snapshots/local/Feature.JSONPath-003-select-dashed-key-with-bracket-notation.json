@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "003-select-dashed-key-with-bracket-notation",
+  "title": "selects a dashed key with bracket notation",
+  "group": "Feature.JSONPath",
+  "hash": "139b63991ccc7fbd59ff703c281d146d7d8de33712402e1a4c6c3b4f0ac132e5",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "$['delivery-partner'].name"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "delivery-partner": {
+      "name": "dhl",
+      "tier": "priority"
+    }
+  },
+  "result": {
+    "output": {
+      "value": "dhl"
+    }
+  }
+}

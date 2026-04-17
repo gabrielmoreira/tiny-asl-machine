@@ -1,0 +1,40 @@
+{
+  "runner": "local",
+  "id": "007-nested-array",
+  "title": "Find structurally equal nested array",
+  "group": "States.ArrayContains",
+  "hash": "3c30535bb85d0160aa17084b834e538b22ef60dfc0c6f138b061ed615a1ffddf",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, $.target)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      [
+        1,
+        2
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "target": [
+      1,
+      2
+    ]
+  },
+  "result": {
+    "output": {
+      "value": true
+    }
+  }
+}

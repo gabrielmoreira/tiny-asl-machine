@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "016-accept-zero-seed",
+  "title": "accepts a zero seed",
+  "group": "States.MathRandom",
+  "hash": "89e93cb485864d5164a9c1b63aadfe45f67a229ce9ac32c8b097b9d550d7d2ec",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1, 10, 0)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 7
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "runner": "aws",
+  "id": "006-missing-startat-fails-validation",
+  "title": "fails validation when StartAt is missing",
+  "group": "Validation.BasicStructure",
+  "hash": "b8acab8989e10088a7b3982b4ddaad8417fcd4a59789b9c3d289cf98d2fd8f22",
+  "definition": {
+    "States": {
+      "First": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "These fields are required: [StartAt]"
+  }
+}

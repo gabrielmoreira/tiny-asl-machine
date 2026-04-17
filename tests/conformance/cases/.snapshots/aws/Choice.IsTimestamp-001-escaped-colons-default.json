@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "001-escaped-colons-default",
+  "title": "routes to Default for an escaped-colon timestamp string that AWS does not accept",
+  "group": "Choice.IsTimestamp",
+  "hash": "569b3cecd0c6dba4cae72286f03ec7e12b1eafd4c729458407d9bf5826445ea9",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsTimestamp": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "2025-01-01T00%3A00%3A00Z"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

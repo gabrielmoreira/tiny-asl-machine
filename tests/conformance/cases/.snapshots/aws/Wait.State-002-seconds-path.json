@@ -1,0 +1,33 @@
+{
+  "runner": "aws",
+  "id": "002-seconds-path",
+  "title": "reads SecondsPath from input and resumes with the same payload",
+  "group": "Wait.State",
+  "hash": "aa41fd5ea7e9e01b7d445e7dce83f05085fb257f097cdb7b54d96222b134896f",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "SecondsPath": "$.waitSeconds",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "waitSeconds": 1,
+    "job": {
+      "id": "job-7",
+      "ready": true
+    }
+  },
+  "result": {
+    "output": {
+      "waitSeconds": 1,
+      "job": {
+        "id": "job-7",
+        "ready": true
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "003-nested-parameters-failure-surfaces-runtime-error",
+  "title": "surfaces a runtime error when a nested Parameters intrinsic produces the wrong type for its parent intrinsic",
+  "group": "Feature.IntrinsicComposition",
+  "hash": "5d14910c36aa8764f3bd840fc44676fc9051931e036f4aa54176089dbc4de996",
+  "definition": {
+    "StartAt": "FailNestedParameters",
+    "States": {
+      "FailNestedParameters": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength(States.JsonToString($.items))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "items": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayLength(States.JsonToString($.items)). Invalid arguments in States.ArrayLength, caused by: States.ArrayLength expected an array, got string"
+  }
+}

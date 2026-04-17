@@ -1,0 +1,44 @@
+{
+  "runner": "aws",
+  "id": "009-parquet-getobject-remains-aws-only-locally",
+  "title": "ItemReader PARQUET via S3 getObject remains AWS-only in the local runner",
+  "group": "Observation.ItemReader",
+  "hash": "bfb66cebceb80be22deb5beab7e8a900d90fd008536429869ce226ce871ba435",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "PARQUET"
+          },
+          "Parameters": {
+            "Bucket": "<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+            "Key": "dataset/file.parquet"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.ItemReaderFailed",
+    "cause": "The specified S3 object does not exist. | Message from S3: The specified key does not exist. (Service: S3, Status Code: 404, Request ID: J2YJ0K06SW6ZR6BH, Extended Request ID: mzevGg6XfwXUZE/DFzy4/GKY2GeYvQL6QTc3HhtrodE78zFoL/iKMmelzQd9SP9vV7FZfdFjUgfiVBy+yGvlBwc+iPruKc1E) (SDK Attempt Count: 1)"
+  }
+}

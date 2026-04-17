@@ -1,0 +1,43 @@
+{
+  "runner": "aws",
+  "id": "001-partition-splits-array-into-chunks",
+  "title": "$partition([1,2,3,4,5], 2) produces [[1,2],[3,4],[5]]",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "231e03ac895f09bbfa67cb27c59d6b10a38651c7f8abf33a1ce09c8d2ba75419",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $partition($states.input.arr, $states.input.size) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "size": 2
+  },
+  "result": {
+    "output": [
+      [
+        1,
+        2
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        5
+      ]
+    ]
+  }
+}

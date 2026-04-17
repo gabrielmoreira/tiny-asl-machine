@@ -1,0 +1,44 @@
+{
+  "runner": "local",
+  "id": "001-items-jsonata-expression-selects-iteration-array",
+  "title": "Map state Items JSONata expression selects the iteration array",
+  "group": "Feature.MapJsonata",
+  "hash": "91dd975dda6c05921528677e3a359e2b778fedff6b6add182f566460463babd2",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Iterate",
+    "States": {
+      "Iterate": {
+        "Type": "Map",
+        "Items": "{% $states.input.elements %}",
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "INLINE"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "elements": [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  "result": {
+    "output": [
+      "a",
+      "b",
+      "c"
+    ]
+  }
+}

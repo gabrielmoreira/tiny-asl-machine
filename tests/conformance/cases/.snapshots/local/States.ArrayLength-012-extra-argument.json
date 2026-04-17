@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "012-extra-argument",
+  "title": "Reject extra-argument arity",
+  "group": "States.ArrayLength",
+  "hash": "5b9be1482b7baa5afb45b02abb27f718cf92e068863cd84c84d5fe20cb5e9620",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength($.arr, 999)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.ArrayLength expects 1 argument(s) but received 2."
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "024-unseeded-sibling-calls",
+  "title": "observes two unseeded sibling calls independently",
+  "group": "States.MathRandom",
+  "hash": "566c9629562bfab0c99ee2970afe99c4754e5389e88762d5ebc1657589153d1c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "first.$": "States.MathRandom(1, 10)",
+          "second.$": "States.MathRandom(1, 10)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "first": 8,
+      "second": 6
+    }
+  }
+}

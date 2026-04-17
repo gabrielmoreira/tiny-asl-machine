@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "022-reject-hyphenless-algorithm-token",
+  "title": "rejects hyphenless algorithm normalization",
+  "group": "States.Hash",
+  "hash": "c03e5e3368fb42ea8baee052284ac102855dd2fdddeab9f1da9f5239dea62e57",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('data', 'SHA256')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.Hash('data', 'SHA256'). Invalid arguments in States.Hash"
+  }
+}

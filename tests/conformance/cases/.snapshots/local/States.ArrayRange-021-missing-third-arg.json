@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "021-missing-third-arg",
+  "title": "missing third argument fails exact arity validation",
+  "group": "States.ArrayRange",
+  "hash": "f9006345a555276a1fbf33ccd0c8007243854d2490fd0e0c0995c32e6a652245",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(1, 5)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.ArrayRange expects 3 argument(s) but received 2."
+  }
+}

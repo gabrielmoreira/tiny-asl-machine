@@ -1,0 +1,63 @@
+{
+  "runner": "local",
+  "id": "005-nested-and-rule",
+  "title": "supports an Or rule containing a nested And rule",
+  "group": "Choice.Or",
+  "hash": "54b3d974f9c3dcbd7dd03bb8380dff924558f331d3fb946a5aa6ae76ccc35306",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Or": [
+              {
+                "And": [
+                  {
+                    "Variable": "$.status",
+                    "StringEquals": "READY"
+                  },
+                  {
+                    "Variable": "$.verified",
+                    "BooleanEquals": true
+                  }
+                ]
+              },
+              {
+                "Variable": "$.priority",
+                "StringEquals": "urgent"
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "escalate"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "queue"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "status": "READY",
+    "verified": true,
+    "priority": "normal"
+  },
+  "result": {
+    "output": {
+      "selected": "escalate"
+    }
+  }
+}

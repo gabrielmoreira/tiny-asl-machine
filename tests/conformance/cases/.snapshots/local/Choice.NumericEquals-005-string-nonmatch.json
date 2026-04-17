@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "005-string-nonmatch",
+  "title": "does not match a numeric string runtime value",
+  "group": "Choice.NumericEquals",
+  "hash": "889b5400161fec9619776742d6c3d8a0112ebd674711dd9210bcf15eab7bc0ad",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericEquals": 42,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "42"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

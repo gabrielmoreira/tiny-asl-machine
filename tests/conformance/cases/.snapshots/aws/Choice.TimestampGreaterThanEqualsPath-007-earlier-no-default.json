@@ -1,0 +1,37 @@
+{
+  "runner": "aws",
+  "id": "007-earlier-no-default",
+  "title": "fails with States.Runtime when the left timestamp is earlier than the right path timestamp and no default is configured",
+  "group": "Choice.TimestampGreaterThanEqualsPath",
+  "hash": "991e577ca80e6ee9b86fd3535094d185768d591d86b0a4c790202feeb68351cd",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampGreaterThanEqualsPath": "$.right",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "2025-01-01T00:00:00Z",
+    "right": "2025-01-01T00:00:10Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

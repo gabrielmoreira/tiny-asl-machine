@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "001-select-scalar-from-input-path",
+  "title": "selects a scalar from the input path",
+  "group": "Feature.JSONPath",
+  "hash": "f8f32d9e86452d3ae5896f29bd4358b4530e6cafef6fc4c657848191ad2d3685",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "$.count"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "count": 3,
+    "ignored": true
+  },
+  "result": {
+    "output": {
+      "value": 3
+    }
+  }
+}

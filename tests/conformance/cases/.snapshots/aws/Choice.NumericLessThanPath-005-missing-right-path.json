@@ -1,0 +1,44 @@
+{
+  "runner": "aws",
+  "id": "005-missing-right-path",
+  "title": "fails with States.Runtime when the comparison path is missing",
+  "group": "Choice.NumericLessThanPath",
+  "hash": "c1c1c56c3b04849cac192369463b8c7597dc21b99624036b0024eb665210a5b2",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericLessThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 7
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Invalid path '$.right': The choice state's condition path references an invalid value."
+  }
+}

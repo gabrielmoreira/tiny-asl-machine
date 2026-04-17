@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "016-reject-numeric-algorithm-argument",
+  "title": "rejects numeric algorithm argument",
+  "group": "States.Hash",
+  "hash": "df02c500ad36dbc71c23962358f8b8a2648c05c0eb0618a33444366057deba88",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('hello', 123)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Hash('hello', 123). Invalid arguments in States.Hash, caused by: States.Hash expected a string, got number"
+  }
+}

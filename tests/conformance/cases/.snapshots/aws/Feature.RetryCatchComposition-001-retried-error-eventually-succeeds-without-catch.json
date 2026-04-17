@@ -1,0 +1,66 @@
+{
+  "runner": "aws",
+  "id": "001-retried-error-eventually-succeeds-without-catch",
+  "title": "retried error eventually succeeds and Catch does not run",
+  "group": "Feature.RetryCatchComposition",
+  "hash": "e6d4154cd1ac59ecd273f798d507d5bf4575ffce53965c24d00f3b0377bf52cf",
+  "definition": {
+    "StartAt": "InvokeFixture",
+    "States": {
+      "InvokeFixture": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "if (payload.retryCount < 2) throw new Error(`retry-${payload.retryCount}`); return { ok: true, observedRetryCount: payload.retryCount };"
+            },
+            "payload": {
+              "retryCount.$": "$$.State.RetryCount"
+            }
+          }
+        },
+        "ResultSelector": {
+          "ok.$": "$.Payload.ok",
+          "observedRetryCount.$": "$.Payload.observedRetryCount"
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 2,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.caught",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "reached": "catch"
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "observedRetryCount": 2,
+      "ok": true
+    }
+  }
+}

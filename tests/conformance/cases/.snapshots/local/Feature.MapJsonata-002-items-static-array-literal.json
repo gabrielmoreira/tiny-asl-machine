@@ -1,0 +1,43 @@
+{
+  "runner": "local",
+  "id": "002-items-static-array-literal",
+  "title": "Map state Items accepts a static JSON array literal in JSONata mode",
+  "group": "Feature.MapJsonata",
+  "hash": "d90c5c3e36aaecfb2de7ebe502eef9099e08377b55ab261784a4671cee81f9e2",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Iterate",
+    "States": {
+      "Iterate": {
+        "Type": "Map",
+        "Items": [
+          10,
+          20,
+          30
+        ],
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "INLINE"
+          },
+          "StartAt": "Double",
+          "States": {
+            "Double": {
+              "Type": "Pass",
+              "Output": "{% $states.input * $states.input %}",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": [
+      100,
+      400,
+      900
+    ]
+  }
+}

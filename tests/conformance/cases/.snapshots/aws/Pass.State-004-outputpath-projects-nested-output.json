@@ -1,0 +1,37 @@
+{
+  "runner": "aws",
+  "id": "004-outputpath-projects-nested-output",
+  "title": "projects a nested branch of the Pass output with OutputPath",
+  "group": "Pass.State",
+  "hash": "8fd8b8b63f8a32e203fb04951ecec02bd77d5ff139fd4dc89348c5835200a6d3",
+  "definition": {
+    "StartAt": "BuildEnvelope",
+    "States": {
+      "BuildEnvelope": {
+        "Type": "Pass",
+        "Result": {
+          "envelope": {
+            "customer": {
+              "id": "cust-9",
+              "tier": "gold"
+            },
+            "request": {
+              "region": "us-east-1"
+            }
+          }
+        },
+        "OutputPath": "$.envelope.customer",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "ignored": true
+  },
+  "result": {
+    "output": {
+      "id": "cust-9",
+      "tier": "gold"
+    }
+  }
+}

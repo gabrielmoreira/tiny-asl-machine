@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "006-null-inverse-default",
+  "title": "treats explicit null as present when IsPresent is false",
+  "group": "Choice.IsPresent",
+  "hash": "c3ecc4918ef4839b5b17e59eed25c18d70d9b5bc12e1a897b499b6d205e10493",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsPresent": false,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": null
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

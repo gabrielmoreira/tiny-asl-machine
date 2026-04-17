@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "005-nested-call",
+  "title": "Compose nested States.Array calls",
+  "group": "States.Array",
+  "hash": "065820cf0f0b9d3f171490fb779f311c81bd48509c84b64ad5cb0c2a3827a5c9",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array(1, States.Array(2, 3))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        1,
+        [
+          2,
+          3
+        ]
+      ]
+    }
+  }
+}

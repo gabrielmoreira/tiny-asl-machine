@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "005-task-outputpath-projects-subfield",
+  "title": "Task OutputPath can project a nested subfield from the task result",
+  "group": "Feature.TaskShapes",
+  "hash": "6ba7d0995529ed019260c8ab593264df82e26af2d7c4402cbcb275eaaaf8ead2",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:task-shapes:projected-result",
+        "OutputPath": "$.payload.customer",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-35"
+  },
+  "result": {
+    "output": {
+      "id": "cust-22",
+      "tier": "pro"
+    }
+  }
+}

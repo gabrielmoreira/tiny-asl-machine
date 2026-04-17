@@ -1,0 +1,41 @@
+{
+  "runner": "aws",
+  "id": "006-replace-array-values-in-shallow-mode",
+  "title": "replaces array values wholesale in shallow mode",
+  "group": "States.JsonMerge",
+  "hash": "b78f854d899444dbcad85b6184eeff982cc5ff95687ffc491b9b20b231f9c7fe",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "list": [
+        1,
+        2
+      ]
+    },
+    "b": {
+      "list": [
+        3
+      ]
+    }
+  },
+  "result": {
+    "output": {
+      "value": {
+        "list": [
+          3
+        ]
+      }
+    }
+  }
+}

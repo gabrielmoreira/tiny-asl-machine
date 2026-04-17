@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "016-reject-missing-closing-parenthesis",
+  "title": "rejects a missing closing parenthesis",
+  "group": "States.UUID",
+  "hash": "ba2048773b5f81a83a563a0767f5f0da438043f24317ca798eb608a9b970b2ec",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID("
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: unexpected end of string at index 12 in \"States.UUID(\""
+  }
+}

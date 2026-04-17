@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "004-parse-numeric-json",
+  "title": "parses numeric JSON text",
+  "group": "States.StringToJson",
+  "hash": "267846952b6da4995b750c85df6a741820e6e5f567b4ab8ef31d420a64bc9d4c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "123"
+  },
+  "result": {
+    "output": {
+      "value": 123
+    }
+  }
+}

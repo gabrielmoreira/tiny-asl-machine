@@ -1,0 +1,41 @@
+{
+  "runner": "aws",
+  "id": "001-singleton-partitions",
+  "title": "chunk size 1 creates singleton partitions",
+  "group": "States.ArrayPartition",
+  "hash": "b18d3ecbb22ac4da6c4cf3039de3ddcfe6511de9012f3e491315690c39b80642",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ]
+      ]
+    }
+  }
+}

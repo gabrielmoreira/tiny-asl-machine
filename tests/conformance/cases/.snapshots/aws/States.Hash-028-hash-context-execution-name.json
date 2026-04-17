@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "028-hash-context-execution-name",
+  "title": "hashes AWS execution name from context",
+  "group": "States.Hash",
+  "hash": "3c859d7260b5108ecc172f616b1409fb18f37f54f7360fa4ef737d5021e3ecc7",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash($$.Execution.Name, 'SHA-256')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "20797436d977f16bcbb57f3e403f879f8bc5f9b49c7f33b1643c765277abdd40"
+    }
+  }
+}

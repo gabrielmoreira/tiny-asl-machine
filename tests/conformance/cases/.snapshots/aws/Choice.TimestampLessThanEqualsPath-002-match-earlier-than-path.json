@@ -1,0 +1,48 @@
+{
+  "runner": "aws",
+  "id": "002-match-earlier-than-path",
+  "title": "matches when the left timestamp is earlier than the right path timestamp",
+  "group": "Choice.TimestampLessThanEqualsPath",
+  "hash": "8c16e2c1c5cae2f82ca36d2fc0272eb53091ec3c3eae807ea1b9d00d1e38e746",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.window.start",
+            "TimestampLessThanEqualsPath": "$.window.end",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "window": {
+      "start": "2025-01-01T00:00:00Z",
+      "end": "2025-01-01T00:05:00Z"
+    }
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

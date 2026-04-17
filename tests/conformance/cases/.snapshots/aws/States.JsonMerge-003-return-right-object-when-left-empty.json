@@ -1,0 +1,32 @@
+{
+  "runner": "aws",
+  "id": "003-return-right-object-when-left-empty",
+  "title": "returns the right object when the left object is empty",
+  "group": "States.JsonMerge",
+  "hash": "6df2fe6a1075a3578364b64ed25c94b800320c4e7c51e378a85a72f00700cce9",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {},
+    "b": {
+      "x": 1
+    }
+  },
+  "result": {
+    "output": {
+      "value": {
+        "x": 1
+      }
+    }
+  }
+}

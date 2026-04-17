@@ -1,0 +1,21 @@
+{
+  "runner": "local",
+  "id": "006-missing-inputpath-produces-undefined-output",
+  "title": "treats a missing InputPath selection as undefined output locally",
+  "group": "Feature.JSONPath",
+  "hash": "e1a4df10102de9e3cbc73ac63df70d4e72956141f86d3dc16fd51eb246dc538d",
+  "definition": {
+    "StartAt": "SelectMissing",
+    "States": {
+      "SelectMissing": {
+        "Type": "Pass",
+        "InputPath": "$.missing",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "present": "value"
+  },
+  "result": {}
+}

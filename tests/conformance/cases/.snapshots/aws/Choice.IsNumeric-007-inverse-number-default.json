@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "007-inverse-number-default",
+  "title": "returns Default for numeric values when IsNumeric is false",
+  "group": "Choice.IsNumeric",
+  "hash": "b5baac3ec04b639a9dafff03e54aa4c0597c102e9e8672075eee2483b2a208d7",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsNumeric": false,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": -7
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "016-missing-argument",
+  "title": "Reject missing argument arity",
+  "group": "States.ArrayUnique",
+  "hash": "51771048dd9f2f2be84959322fcdb2fe5d1faae369a8522372e20309da827288",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.ArrayUnique expects 1 argument(s) but received 0."
+  }
+}

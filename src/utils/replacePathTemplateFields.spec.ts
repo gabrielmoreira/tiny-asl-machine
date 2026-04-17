@@ -1,236 +1,167 @@
 import type { Context } from '../../types';
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { replacePathTemplateFields } from './replacePathTemplateFields';
 
+const awsJsonPathContext = {
+  Execution: {
+    Id: 'arn:aws:states:us-east-1:123456789012:execution:MyStateMachine:exec-abc-123',
+    Name: 'exec-abc-123',
+    Input: {},
+    RoleArn: 'arn:aws:iam::123456789012:role/StepFunctionsRole',
+    StartTime: '2025-01-01T00:00:00.000Z',
+    RedriveCount: 0,
+  },
+  StateMachine: {
+    Id: 'arn:aws:states:us-east-1:123456789012:stateMachine:MyStateMachine',
+    Name: 'MyStateMachine',
+    QueryLanguage: 'JSONPath',
+  },
+  State: {
+    Name: 'TestState',
+    EnteredTime: '2025-01-01T00:00:01.000Z',
+    RetryCount: 0,
+  },
+  Task: {
+    Token: 'TaskToken-abc',
+  },
+} as unknown as Context;
+
+const awsJsonataContext = {
+  ...awsJsonPathContext,
+  StateMachine: {
+    ...awsJsonPathContext.StateMachine,
+    QueryLanguage: 'JSONata',
+  },
+} as unknown as Context;
+
 describe('replacePathTemplateFields', () => {
-  const awsContext = (<Context>{
-    Execution: {
-      Id: 'arn:aws:states:us-east-1:123456789012:execution:MyStateMachine:exec-abc-123',
-      Name: 'exec-abc-123',
-      Input: {},
-      RoleArn: 'arn:aws:iam::123456789012:role/StepFunctionsRole',
-      StartTime: '2025-01-01T00:00:00.000Z',
-    },
-    StateMachine: {
-      Id: 'arn:aws:states:us-east-1:123456789012:stateMachine:MyStateMachine',
-      Name: 'MyStateMachine',
-    },
-    State: {
-      Name: 'TestState',
-      EnteredTime: '2025-01-01T00:00:01.000Z',
-      RetryCount: 0,
-    },
-  }) as unknown as Context;
-
-  describe('basic path resolution', () => {
-    it('replaces a single template field from input and renames the key', () => {
-      // Given
-      const template = {
+  it('replaces JSONPath .$ fields and renames the key', async () => {
+    const result = await replacePathTemplateFields(
+      {
         'name.$': '$.user.name',
-      };
-      const input = {
-        user: {
-          name: 'Alice',
+      },
+      {
+        user: { name: 'Alice' },
+      },
+      awsJsonPathContext
+    );
+
+    expect(result).toStrictEqual({
+      name: 'Alice',
+    });
+  });
+
+  it('evaluates a top-level JSONata string template', async () => {
+    const result = await replacePathTemplateFields(
+      '{% {"hello": $states.input.user.name, "retry": $states.context.State.RetryCount} %}',
+      {
+        user: { name: 'Alice' },
+      },
+      awsJsonataContext
+    );
+
+    expect(result).toStrictEqual({
+      hello: 'Alice',
+      retry: 0,
+    });
+  });
+
+  it('supports JSONPath .$ keys and nested JSONata strings in the same object', async () => {
+    const result = await replacePathTemplateFields(
+      {
+        'name.$': '$.user.name',
+        meta: {
+          executionId: '{% $states.context.Execution.Id %}',
+          retryCount: '{% $states.context.State.RetryCount %}',
         },
-      };
-      // When
-      const result = replacePathTemplateFields(template, input, awsContext);
-      // Then
-      expect(result).toStrictEqual({
-        name: 'Alice',
-      });
-    });
+      },
+      {
+        user: { name: 'Alice' },
+      },
+      awsJsonataContext
+    );
 
-    it('returns undefined for a missing input path while still renaming the key', () => {
-      // Given
-      const template = {
-        'missing.$': '$.user.nickname',
-      };
-      const input = {
-        user: {
-          name: 'Alice',
-        },
-      };
-      // When
-      const result = replacePathTemplateFields(template, input, awsContext);
-      // Then
-      expect(result).toStrictEqual({
-        missing: undefined,
-      });
+    expect(result).toStrictEqual({
+      name: 'Alice',
+      meta: {
+        executionId: 'arn:aws:states:us-east-1:123456789012:execution:MyStateMachine:exec-abc-123',
+        retryCount: 0,
+      },
     });
   });
 
-  describe('context path resolution', () => {
-    it('resolves values from the Step Functions context object', () => {
-      // Given
-      const template = {
-        'execId.$': '$$.Execution.Id',
-      };
-      // When
-      const result = replacePathTemplateFields(template, {}, awsContext);
-      // Then
-      expect(result).toStrictEqual({
-        execId: 'arn:aws:states:us-east-1:123456789012:execution:MyStateMachine:exec-abc-123',
-      });
+  it('passes result and errorOutput bindings into nested JSONata values', async () => {
+    const result = await replacePathTemplateFields(
+      {
+        payload: '{% $states.result.Payload %}',
+        payloadString: '{% $string($states.result.Payload) %}',
+        error: '{% $states.errorOutput %}',
+      },
+      {},
+      awsJsonataContext,
+      {
+        Payload: { ok: true },
+      },
+      {
+        Error: 'Boom',
+        Cause: 'Failure',
+      }
+    );
+
+    expect(result).toStrictEqual({
+      payload: { ok: true },
+      payloadString: '{"ok":true}',
+      error: {
+        Error: 'Boom',
+        Cause: 'Failure',
+      },
     });
   });
 
-  describe('intrinsic functions', () => {
-    it('evaluates intrinsic functions before assigning the renamed key', () => {
-      // Given
-      const template = {
-        'greeting.$': "States.Format('Hello {}', $.name)",
-      };
-      const input = {
-        name: 'Alice',
-      };
-      // When
-      const result = replacePathTemplateFields(template, input, awsContext);
-      // Then
-      expect(result).toStrictEqual({
-        greeting: 'Hello Alice',
-      });
-    });
+  it('keeps JSONata wrapper strings literal in JSONPath contexts', async () => {
+    const result = await replacePathTemplateFields(
+      {
+        literal: '{% $states.input.answer %}',
+        plain: 'hello',
+      },
+      { answer: 42 },
+      awsJsonPathContext
+    );
 
-    it('throws when a template path expression is not a string', () => {
-      // Given
-      const template = {
-        'broken.$': 123,
-      };
-      // When / Then
-      expect(() => replacePathTemplateFields(template, {}, awsContext)).toThrow(
-        /JSON Path should be a string/
-      );
+    expect(result).toStrictEqual({
+      literal: '{% $states.input.answer %}',
+      plain: 'hello',
     });
   });
 
-  describe('nested objects', () => {
-    it('replaces nested template fields deeply without affecting sibling keys', () => {
-      // Given
-      const template = {
-        outer: {
-          'inner.$': '$.val',
-          sibling: 'keep-me',
-        },
-      };
-      const input = {
-        val: 42,
-      };
-      // When
-      const result = replacePathTemplateFields(template, input, awsContext);
-      // Then
-      expect(result).toStrictEqual({
-        outer: {
-          inner: 42,
-          sibling: 'keep-me',
-        },
-      });
-    });
+  it('returns non-template literals unchanged', async () => {
+    await expect(
+      replacePathTemplateFields('hello', { answer: 42 }, awsJsonPathContext)
+    ).resolves.toBe('hello');
+    await expect(replacePathTemplateFields(7, { answer: 42 }, awsJsonPathContext)).resolves.toBe(7);
+    await expect(replacePathTemplateFields(null, { answer: 42 }, awsJsonPathContext)).resolves.toBe(
+      null
+    );
   });
 
-  describe('mixed keys', () => {
-    it('preserves static keys while resolving dynamic template keys', () => {
-      // Given
-      const template = {
-        static: 'unchanged',
-        'dynamic.$': '$.x',
-      };
-      const input = {
-        x: 'resolved',
-      };
-      // When
-      const result = replacePathTemplateFields(template, input, awsContext);
-      // Then
-      expect(result).toStrictEqual({
-        static: 'unchanged',
-        dynamic: 'resolved',
-      });
-    });
-  });
+  it('does not mutate the original template object', async () => {
+    const template = {
+      nested: {
+        'value.$': '$.answer',
+      },
+    };
 
-  describe('templates without path fields', () => {
-    it('passes through objects with no .$ keys unchanged', () => {
-      // Given
-      const template = {
-        a: 1,
-        b: 2,
-      };
-      // When
-      const result = replacePathTemplateFields(template, {}, awsContext);
-      // Then
-      expect(result).toStrictEqual({
-        a: 1,
-        b: 2,
-      });
-    });
-  });
+    const result = await replacePathTemplateFields(template, { answer: 99 }, awsJsonPathContext);
 
-  describe('array values', () => {
-    it('assigns arrays returned from path selection without modification', () => {
-      // Given
-      const template = {
-        'arr.$': '$.items',
-      };
-      const input = {
-        items: ['first', 'second', { nested: true }],
-      };
-      // When
-      const result = replacePathTemplateFields(template, input, awsContext);
-      // Then
-      expect(result).toStrictEqual({
-        arr: ['first', 'second', { nested: true }],
-      });
+    expect(result).toStrictEqual({
+      nested: {
+        value: 99,
+      },
     });
-  });
-
-  describe('multiple template keys', () => {
-    it('resolves multiple .$ keys in the same object', () => {
-      // Given
-      const template = {
-        'a.$': '$.x',
-        'b.$': '$.y',
-      };
-      const input = {
-        x: 'value-x',
-        y: 'value-y',
-      };
-      // When
-      const result = replacePathTemplateFields(template, input, awsContext);
-      // Then
-      expect(result).toStrictEqual({
-        a: 'value-x',
-        b: 'value-y',
-      });
-    });
-  });
-
-  describe('immutability', () => {
-    it('does not mutate the original template object', () => {
-      // Given
-      const template = {
-        static: 'unchanged',
-        nested: {
-          'value.$': '$.answer',
-        },
-      };
-      const input = {
-        answer: 99,
-      };
-      // When
-      const result = replacePathTemplateFields(template, input, awsContext);
-      // Then
-      expect(result).toStrictEqual({
-        static: 'unchanged',
-        nested: {
-          value: 99,
-        },
-      });
-      expect(template).toStrictEqual({
-        static: 'unchanged',
-        nested: {
-          'value.$': '$.answer',
-        },
-      });
+    expect(template).toStrictEqual({
+      nested: {
+        'value.$': '$.answer',
+      },
     });
   });
 });

@@ -1,0 +1,35 @@
+{
+  "runner": "local",
+  "id": "008-serialize-context-sourced-value",
+  "title": "serializes a value sourced from execution input context",
+  "group": "States.JsonToString",
+  "hash": "8a41094ee05e54eb89c02017a28cd46147842e43067c315fe3ba8e173fa2d84a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($$.Execution.Input.payload)",
+          "raw.$": "$$.Execution.Input.payload"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "payload": {
+      "from": "execution-input",
+      "n": 1
+    }
+  },
+  "result": {
+    "output": {
+      "value": "{\"from\":\"execution-input\",\"n\":1}",
+      "raw": {
+        "from": "execution-input",
+        "n": 1
+      }
+    }
+  }
+}

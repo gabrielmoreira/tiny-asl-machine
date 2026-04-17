@@ -1,0 +1,35 @@
+{
+  "runner": "local",
+  "id": "010-nested-object-array",
+  "title": "Search nested intrinsic-produced object array",
+  "group": "States.ArrayContains",
+  "hash": "81be1e65d6a8483a003bac50df4026277ece7f1d68aaf5b539e1fd9ed1f993fe",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains(States.Array($.obj1, $.obj2), $.target)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "obj1": {
+      "a": 1
+    },
+    "obj2": {
+      "b": 2
+    },
+    "target": {
+      "b": 2
+    }
+  },
+  "result": {
+    "output": {
+      "value": true
+    }
+  }
+}

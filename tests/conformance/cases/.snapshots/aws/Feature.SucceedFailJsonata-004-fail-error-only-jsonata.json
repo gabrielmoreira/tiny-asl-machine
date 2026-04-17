@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "004-fail-error-only-jsonata",
+  "title": "allows a JSONata Fail state with Error only",
+  "group": "Feature.SucceedFailJsonata",
+  "hash": "2b605341cda6d52ef7d7b2ff77312e98e7c30deedd1290d3f61ce392a4a5aafa",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "FailState",
+    "States": {
+      "FailState": {
+        "Type": "Fail",
+        "Error": "{% $states.input.Error %}"
+      }
+    }
+  },
+  "input": {
+    "Error": "ErrorOnlyJsonataFail"
+  },
+  "result": {
+    "error": "ErrorOnlyJsonataFail",
+    "cause": "FAILED"
+  }
+}

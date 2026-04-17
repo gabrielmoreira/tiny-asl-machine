@@ -1,0 +1,29 @@
+{
+  "runner": "aws",
+  "id": "002-format-mixed-scalar-placeholders",
+  "title": "formats multiple placeholders with mixed scalar arguments",
+  "group": "States.Format",
+  "hash": "9c3000751546c6f26ed45937673f7fae0b08e893df8ad68a171324359d0f5b24",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('{} {} {}', $.a, $.b, $.c)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": "x",
+    "b": 2,
+    "c": true
+  },
+  "result": {
+    "output": {
+      "value": "x 2 true"
+    }
+  }
+}

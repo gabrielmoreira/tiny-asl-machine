@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "024-very-large-chunk",
+  "title": "very large positive chunk size still returns one chunk",
+  "group": "States.ArrayPartition",
+  "hash": "db21bec03a0d57019ea7614ac154d24883c4a274f4a3f090919c6cc6b0d8aeb8",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 2147483647)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        [
+          1,
+          2,
+          3
+        ]
+      ]
+    }
+  }
+}

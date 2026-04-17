@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "007-boolean-stringish-default",
+  "title": "does not match a boolean runtime value even when the rule looks string-equivalent",
+  "group": "Choice.StringEquals",
+  "hash": "71eae72df01f647a008397b006a05d9b7a49c257f638b8e2ae4006f9df7eb888",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringEquals": "true",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": true
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

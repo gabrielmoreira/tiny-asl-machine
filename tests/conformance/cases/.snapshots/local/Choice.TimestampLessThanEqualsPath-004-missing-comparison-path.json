@@ -1,0 +1,44 @@
+{
+  "runner": "local",
+  "id": "004-missing-comparison-path",
+  "title": "fails with States.Runtime when the comparison path is missing",
+  "group": "Choice.TimestampLessThanEqualsPath",
+  "hash": "21ee97b84f39f30bf89f0701a805c13959f6d2559371a83110557ef6b40fb31a",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampLessThanEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "2025-01-01T00:00:10Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid path '$.right': The choice state's condition path references an invalid value."
+  }
+}

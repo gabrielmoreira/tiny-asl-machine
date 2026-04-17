@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "003-greater-default",
+  "title": "takes the default branch when the input is greater than the rule value",
+  "group": "Choice.NumericLessThan",
+  "hash": "f0082c6fd6595206035b6a2bc188d59546b038d827984c84661168bb15161859",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericLessThan": 10,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 11
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

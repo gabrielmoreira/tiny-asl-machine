@@ -1,0 +1,76 @@
+{
+  "runner": "aws",
+  "id": "002-retries-exhaust-before-catch-recovery",
+  "title": "retries exhaust and Catch runs afterward",
+  "group": "Feature.RetryCatchComposition",
+  "hash": "68d153c837c20d193ef1492922a9f2648d09f656e5e8dd6815d939419969dc1a",
+  "definition": {
+    "StartAt": "InvokeFixture",
+    "States": {
+      "InvokeFixture": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "throw new Error(`exhausted-${payload.requestId}`);"
+            },
+            "payload": {
+              "requestId.$": "$.requestId"
+            }
+          }
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 1,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.retriedError",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "status": "caught-after-exhaustion"
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-retry-catch-2",
+    "job": {
+      "id": "job-2"
+    }
+  },
+  "result": {
+    "output": {
+      "requestId": "req-retry-catch-2",
+      "job": {
+        "id": "job-2"
+      },
+      "retriedError": {
+        "Error": "Error",
+        "Cause": "{\"errorType\":\"Error\",\"errorMessage\":\"exhausted-req-retry-catch-2\",\"trace\":[\"Error: exhausted-req-retry-catch-2\",\"    at eval (eval at handler (file:///var/task/index.mjs:44:25), <anonymous>:4:7)\",\"    at BufferedInvokeProcessor.handler (file:///var/task/index.mjs:55:16)\",\"    at BufferedInvokeProcessor.processInvoke (file:///var/runtime/index.mjs:1092:33)\",\"    at file:///var/runtime/index.mjs:1178:98\",\"    at InvokeStoreSingle.run (file:///var/runtime/index.mjs:83:12)\",\"    at _Runtime.runWithInvokeContext (file:///var/runtime/index.mjs:1191:24)\",\"    at async _Runtime.processSingleConcurrent (file:///var/runtime/index.mjs:1178:7)\",\"    at async _Runtime.start (file:///var/runtime/index.mjs:1165:7)\",\"    at async ignition (file:///var/runtime/index.mjs:1634:5)\"]}"
+      },
+      "recovery": {
+        "status": "caught-after-exhaustion"
+      }
+    }
+  }
+}

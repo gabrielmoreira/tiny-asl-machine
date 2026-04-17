@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "018-reject-null-first-argument",
+  "title": "rejects a null first argument",
+  "group": "States.StringSplit",
+  "hash": "a45b2eecc8a1ab33e57ef4b65835223b3c160274adda2b51359d77193dcd3d94",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, $.d)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": null,
+    "d": ","
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.StringSplit($.str, $.d). Invalid arguments in States.StringSplit"
+  }
+}

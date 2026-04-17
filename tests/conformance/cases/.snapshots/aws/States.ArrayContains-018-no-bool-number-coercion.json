@@ -1,0 +1,32 @@
+{
+  "runner": "aws",
+  "id": "018-no-bool-number-coercion",
+  "title": "does not coerce booleans to matching numeric primitives",
+  "group": "States.ArrayContains",
+  "hash": "065c194b0948fc6a48d6c6a2b19ebb401069b23f3ed3b7f623c01a9e2597c86c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      0,
+      1,
+      -1,
+      -1.5
+    ]
+  },
+  "result": {
+    "output": {
+      "value": false
+    }
+  }
+}

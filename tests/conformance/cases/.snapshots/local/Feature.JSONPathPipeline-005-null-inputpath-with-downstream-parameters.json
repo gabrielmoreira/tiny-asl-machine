@@ -1,0 +1,40 @@
+{
+  "runner": "local",
+  "id": "005-null-inputpath-with-downstream-parameters",
+  "title": "documents current local InputPath null behavior when downstream Parameters still run",
+  "group": "Feature.JSONPathPipeline",
+  "hash": "c3f41c2de397c9336be2571b7b7bebcde3697c0cde0c8d2d08eeeb9a734a8928",
+  "definition": {
+    "StartAt": "BuildFromNullInputPath",
+    "States": {
+      "BuildFromNullInputPath": {
+        "Type": "Pass",
+        "InputPath": null,
+        "Parameters": {
+          "customerId.$": "$.request.customer.id",
+          "traceId.$": "$.meta.traceId",
+          "mode": "local-characterization"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "meta": {
+      "traceId": "trace-null"
+    },
+    "request": {
+      "customer": {
+        "id": "cust-null"
+      }
+    },
+    "ignored": true
+  },
+  "result": {
+    "output": {
+      "mode": "local-characterization",
+      "customerId": "cust-null",
+      "traceId": "trace-null"
+    }
+  }
+}

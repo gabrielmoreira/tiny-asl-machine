@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "009-partition-zero-chunk-size-fails",
+  "title": "$partition rejects a zero chunk size",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "e1d4633c5d592108446be77faf3d05fee4c407b8226848186edd2c271f1e4791",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $partition($states.input.arr, $states.input.size) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ],
+    "size": 0
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "JSONata expression evaluated to undefined: $partition($states.input.arr, $states.input.size)"
+  }
+}

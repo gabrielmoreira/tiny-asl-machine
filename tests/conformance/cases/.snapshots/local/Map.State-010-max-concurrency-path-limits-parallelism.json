@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "010-max-concurrency-path-limits-parallelism",
+  "title": "MaxConcurrencyPath limits local Map parallelism using parent input",
+  "group": "Map.State",
+  "hash": "1c2895344660c624fd0659d9aa09a96cff61392a0c1931236d8cf868b6700e92",
+  "definition": {
+    "StartAt": "Iterate",
+    "States": {
+      "Iterate": {
+        "Type": "Map",
+        "ItemsPath": "$.items",
+        "MaxConcurrencyPath": "$.limits.map",
+        "Iterator": {
+          "StartAt": "Observe",
+          "States": {
+            "Observe": {
+              "Type": "Task",
+              "Resource": "arn:local:map:max-concurrency",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "items": [
+      1,
+      2,
+      3
+    ],
+    "limits": {
+      "map": 1
+    }
+  },
+  "result": {
+    "output": [
+      1,
+      2,
+      3
+    ]
+  }
+}

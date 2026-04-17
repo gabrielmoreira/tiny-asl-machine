@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "017-reject-missing-hash-arguments",
+  "title": "rejects missing hash arguments",
+  "group": "States.Hash",
+  "hash": "f41e3719147b68d8c7c8fae0ec1f2050246a16f4c1dd2a0fe2d04a7e38a5089c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.Hash(). Invalid arguments in States.Hash"
+  }
+}

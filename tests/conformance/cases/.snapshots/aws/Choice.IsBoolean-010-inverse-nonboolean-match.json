@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "010-inverse-nonboolean-match",
+  "title": "matches a non-boolean value when IsBoolean is false",
+  "group": "Choice.IsBoolean",
+  "hash": "4b6fdaad8069d7dce4cd115eec11a35e4a84322308d5e21326354f387e5c8ddb",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsBoolean": false,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "nope"
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "016-reject-object-input",
+  "title": "rejects object input instead of a string",
+  "group": "States.StringToJson",
+  "hash": "b22d83bac335b576e36e9286629e8b9f70c5453a707cb74e735e15fd6a220102",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": {
+      "a": 1
+    }
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.StringToJson($.json). Invalid arguments in States.StringToJson"
+  }
+}

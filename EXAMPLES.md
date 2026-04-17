@@ -1,18 +1,17 @@
 # Examples
 
-This file contains practical examples of how to use Tiny ASL Machine for testing Step Functions state machines.
+Short, test-shaped examples for Tiny ASL Machine.
 
-See also: [tests/](tests/) for runnable test examples.
+Use this file when you want fast patterns.
+Use `tests/` for the full runnable cases.
 
-## Quick Start Examples
+## 1. Pass-through
 
-### 1. Simple Pass-Through State
+```ts
+import { run, type StateDefinition } from 'tiny-asl-machine';
 
-```typescript
-import { run } from 'tiny-asl-machine';
-
-const definition = {
-  Comment: 'A minimal state machine',
+// Given
+const definition: StateDefinition = {
   StartAt: 'PassThrough',
   States: {
     PassThrough: {
@@ -21,23 +20,23 @@ const definition = {
     },
   },
 };
+const input = { message: 'Hello' };
 
-const result = await run({ definition }, { message: 'Hello' });
-// Result: { message: 'Hello' }
+// When
+const result = await run({ definition }, input);
+
+// Then
+expect(result).toEqual({ message: 'Hello' });
 ```
 
-### 2. Task with Mocked Service
+## 2. Task with a mocked resource
 
-```typescript
-import { run } from 'tiny-asl-machine';
+```ts
+import { run, type StateDefinition } from 'tiny-asl-machine';
 import { vi } from 'vitest';
 
-const mockPaymentService = vi.fn().mockResolvedValue({ 
-  transactionId: 'TXN-123',
-  status: 'approved' 
-});
-
-const definition = {
+// Given
+const definition: StateDefinition = {
   StartAt: 'ProcessPayment',
   States: {
     ProcessPayment: {
@@ -48,7 +47,13 @@ const definition = {
     },
   },
 };
+const mockPaymentService = vi.fn().mockResolvedValue({
+  transactionId: 'TXN-123',
+  status: 'approved',
+});
+const input = { orderId: 'ORD-123', amount: 99.99 };
 
+// When
 const result = await run(
   {
     definition,
@@ -57,86 +62,136 @@ const result = await run(
         if (resource === 'arn:aws:lambda:us-east-1:123456789012:function:ProcessPayment') {
           return mockPaymentService(payload);
         }
+        throw new Error(`Unexpected resource: ${resource}`);
       },
     },
   },
-  { orderId: 'ORD-123', amount: 99.99 }
+  input
 );
 
-// Result: { 
-//   orderId: 'ORD-123', 
-//   amount: 99.99,
-//   transaction: { transactionId: 'TXN-123', status: 'approved' }
-// }
+// Then
+expect(mockPaymentService).toHaveBeenCalledWith(input);
+expect(result).toEqual({
+  orderId: 'ORD-123',
+  amount: 99.99,
+  transaction: {
+    transactionId: 'TXN-123',
+    status: 'approved',
+  },
+});
 ```
 
-### 3. Choice State with Branching
+## 3. Same lambda called twice with different responses
 
-```typescript
-import { run } from 'tiny-asl-machine';
+```ts
+import { run, type StateDefinition } from 'tiny-asl-machine';
+import { vi } from 'vitest';
 
-const definition = {
+// Given
+const definition: StateDefinition = {
+  StartAt: 'FirstCall',
+  States: {
+    FirstCall: {
+      Type: 'Task',
+      Resource: 'arn:aws:lambda:us-east-1:123456789012:function:GetStatus',
+      ResultPath: '$.first',
+      Next: 'SecondCall',
+    },
+    SecondCall: {
+      Type: 'Task',
+      Resource: 'arn:aws:lambda:us-east-1:123456789012:function:GetStatus',
+      ResultPath: '$.second',
+      End: true,
+    },
+  },
+};
+const mockStatus = vi
+  .fn()
+  .mockResolvedValueOnce({ status: 'pending' })
+  .mockResolvedValueOnce({ status: 'complete' });
+const input = { orderId: 'ORD-123' };
+
+// When
+const result = await run(
+  {
+    definition,
+    resourceContext: {
+      invoke: async resource => {
+        if (resource === 'arn:aws:lambda:us-east-1:123456789012:function:GetStatus') {
+          return mockStatus();
+        }
+        throw new Error(`Unexpected resource: ${resource}`);
+      },
+    },
+  },
+  input
+);
+
+// Then
+expect(result).toEqual({
+  orderId: 'ORD-123',
+  first: { status: 'pending' },
+  second: { status: 'complete' },
+});
+expect(mockStatus).toHaveBeenCalledTimes(2);
+```
+
+## 4. Choice branching
+
+```ts
+import { run, type StateDefinition } from 'tiny-asl-machine';
+
+// Given
+const definition: StateDefinition = {
   StartAt: 'CheckAmount',
   States: {
     CheckAmount: {
       Type: 'Choice',
       Choices: [
-        {
-          Variable: '$.amount',
-          NumericGreaterThan: 1000,
-          Next: 'HighValueOrder',
-        },
-        {
-          Variable: '$.amount',
-          NumericGreaterThanEquals: 100,
-          Next: 'StandardOrder',
-        },
+        { Variable: '$.amount', NumericGreaterThan: 1000, Next: 'HighValue' },
+        { Variable: '$.amount', NumericGreaterThanEquals: 100, Next: 'Standard' },
       ],
-      Default: 'SmallOrder',
+      Default: 'Small',
     },
-    HighValueOrder: {
-      Type: 'Pass',
-      Result: 'Requires approval',
-      End: true,
-    },
-    StandardOrder: {
-      Type: 'Pass',
-      Result: 'Auto-approved',
-      End: true,
-    },
-    SmallOrder: {
-      Type: 'Pass',
-      Result: 'Direct shipment',
-      End: true,
-    },
+    HighValue: { Type: 'Pass', Result: 'Requires approval', End: true },
+    Standard: { Type: 'Pass', Result: 'Auto-approved', End: true },
+    Small: { Type: 'Pass', Result: 'Direct shipment', End: true },
   },
 };
 
-// Test each branch
-expect(await run({ definition }, { amount: 5000 })).toBe('Requires approval');
-expect(await run({ definition }, { amount: 500 })).toBe('Auto-approved');
-expect(await run({ definition }, { amount: 25 })).toBe('Direct shipment');
+// When
+const high = await run({ definition }, { amount: 5000 });
+const standard = await run({ definition }, { amount: 500 });
+const small = await run({ definition }, { amount: 25 });
+
+// Then
+expect(high).toBe('Requires approval');
+expect(standard).toBe('Auto-approved');
+expect(small).toBe('Direct shipment');
 ```
 
-### 4. Error Handling with Catch
+## 5. Catch for a handled failure
 
-```typescript
-import { run } from 'tiny-asl-machine';
-import { vi } from 'vitest';
+```ts
+import { run, type StateDefinition } from 'tiny-asl-machine';
 
-const mockRiskyService = vi.fn()
-  .mockRejectedValueOnce(new Error('Database connection failed'))
-  .mockResolvedValueOnce({ data: 'success' });
+class PaymentRetryableError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'PaymentRetryableError';
+  }
+}
 
-const definition = {
+// Given
+const definition: StateDefinition = {
   StartAt: 'AttemptTask',
   States: {
     AttemptTask: {
       Type: 'Task',
-      Resource: 'arn:aws:lambda:function:Risky',
+      Resource: 'arn:aws:lambda:us-east-1:123456789012:function:Risky',
       Catch: [
         {
-          ErrorEquals: ['Error'],
+          ErrorEquals: ['PaymentRetryableError'],
           Next: 'HandleError',
           ResultPath: '$.error',
         },
@@ -147,99 +202,95 @@ const definition = {
       Type: 'Pass',
       Parameters: {
         'original.$': '$.error',
-        'retryMessage': 'Operation failed, will retry',
+        retryMessage: 'Operation failed, will retry',
       },
       End: true,
     },
   },
 };
-
-// First call fails, caught
-const result1 = await run(
+const input = {};
+// When
+const result = await run(
   {
     definition,
     resourceContext: {
-      invoke: mockRiskyService,
+      invoke: async () => {
+        throw new PaymentRetryableError('Database connection failed');
+      },
     },
   },
-  {}
+  input
 );
 
-expect(result1.original.Error).toBe('Error');
-expect(result1.original.Cause).toBe('Database connection failed');
+// Then
+expect(result.original.Error).toBe('PaymentRetryableError');
+expect(result.original.Cause).toBe('Database connection failed');
+expect(result.retryMessage).toBe('Operation failed, will retry');
 ```
 
-### 5. Map State for Batch Processing
+## 6. Map for batch processing
 
-```typescript
-import { run } from 'tiny-asl-machine';
+```ts
+import { run, type StateDefinition } from 'tiny-asl-machine';
 import { vi } from 'vitest';
 
-const mockProcessor = vi.fn()
-  .mockImplementation(async (item) => ({
-    ...item,
-    processed: true,
-    timestamp: new Date().toISOString(),
-  }));
-
-const definition = {
+// Given
+const definition: StateDefinition = {
   StartAt: 'ProcessBatch',
   States: {
     ProcessBatch: {
       Type: 'Map',
       ItemsPath: '$.items',
-      MaxConcurrency: 2,
       Iterator: {
         StartAt: 'ProcessItem',
         States: {
           ProcessItem: {
             Type: 'Task',
-            Resource: 'arn:aws:lambda:function:ProcessItem',
+            Resource: 'arn:aws:lambda:us-east-1:123456789012:function:ProcessItem',
             End: true,
           },
         },
       },
       ResultPath: '$.results',
-      Next: 'Success',
-    },
-    Success: {
-      Type: 'Succeed',
+      End: true,
     },
   },
 };
+const mockProcessor = vi.fn(async item => ({ ...item, processed: true }));
+const input = {
+  items: [
+    { id: 1, name: 'Item 1' },
+    { id: 2, name: 'Item 2' },
+  ],
+};
 
+// When
 const result = await run(
   {
     definition,
     resourceContext: {
-      invoke: mockProcessor,
+      invoke: async (_, payload) => mockProcessor(payload),
     },
   },
-  {
-    items: [
-      { id: 1, name: 'Item 1' },
-      { id: 2, name: 'Item 2' },
-      { id: 3, name: 'Item 3' },
-    ],
-  }
+  input
 );
 
-// Check all items were processed
-expect(result.results).toHaveLength(3);
-expect(result.results[0].processed).toBe(true);
-expect(mockProcessor).toHaveBeenCalledTimes(3);
+// Then
+expect(mockProcessor).toHaveBeenCalledTimes(2);
+expect(result.results).toEqual([
+  { id: 1, name: 'Item 1', processed: true },
+  { id: 2, name: 'Item 2', processed: true },
+]);
 ```
 
-### 6. Parallel Execution
+## 7. Parallel execution
 
-```typescript
-import { run } from 'tiny-asl-machine';
+```ts
+import { run, type StateDefinition } from 'tiny-asl-machine';
 import { vi } from 'vitest';
 
-const mockBranchA = vi.fn().mockResolvedValue({ branch: 'A', result: 'Success' });
-const mockBranchB = vi.fn().mockResolvedValue({ branch: 'B', result: 'Success' });
-
-const definition = {
+// Given
+const definition: StateDefinition = {
   StartAt: 'ExecuteParallel',
   States: {
     ExecuteParallel: {
@@ -250,7 +301,7 @@ const definition = {
           States: {
             BranchA: {
               Type: 'Task',
-              Resource: 'arn:aws:lambda:function:BranchA',
+              Resource: 'arn:aws:lambda:us-east-1:123456789012:function:BranchA',
               End: true,
             },
           },
@@ -260,7 +311,7 @@ const definition = {
           States: {
             BranchB: {
               Type: 'Task',
-              Resource: 'arn:aws:lambda:function:BranchB',
+              Resource: 'arn:aws:lambda:us-east-1:123456789012:function:BranchB',
               End: true,
             },
           },
@@ -270,21 +321,30 @@ const definition = {
     },
   },
 };
+const mockBranchA = vi.fn().mockResolvedValue({ branch: 'A', result: 'Success' });
+const mockBranchB = vi.fn().mockResolvedValue({ branch: 'B', result: 'Success' });
+const input = {};
 
+// When
 const result = await run(
   {
     definition,
     resourceContext: {
-      invoke: async (resource, payload) => {
-        if (resource === 'arn:aws:lambda:function:BranchA') return mockBranchA();
-        if (resource === 'arn:aws:lambda:function:BranchB') return mockBranchB();
+      invoke: async resource => {
+        if (resource === 'arn:aws:lambda:us-east-1:123456789012:function:BranchA') {
+          return mockBranchA();
+        }
+        if (resource === 'arn:aws:lambda:us-east-1:123456789012:function:BranchB') {
+          return mockBranchB();
+        }
+        throw new Error(`Unexpected resource: ${resource}`);
       },
     },
   },
-  {}
+  input
 );
 
-// Both branches execute in parallel
+// Then
 expect(mockBranchA).toHaveBeenCalled();
 expect(mockBranchB).toHaveBeenCalled();
 expect(result).toEqual([
@@ -293,13 +353,13 @@ expect(result).toEqual([
 ]);
 ```
 
-### 7. Wait State
+## 8. Wait with deterministic runtime
 
-```typescript
-import { run } from 'tiny-asl-machine';
-import { vi } from 'vitest';
+```ts
+import { createTestRuntime, run, type StateDefinition } from 'tiny-asl-machine';
 
-const definition = {
+// Given
+const definition: StateDefinition = {
   StartAt: 'WaitBefore',
   States: {
     WaitBefore: {
@@ -314,217 +374,59 @@ const definition = {
     },
   },
 };
+const runtime = createTestRuntime();
+const input = {};
 
-// Use fake timers for testing
-vi.useFakeTimers();
-vi.spyOn(globalThis, 'setTimeout');
+// When
+const result = await run({ definition, runtime }, input);
 
-const promise = run({ definition }, {});
-
-// Advance time
-vi.advanceTimersByTime(5000);
-
-const result = await promise;
+// Then
 expect(result).toBe('Done waiting');
-
-vi.useRealTimers();
 ```
 
-### 8. Intrinsic Functions
+## 9. Intrinsic functions in Parameters
 
-```typescript
-import { run } from 'tiny-asl-machine';
+```ts
+import { run, type StateDefinition } from 'tiny-asl-machine';
 
-const definition = {
+// Given
+const definition: StateDefinition = {
   StartAt: 'UseIntrinsics',
   States: {
     UseIntrinsics: {
       Type: 'Pass',
       Parameters: {
         'greeting.$': "States.Format('Hello, {}!', $.name)",
-        'jsonString.$': "States.JsonToString($.data)",
-        'parsed.$': "States.StringToJson($.jsonInput)",
-        'items.$': "States.Array($.first, $.second, $.third)",
+        'jsonString.$': 'States.JsonToString($.data)',
+        'parsed.$': 'States.StringToJson($.jsonInput)',
+        'items.$': 'States.Array($.first, $.second, $.third)',
       },
       End: true,
     },
   },
 };
-
-const result = await run({ definition }, {
+const input = {
   name: 'Alice',
   data: { user: 'bob', role: 'admin' },
   jsonInput: '{"x":1,"y":2}',
   first: 'a',
   second: 'b',
   third: 'c',
-});
+};
 
+// When
+const result = await run({ definition }, input);
+
+// Then
 expect(result.greeting).toBe('Hello, Alice!');
 expect(result.jsonString).toBe('{"user":"bob","role":"admin"}');
 expect(result.parsed).toEqual({ x: 1, y: 2 });
 expect(result.items).toEqual(['a', 'b', 'c']);
 ```
 
-### 9. Complex Real-World Example: Order Processing
+## Good next steps
 
-```typescript
-import { run } from 'tiny-asl-machine';
-import { vi } from 'vitest';
-
-const definition = {
-  Comment: 'Process an e-commerce order',
-  StartAt: 'ValidateOrder',
-  States: {
-    ValidateOrder: {
-      Type: 'Task',
-      Resource: 'arn:aws:lambda:function:ValidateOrder',
-      Next: 'IsValid',
-      Catch: [
-        {
-          ErrorEquals: ['ValidationError'],
-          Next: 'OrderRejected',
-          ResultPath: '$.validationError',
-        },
-      ],
-    },
-    IsValid: {
-      Type: 'Choice',
-      Choices: [
-        {
-          Variable: '$.isValid',
-          BooleanEquals: true,
-          Next: 'ProcessPayment',
-        },
-      ],
-      Default: 'OrderRejected',
-    },
-    ProcessPayment: {
-      Type: 'Task',
-      Resource: 'arn:aws:lambda:function:ProcessPayment',
-      Retry: [
-        {
-          ErrorEquals: ['States.TaskFailed'],
-          IntervalSeconds: 2,
-          MaxAttempts: 3,
-          BackoffRate: 2.0,
-        },
-      ],
-      Catch: [
-        {
-          ErrorEquals: ['PaymentFailed'],
-          Next: 'OrderRejected',
-          ResultPath: '$.paymentError',
-        },
-      ],
-      ResultPath: '$.payment',
-      Next: 'FulfillOrder',
-    },
-    FulfillOrder: {
-      Type: 'Task',
-      Resource: 'arn:aws:lambda:function:FulfillOrder',
-      End: true,
-    },
-    OrderRejected: {
-      Type: 'Fail',
-      Error: 'OrderRejected',
-      Cause: 'Order could not be processed',
-    },
-  },
-};
-
-// Test successful order
-const mockValidate = vi.fn().mockResolvedValue({ isValid: true });
-const mockPayment = vi.fn().mockResolvedValue({ status: 'approved', txnId: 'TXN123' });
-const mockFulfill = vi.fn().mockResolvedValue({ shippingId: 'SHIP123' });
-
-const result = await run(
-  {
-    definition,
-    resourceContext: {
-      invoke: async (resource, payload) => {
-        if (resource.includes('ValidateOrder')) return mockValidate(payload);
-        if (resource.includes('ProcessPayment')) return mockPayment(payload);
-        if (resource.includes('FulfillOrder')) return mockFulfill(payload);
-      },
-    },
-  },
-  {
-    orderId: 'ORD-001',
-    customerId: 'CUST-123',
-    items: [{ sku: 'ITEM1', qty: 2 }],
-    total: 99.99,
-  }
-);
-
-expect(result.payment.status).toBe('approved');
-expect(result.shippingId).toBe('SHIP123');
-```
-
-## Running the Examples
-
-```bash
-# All examples (they're in tests/)
-pnpm test
-
-# Specific example
-pnpm test -- --grep "Order Processing"
-
-# Watch mode
-pnpm test:watch
-```
-
-## Learning Path
-
-Start with these in order:
-
-1. ✅ Simple Pass-Through (understand basic structure)
-2. ✅ Task with Mock (understand mocking pattern)
-3. ✅ Choice State (understand branching)
-4. ✅ Error Handling (understand Catch blocks)
-5. ✅ Map State (understand iteration)
-6. ✅ Parallel (understand concurrency)
-7. ✅ Wait State (understand timing)
-8. ✅ Intrinsic Functions (understand transformations)
-9. ✅ Complex Example (understand real patterns)
-
-## Tips for Success
-
-1. **Test one behavior at a time** - Use separate test cases
-2. **Mock external dependencies** - Focus on state machine logic
-3. **Use clear variable names** - Makes tests readable
-4. **Document your assumptions** - Help future maintainers
-5. **Test error paths** - Not just happy paths
-
-## Common Patterns
-
-### Mocking Multiple Calls
-```typescript
-const mock = vi.fn()
-  .mockResolvedValueOnce({ status: 'pending' })
-  .mockResolvedValueOnce({ status: 'complete' });
-```
-
-### Testing Conditionals
-```typescript
-const definition = { /* state machine */ };
-
-// Test each branch
-for (const value of [10, 100, 1000]) {
-  const result = await run({ definition }, { amount: value });
-  // Assert for each value
-}
-```
-
-### Fake Timers for Wait
-```typescript
-vi.useFakeTimers();
-const promise = run({ definition }, {});
-vi.advanceTimersByTime(5000);
-const result = await promise;
-vi.useRealTimers();
-```
-
----
-
-**For more information, see [README.md](README.md) and [CONTRIBUTING.md](CONTRIBUTING.md)**
+- [README.md](README.md) for the main package overview
+- [FAQ.md](FAQ.md) for short answers
+- [ASL_COMPATIBILITY.md](ASL_COMPATIBILITY.md) for support details
+- `skills/write-local-state-machine-tests/SKILL.md` for a testing playbook

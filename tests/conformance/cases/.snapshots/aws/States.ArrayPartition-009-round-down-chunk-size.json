@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "009-round-down-chunk-size",
+  "title": "rounds 2.4 down to chunk size 2 before partitioning",
+  "group": "States.ArrayPartition",
+  "hash": "bbe2409b4a0cf911eba07d2c1dac00257e4d572633bd772ebdd39eaeb1e5ecfd",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 2.4)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          5
+        ]
+      ]
+    }
+  }
+}

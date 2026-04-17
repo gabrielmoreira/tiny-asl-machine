@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "019-reject-trailing-characters",
+  "title": "rejects trailing characters after a valid call",
+  "group": "States.UUID",
+  "hash": "14d3b94f0abbe9b63d951e407d67a10fd8fd58fd89259d2a3749a66c2377bbbf",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID() trailing"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: unexpected trailing characters at index 14 in \"States.UUID() trailing\""
+  }
+}

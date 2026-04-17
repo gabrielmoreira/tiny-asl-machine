@@ -1,0 +1,200 @@
+{
+  "runner": "aws",
+  "id": "007-aws-observe-catcher-ordering",
+  "title": "observes whether AWS chooses the first matching catcher",
+  "group": "Feature.Catch",
+  "hash": "a1ef7cdcbf73e9c3961b27c38e72180673fbc3e9a0ace9cd40ae8bc23532a5be",
+  "definition": {
+    "StartAt": "InvokeMissingService",
+    "States": {
+      "InvokeMissingService": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:s3:headBucket",
+        "Parameters": {
+          "Bucket": "tiny-asl-machine-observation-bucket-should-not-exist"
+        },
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "S3.NoSuchBucketException"
+            ],
+            "ResultPath": "$.firstError",
+            "Next": "RecoveredByFirst"
+          },
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.secondError",
+            "Next": "RecoveredBySecond"
+          }
+        ],
+        "End": true
+      },
+      "RecoveredByFirst": {
+        "Type": "Pass",
+        "Result": {
+          "winner": "first"
+        },
+        "ResultPath": "$.resolution",
+        "End": true
+      },
+      "RecoveredBySecond": {
+        "Type": "Pass",
+        "Result": {
+          "winner": "second"
+        },
+        "ResultPath": "$.resolution",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-catch-order"
+  },
+  "result": {
+    "output": {
+      "requestId": "req-catch-order",
+      "firstError": {
+        "Error": "S3.NoSuchBucketException",
+        "Cause": "(Service: S3, Status Code: 404, Request ID: YBTPMMKZRZRDZDC4, Extended Request ID: Chg7WSxIf+vJ3GqOE95uVQGGsY4guzHMd77Gv2asYG1tVGXK1PgXcyqhVPRLeir+S8b9xH2FQlM=) (SDK Attempt Count: 1) (Service: S3, Status Code: 404, Request ID: YBTPMMKZRZRDZDC4, Extended Request ID: Chg7WSxIf+vJ3GqOE95uVQGGsY4guzHMd77Gv2asYG1tVGXK1PgXcyqhVPRLeir+S8b9xH2FQlM=)"
+      },
+      "resolution": {
+        "winner": "first"
+      }
+    },
+    "meta": {
+      "history": [
+        {
+          "id": 1,
+          "type": "ExecutionStarted",
+          "previousEventId": 0,
+          "timestamp": "2026-04-15T00:05:21.797Z",
+          "details": {
+            "executionStartedEventDetails": {
+              "input": "{\"requestId\":\"req-catch-order\"}",
+              "inputDetails": {
+                "truncated": false
+              },
+              "roleArn": "arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "type": "TaskStateEntered",
+          "previousEventId": 0,
+          "timestamp": "2026-04-15T00:05:21.824Z",
+          "details": {
+            "stateEnteredEventDetails": {
+              "name": "InvokeMissingService",
+              "input": "{\"requestId\":\"req-catch-order\"}",
+              "inputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "type": "TaskScheduled",
+          "previousEventId": 2,
+          "timestamp": "2026-04-15T00:05:21.824Z",
+          "details": {
+            "taskScheduledEventDetails": {
+              "resourceType": "aws-sdk:s3",
+              "resource": "headBucket",
+              "region": "<REDACTED_VAR:REGION>",
+              "parameters": "{\"Bucket\":\"tiny-asl-machine-observation-bucket-should-not-exist\"}"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "type": "TaskStarted",
+          "previousEventId": 3,
+          "timestamp": "2026-04-15T00:05:21.858Z",
+          "details": {
+            "taskStartedEventDetails": {
+              "resourceType": "aws-sdk:s3",
+              "resource": "headBucket"
+            }
+          }
+        },
+        {
+          "id": 5,
+          "type": "TaskFailed",
+          "previousEventId": 4,
+          "timestamp": "2026-04-15T00:05:21.925Z",
+          "details": {
+            "taskFailedEventDetails": {
+              "resourceType": "aws-sdk:s3",
+              "resource": "headBucket",
+              "error": "S3.NoSuchBucketException",
+              "cause": "(Service: S3, Status Code: 404, Request ID: YBTPMMKZRZRDZDC4, Extended Request ID: Chg7WSxIf+vJ3GqOE95uVQGGsY4guzHMd77Gv2asYG1tVGXK1PgXcyqhVPRLeir+S8b9xH2FQlM=) (SDK Attempt Count: 1) (Service: S3, Status Code: 404, Request ID: YBTPMMKZRZRDZDC4, Extended Request ID: Chg7WSxIf+vJ3GqOE95uVQGGsY4guzHMd77Gv2asYG1tVGXK1PgXcyqhVPRLeir+S8b9xH2FQlM=)"
+            }
+          }
+        },
+        {
+          "id": 6,
+          "type": "TaskStateExited",
+          "previousEventId": 5,
+          "timestamp": "2026-04-15T00:05:21.945Z",
+          "details": {
+            "stateExitedEventDetails": {
+              "name": "InvokeMissingService",
+              "output": "{\"requestId\":\"req-catch-order\",\"firstError\":{\"Error\":\"S3.NoSuchBucketException\",\"Cause\":\"(Service: S3, Status Code: 404, Request ID: YBTPMMKZRZRDZDC4, Extended Request ID: Chg7WSxIf+vJ3GqOE95uVQGGsY4guzHMd77Gv2asYG1tVGXK1PgXcyqhVPRLeir+S8b9xH2FQlM=) (SDK Attempt Count: 1) (Service: S3, Status Code: 404, Request ID: YBTPMMKZRZRDZDC4, Extended Request ID: Chg7WSxIf+vJ3GqOE95uVQGGsY4guzHMd77Gv2asYG1tVGXK1PgXcyqhVPRLeir+S8b9xH2FQlM=)\"}}",
+              "outputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "type": "PassStateEntered",
+          "previousEventId": 6,
+          "timestamp": "2026-04-15T00:05:21.945Z",
+          "details": {
+            "stateEnteredEventDetails": {
+              "name": "RecoveredByFirst",
+              "input": "{\"requestId\":\"req-catch-order\",\"firstError\":{\"Error\":\"S3.NoSuchBucketException\",\"Cause\":\"(Service: S3, Status Code: 404, Request ID: YBTPMMKZRZRDZDC4, Extended Request ID: Chg7WSxIf+vJ3GqOE95uVQGGsY4guzHMd77Gv2asYG1tVGXK1PgXcyqhVPRLeir+S8b9xH2FQlM=) (SDK Attempt Count: 1) (Service: S3, Status Code: 404, Request ID: YBTPMMKZRZRDZDC4, Extended Request ID: Chg7WSxIf+vJ3GqOE95uVQGGsY4guzHMd77Gv2asYG1tVGXK1PgXcyqhVPRLeir+S8b9xH2FQlM=)\"}}",
+              "inputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "type": "PassStateExited",
+          "previousEventId": 7,
+          "timestamp": "2026-04-15T00:05:21.945Z",
+          "details": {
+            "stateExitedEventDetails": {
+              "name": "RecoveredByFirst",
+              "output": "{\"requestId\":\"req-catch-order\",\"firstError\":{\"Error\":\"S3.NoSuchBucketException\",\"Cause\":\"(Service: S3, Status Code: 404, Request ID: YBTPMMKZRZRDZDC4, Extended Request ID: Chg7WSxIf+vJ3GqOE95uVQGGsY4guzHMd77Gv2asYG1tVGXK1PgXcyqhVPRLeir+S8b9xH2FQlM=) (SDK Attempt Count: 1) (Service: S3, Status Code: 404, Request ID: YBTPMMKZRZRDZDC4, Extended Request ID: Chg7WSxIf+vJ3GqOE95uVQGGsY4guzHMd77Gv2asYG1tVGXK1PgXcyqhVPRLeir+S8b9xH2FQlM=)\"},\"resolution\":{\"winner\":\"first\"}}",
+              "outputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "type": "ExecutionSucceeded",
+          "previousEventId": 8,
+          "timestamp": "2026-04-15T00:05:21.968Z",
+          "details": {
+            "executionSucceededEventDetails": {
+              "output": "{\"requestId\":\"req-catch-order\",\"firstError\":{\"Error\":\"S3.NoSuchBucketException\",\"Cause\":\"(Service: S3, Status Code: 404, Request ID: YBTPMMKZRZRDZDC4, Extended Request ID: Chg7WSxIf+vJ3GqOE95uVQGGsY4guzHMd77Gv2asYG1tVGXK1PgXcyqhVPRLeir+S8b9xH2FQlM=) (SDK Attempt Count: 1) (Service: S3, Status Code: 404, Request ID: YBTPMMKZRZRDZDC4, Extended Request ID: Chg7WSxIf+vJ3GqOE95uVQGGsY4guzHMd77Gv2asYG1tVGXK1PgXcyqhVPRLeir+S8b9xH2FQlM=)\"},\"resolution\":{\"winner\":\"first\"}}",
+              "outputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

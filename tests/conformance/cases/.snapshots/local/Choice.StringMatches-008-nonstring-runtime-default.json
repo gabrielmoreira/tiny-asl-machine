@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "008-nonstring-runtime-default",
+  "title": "does not match when the runtime value is numeric instead of string",
+  "group": "Choice.StringMatches",
+  "hash": "8fb0eadf25f42845107835fa5b68d9eee44e853299aa148a4506d773a70bc30c",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringMatches": "123",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "exact-pattern"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "no-pattern-match"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 123
+  },
+  "result": {
+    "output": {
+      "selected": "no-pattern-match"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "003-terminal-state-with-next-fails-validation",
+  "title": "fails validation when a terminal state also specifies Next",
+  "group": "Validation.BasicStructure",
+  "hash": "cc1246c54cd7021112bce952575da4afe021aa5078f2f22235b44933fd5505ce",
+  "definition": {
+    "StartAt": "Done",
+    "States": {
+      "Done": {
+        "Type": "Succeed",
+        "Next": "AfterDone"
+      },
+      "AfterDone": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Field 'Next' is not supported"
+  }
+}

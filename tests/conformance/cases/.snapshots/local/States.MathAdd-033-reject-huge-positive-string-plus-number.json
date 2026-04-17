@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "033-reject-huge-positive-string-plus-number",
+  "title": "rejects a huge positive numeric-looking string before any range coercion",
+  "group": "States.MathAdd",
+  "hash": "874ec413e6ea5402dccb39e1cb4b160ee605a8db39c056ab80409703a991f917",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd('3000000000', 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.MathAdd('3000000000', 1). Invalid arguments in States.MathAdd, caused by: States.MathAdd expected a number, got string"
+  }
+}

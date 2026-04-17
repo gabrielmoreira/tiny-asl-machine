@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "008-boolean-right-default",
+  "title": "falls through to Default when the comparison path resolves to a boolean runtime value",
+  "group": "Choice.NumericLessThanPath",
+  "hash": "d8598ef98973a5dc08399ca54a0a2796d141a72ebeaa6ce9955ab62f58f9d7c5",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericLessThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 7,
+    "right": true
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

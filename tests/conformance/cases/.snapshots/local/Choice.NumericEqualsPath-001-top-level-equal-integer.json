@@ -1,0 +1,46 @@
+{
+  "runner": "local",
+  "id": "001-top-level-equal-integer",
+  "title": "matches when both top-level numeric paths resolve to the same integer",
+  "group": "Choice.NumericEqualsPath",
+  "hash": "bfa01279c56edbe29c3889b32f0388107a9cef07c3cdd83f2e07f87ca6c2d667",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 7,
+    "right": 7
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

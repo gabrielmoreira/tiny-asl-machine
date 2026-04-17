@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "010-ignore-two-arguments",
+  "title": "still returns a UUID when given two arguments",
+  "group": "States.UUID",
+  "hash": "7d1f1ee3b270b6938971ef21c46288cd8bd4ae3d7c3931323711a4e63630a322",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID(1, 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "78d074fb-bb44-4210-a3bd-80dfb0fb5906"
+    }
+  }
+}

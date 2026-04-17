@@ -1,0 +1,48 @@
+{
+  "runner": "local",
+  "id": "007-object-left-default",
+  "title": "falls through to Default when the variable path resolves to an object runtime value",
+  "group": "Choice.NumericGreaterThanEqualsPath",
+  "hash": "4be9523d46848cb24c30415a7fe0dc3597ce268d0815834dfd146bc4ab3dd844",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericGreaterThanEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": {
+      "value": 8
+    },
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

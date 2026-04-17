@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "024-mathadd-into-array",
+  "title": "feeds MathAdd results into States.Array",
+  "group": "States.MathAdd",
+  "hash": "e74b83882d00f8c3e69586389f7f5af14b8c7791ac3501bb693adb274ac58d78",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array(States.MathAdd($.x, -1), States.MathAdd($.x, 1))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "x": 5
+  },
+  "result": {
+    "output": {
+      "value": [
+        4,
+        6
+      ]
+    }
+  }
+}

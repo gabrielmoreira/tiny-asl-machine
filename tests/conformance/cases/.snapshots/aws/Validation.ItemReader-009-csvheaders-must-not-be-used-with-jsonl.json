@@ -1,0 +1,48 @@
+{
+  "runner": "aws",
+  "id": "009-csvheaders-must-not-be-used-with-jsonl",
+  "title": "fails validation when CSVHeaders are provided for JSONL input",
+  "group": "Validation.ItemReader",
+  "hash": "8bb16536485b50ecde1a331bcaeba1231d3c5a4954cdf48afb7bc8e434e77a5f",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "JSONL",
+            "CSVHeaderLocation": "GIVEN",
+            "CSVHeaders": [
+              "id"
+            ]
+          },
+          "Parameters": {
+            "Bucket": "amzn-s3-demo-bucket",
+            "Key": "dataset/file.jsonl"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Field 'CSVHeaderLocation' is not supported; Field 'CSVHeaders' is not supported"
+  }
+}

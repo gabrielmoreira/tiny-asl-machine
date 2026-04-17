@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "014-missing-second-arg",
+  "title": "Reject missing second argument",
+  "group": "States.ArrayContains",
+  "hash": "ae8ec69c3a684f49addbc66c80cfdd2ec3e05248434cf0863b03d90744077cfa",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.ArrayContains($.arr). Invalid arguments in States.ArrayContains"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "runner": "aws",
+  "id": "003-nested-equal-decimal",
+  "title": "matches when nested left and right paths resolve to the same decimal value",
+  "group": "Choice.NumericEqualsPath",
+  "hash": "68fff5b6a45e796abb3aaac7e4d616ba0656b5f57b94deb759cdab3d0e287210",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.payload.metrics.current",
+            "NumericEqualsPath": "$.payload.metrics.expected",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "payload": {
+      "metrics": {
+        "current": 12.5,
+        "expected": 12.5
+      }
+    }
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

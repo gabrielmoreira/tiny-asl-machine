@@ -1,0 +1,29 @@
+{
+  "runner": "local",
+  "id": "001-serialize-object-from-input-path",
+  "title": "serializes an object from an input path",
+  "group": "States.JsonToString",
+  "hash": "cad7a4a6d87833c8505df8c8a452797b58af926cea0f9e1507451e3631fd69e4",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.obj)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "obj": {
+      "a": 1
+    }
+  },
+  "result": {
+    "output": {
+      "value": "{\"a\":1}"
+    }
+  }
+}

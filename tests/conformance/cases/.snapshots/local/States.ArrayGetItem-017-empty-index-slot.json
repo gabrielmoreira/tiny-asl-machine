@@ -1,0 +1,28 @@
+{
+  "runner": "local",
+  "id": "017-empty-index-slot",
+  "title": "Reject malformed call with empty index slot",
+  "group": "States.ArrayGetItem",
+  "hash": "0ccd884ec63bafd7f0851253efba5d0ea6ca59557a5e11b1577ae96ad2250617",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($.arr, )"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: expected argument after comma at index 27 in \"States.ArrayGetItem($.arr, )\""
+  }
+}

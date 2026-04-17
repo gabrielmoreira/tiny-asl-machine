@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "004-empty-match",
+  "title": "StringLessThan treats the empty string as sorting before non-empty strings",
+  "group": "Choice.StringLessThan",
+  "hash": "e8b9e56379132237b98c0f0217f2bd02e8f4c4297af74303772315fb6c938373",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringLessThan": "alpha",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": ""
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

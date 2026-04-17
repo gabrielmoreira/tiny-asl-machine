@@ -1,0 +1,59 @@
+{
+  "runner": "local",
+  "id": "003-non-retried-error-goes-straight-to-catch",
+  "title": "one error type is retried while another goes straight to Catch",
+  "group": "Feature.RetryCatchComposition",
+  "hash": "8ebcc93ad9c5420840001ff86851331679c2175919066b9683722da6f20e94f6",
+  "definition": {
+    "StartAt": "InvokeTask",
+    "States": {
+      "InvokeTask": {
+        "Type": "Task",
+        "Resource": "local:feature:retry-catch:mixed-errors",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "TransientError"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 2,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "ValidationError"
+            ],
+            "ResultPath": "$.caught",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "path": "validation-catch"
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-retry-catch-3"
+  },
+  "result": {
+    "output": {
+      "requestId": "req-retry-catch-3",
+      "caught": {
+        "Error": "ValidationError",
+        "Cause": "go-straight-to-catch"
+      },
+      "recovery": {
+        "path": "validation-catch"
+      }
+    }
+  }
+}

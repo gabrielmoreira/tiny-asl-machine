@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "003-outputpath-null-local-characterization",
+  "title": "documents current local behavior when a Pass state uses OutputPath null",
+  "group": "Feature.PassEdgeCases",
+  "hash": "7a65d71c0ef47fbbdee712055aec84c5cd78daad5aa19fe76cbdf29b7872ea1c",
+  "definition": {
+    "StartAt": "DropOutputWithNullPath",
+    "States": {
+      "DropOutputWithNullPath": {
+        "Type": "Pass",
+        "Result": {
+          "visible": true
+        },
+        "OutputPath": null,
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-33"
+  },
+  "result": {
+    "error": "InvalidJSONPath",
+    "cause": "JSON Path should be a string! Value: null"
+  }
+}

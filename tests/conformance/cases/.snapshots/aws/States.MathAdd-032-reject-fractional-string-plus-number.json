@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "032-reject-fractional-string-plus-number",
+  "title": "rejects a fractional numeric-looking string instead of rounding it",
+  "group": "States.MathAdd",
+  "hash": "1ad463a431618b99f4932a8d26fd0eb826c1cae7712964dd1dc2605ff0740ad5",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd('1.5', 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathAdd('1.5', 2). Invalid arguments in States.MathAdd"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "008-no-default-lower",
+  "title": "StringGreaterThan fails with States.Runtime without Default when the input sorts before the comparison string",
+  "group": "Choice.StringGreaterThan",
+  "hash": "ecce8cdade0411c8c7ba9235acea7c59fc9e74f52f921d630157a56f9027885b",
+  "definition": {
+    "StartAt": "Compare",
+    "States": {
+      "Compare": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringGreaterThan": "bravo",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "alpha"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

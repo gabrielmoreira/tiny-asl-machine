@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "006-parallel-branch-cannot-shadow-outer-variable-in-composed-flow",
+  "title": "Parallel branch Assign cannot shadow an outer variable name in a composed JSONata flow",
+  "group": "Feature.JSONataComposition",
+  "hash": "0c6ee58a4765ba3f645ac222a77565359010f7a7b378cd28669dff56ad7cb677",
+  "definition": {
+    "QueryLanguage": "JSONPath",
+    "StartAt": "SeedOuter",
+    "States": {
+      "SeedOuter": {
+        "Type": "Pass",
+        "QueryLanguage": "JSONata",
+        "Assign": {
+          "shared": "outer"
+        },
+        "Next": "FanOut"
+      },
+      "FanOut": {
+        "Type": "Parallel",
+        "Branches": [
+          {
+            "StartAt": "Shadow",
+            "States": {
+              "Shadow": {
+                "Type": "Pass",
+                "QueryLanguage": "JSONata",
+                "Assign": {
+                  "shared": "inner"
+                },
+                "End": true
+              }
+            }
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "The variable name 'shared' was already defined in a parent scope."
+  }
+}

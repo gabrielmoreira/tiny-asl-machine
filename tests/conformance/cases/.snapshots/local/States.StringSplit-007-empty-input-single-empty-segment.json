@@ -1,0 +1,29 @@
+{
+  "runner": "local",
+  "id": "007-empty-input-single-empty-segment",
+  "title": "returns a single empty segment for an empty input string",
+  "group": "States.StringSplit",
+  "hash": "2b5abdb063e7a8aa9c7cac87eb0b29353124d0d29c780db9ac4dc32cd464e50a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, ',')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": ""
+  },
+  "result": {
+    "output": {
+      "value": [
+        ""
+      ]
+    }
+  }
+}

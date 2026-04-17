@@ -1,0 +1,52 @@
+{
+  "runner": "local",
+  "id": "002-iterator-without-parameters-gets-raw-item",
+  "title": "Iterator without Parameters receives each raw item as its input",
+  "group": "Map.State",
+  "hash": "cf1e033bdd28af4d9f3db275ed4d75a5925d6c8d24b67c118b96101b1fc08fc2",
+  "definition": {
+    "StartAt": "IterateOrders",
+    "States": {
+      "IterateOrders": {
+        "Type": "Map",
+        "ItemsPath": "$.orders",
+        "Iterator": {
+          "StartAt": "EchoOrder",
+          "States": {
+            "EchoOrder": {
+              "Type": "Task",
+              "Resource": "arn:local:map:echo-order",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "batch": "north-1",
+    "orders": [
+      {
+        "sku": "A-1",
+        "quantity": 2
+      },
+      {
+        "sku": "B-9",
+        "quantity": 1
+      }
+    ]
+  },
+  "result": {
+    "output": [
+      {
+        "sku": "A-1",
+        "quantity": 2
+      },
+      {
+        "sku": "B-9",
+        "quantity": 1
+      }
+    ]
+  }
+}

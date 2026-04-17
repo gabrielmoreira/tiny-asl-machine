@@ -1,0 +1,49 @@
+{
+  "runner": "aws",
+  "id": "003-catch-catches-query-evaluation-error-from-arguments",
+  "title": "Catch clause catches States.QueryEvaluationError raised during Arguments evaluation",
+  "group": "Feature.JSONataErrors",
+  "hash": "a357ebcc721eb4dae7746e80e93f71b636dae4db9d25fe5a9320ae935ae39936",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Arguments": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": "{% $states.input.num + $states.input.str %}"
+        },
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.QueryEvaluationError"
+            ],
+            "Output": {
+              "caught": true,
+              "requestId": "{% $states.input.requestId %}"
+            },
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "num": 42,
+    "str": "not-a-number",
+    "requestId": "req-catch-qee"
+  },
+  "result": {
+    "output": {
+      "caught": true,
+      "requestId": "req-catch-qee"
+    }
+  }
+}

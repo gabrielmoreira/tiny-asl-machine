@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "002-smaller-value-match",
+  "title": "matches when the left numeric path resolves to a smaller value",
+  "group": "Choice.NumericLessThanEqualsPath",
+  "hash": "d645600154e510b21a425016cbe384f9ab9b020e36fd6c3a7dad61b9562ce68e",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericLessThanEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 7,
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

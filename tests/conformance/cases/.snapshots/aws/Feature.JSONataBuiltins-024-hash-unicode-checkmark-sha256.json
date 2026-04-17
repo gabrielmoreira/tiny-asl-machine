@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "024-hash-unicode-checkmark-sha256",
+  "title": "$hash hashes the Unicode checkmark with SHA-256",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "14ed6760a9252177045107ca285c66aac984bab44d42e430e139f7c431cea3d7",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $hash($states.input.s, \"SHA-256\") %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "✓"
+  },
+  "result": {
+    "output": "1dabba21cdad44541f6b15796f8d22978fc7ea10c46aeceeeeb66c23b3ac7604"
+  }
+}

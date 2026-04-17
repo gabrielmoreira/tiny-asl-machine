@@ -1,0 +1,33 @@
+{
+  "runner": "aws",
+  "id": "006-context-paths",
+  "title": "Mix execution-input context and input paths",
+  "group": "States.Array",
+  "hash": "870d75a0db6a6b16548defa4e723d17132969fb1774a3ceff198802c3871eea4",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array($$.Execution.Input.userId, $.role, $.enabled)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "userId": 7,
+    "role": "admin",
+    "enabled": false
+  },
+  "result": {
+    "output": {
+      "value": [
+        7,
+        "admin",
+        false
+      ]
+    }
+  }
+}

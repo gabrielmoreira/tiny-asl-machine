@@ -1,0 +1,36 @@
+{
+  "runner": "aws",
+  "id": "010-no-default-string-input",
+  "title": "fails with States.Runtime when no numeric rule matches and no Default is present",
+  "group": "Choice.IsNumeric",
+  "hash": "981c4438ad946f769508a8a1660390fe89594953324203753caa9a52c14954d1",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsNumeric": true,
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "42"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

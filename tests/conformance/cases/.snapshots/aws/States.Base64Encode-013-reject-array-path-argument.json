@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "013-reject-array-path-argument",
+  "title": "rejects array argument from path",
+  "group": "States.Base64Encode",
+  "hash": "77fa42d8457bb53f7553f407adabb4375fd432e2075457ef80122de975594545",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      "x"
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.Base64Encode($.arr). Invalid arguments in States.Base64Encode"
+  }
+}

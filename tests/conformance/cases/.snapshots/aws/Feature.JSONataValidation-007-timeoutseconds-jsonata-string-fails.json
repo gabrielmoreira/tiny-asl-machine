@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "007-timeoutseconds-jsonata-string-fails",
+  "title": "Task TimeoutSeconds rejects a JSONata expression that returns a string",
+  "group": "Feature.JSONataValidation",
+  "hash": "3387b1ab102a23ef1398c7086b3784156ba25108a7ab3f248fef1889498ea8f0",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:sts:getCallerIdentity",
+        "TimeoutSeconds": "{% \"3\" %}",
+        "Arguments": {},
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Invoke' (entered at the event id #2). The JSONata expression '\"3\"' specified for the field 'TimeoutSeconds' returned an unexpected result type. Expected 'number', but was 'string' for value: \"3\""
+  }
+}

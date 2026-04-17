@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "018-reject-zero-argument-invocation",
+  "title": "rejects zero-argument invocation",
+  "group": "States.StringToJson",
+  "hash": "c2aae77c7956fbe9a329a421c467480b2df7d7126719d6971448883996e5ea64",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.StringToJson expects 1 argument(s) but received 0."
+  }
+}

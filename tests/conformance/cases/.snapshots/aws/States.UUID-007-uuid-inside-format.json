@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "007-uuid-inside-format",
+  "title": "composes UUID inside States.Format",
+  "group": "States.UUID",
+  "hash": "b5748b552e89de8db38be454215cea4520e70b4db86fc0275798b8e100ef60e4",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('{}', States.UUID())"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "a9b2e704-e493-483b-a01d-ba201853c8d6"
+    }
+  }
+}

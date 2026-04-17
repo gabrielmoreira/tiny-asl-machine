@@ -1,0 +1,67 @@
+{
+  "runner": "local",
+  "id": "007-aws-observe-catcher-ordering",
+  "title": "observes whether AWS chooses the first matching catcher",
+  "group": "Feature.Catch",
+  "hash": "a1ef7cdcbf73e9c3961b27c38e72180673fbc3e9a0ace9cd40ae8bc23532a5be",
+  "definition": {
+    "StartAt": "InvokeMissingService",
+    "States": {
+      "InvokeMissingService": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:s3:headBucket",
+        "Parameters": {
+          "Bucket": "tiny-asl-machine-observation-bucket-should-not-exist"
+        },
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "S3.NoSuchBucketException"
+            ],
+            "ResultPath": "$.firstError",
+            "Next": "RecoveredByFirst"
+          },
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.secondError",
+            "Next": "RecoveredBySecond"
+          }
+        ],
+        "End": true
+      },
+      "RecoveredByFirst": {
+        "Type": "Pass",
+        "Result": {
+          "winner": "first"
+        },
+        "ResultPath": "$.resolution",
+        "End": true
+      },
+      "RecoveredBySecond": {
+        "Type": "Pass",
+        "Result": {
+          "winner": "second"
+        },
+        "ResultPath": "$.resolution",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-catch-order"
+  },
+  "result": {
+    "output": {
+      "requestId": "req-catch-order",
+      "firstError": {
+        "Error": "S3.NoSuchBucketException",
+        "Cause": "local observation failure"
+      },
+      "resolution": {
+        "winner": "first"
+      }
+    }
+  }
+}

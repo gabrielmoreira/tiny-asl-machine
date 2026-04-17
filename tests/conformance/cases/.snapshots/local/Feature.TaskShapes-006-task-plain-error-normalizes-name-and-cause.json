@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "006-task-plain-error-normalizes-name-and-cause",
+  "title": "plain thrown Error surfaces its default name and message as task failure output",
+  "group": "Feature.TaskShapes",
+  "hash": "5d00552c61511005df2e7d65246fff216c37ad96566f2973e4eca1dcf3645414",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:task-shapes:plain-error",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "jobId": "job-plain"
+  },
+  "result": {
+    "error": "Error",
+    "cause": "plain task failure"
+  }
+}

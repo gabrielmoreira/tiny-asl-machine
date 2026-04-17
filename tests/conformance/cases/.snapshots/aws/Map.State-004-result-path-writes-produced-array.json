@@ -1,0 +1,75 @@
+{
+  "runner": "aws",
+  "id": "004-result-path-writes-produced-array",
+  "title": "ResultPath writes the produced array back into the parent input",
+  "group": "Map.State",
+  "hash": "226bfbf3aca4ce18f7118155a7e9627fa60a289b04af89b937bc6309d0bfcf59",
+  "definition": {
+    "StartAt": "Summarize",
+    "States": {
+      "Summarize": {
+        "Type": "Map",
+        "ItemsPath": "$.todo",
+        "ResultPath": "$.summary.processed",
+        "Iterator": {
+          "StartAt": "ProjectTask",
+          "States": {
+            "ProjectTask": {
+              "Type": "Pass",
+              "Parameters": {
+                "task.$": "$.task",
+                "completed.$": "$.done"
+              },
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-7",
+    "todo": [
+      {
+        "task": "pack",
+        "done": false
+      },
+      {
+        "task": "ship",
+        "done": true
+      }
+    ],
+    "summary": {
+      "count": 2
+    }
+  },
+  "result": {
+    "output": {
+      "requestId": "req-7",
+      "todo": [
+        {
+          "task": "pack",
+          "done": false
+        },
+        {
+          "task": "ship",
+          "done": true
+        }
+      ],
+      "summary": {
+        "count": 2,
+        "processed": [
+          {
+            "task": "pack",
+            "completed": false
+          },
+          {
+            "task": "ship",
+            "completed": true
+          }
+        ]
+      }
+    }
+  }
+}

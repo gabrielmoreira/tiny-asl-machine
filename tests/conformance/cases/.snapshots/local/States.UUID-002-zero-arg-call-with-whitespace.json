@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "002-zero-arg-call-with-whitespace",
+  "title": "tolerates whitespace inside the zero-arg call",
+  "group": "States.UUID",
+  "hash": "8cd3d104af55d35bbadb804164ebfeacd5fefd14faa8debcd8b5c2bf90a2198a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID( )"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "0d553bbc-e4c4-492f-9196-382a58481210"
+    }
+  }
+}

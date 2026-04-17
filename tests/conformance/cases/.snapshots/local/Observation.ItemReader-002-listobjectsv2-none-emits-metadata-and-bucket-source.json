@@ -1,0 +1,56 @@
+{
+  "runner": "local",
+  "id": "002-listobjectsv2-none-emits-metadata-and-bucket-source",
+  "title": "ItemReader ListObjectsV2 with Transformation NONE emits metadata items and bucket-level source",
+  "group": "Observation.ItemReader",
+  "hash": "e60bb7bb55c923c11fdf1b977d165fb4ce9af381671d221d002f8761e75d5996",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:listObjectsV2",
+          "ReaderConfig": {
+            "Transformation": "NONE"
+          },
+          "Parameters": {
+            "Bucket": "<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+            "Prefix": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/list-none/"
+          }
+        },
+        "ItemSelector": {
+          "Source.$": "$$.Map.Item.Source",
+          "Key.$": "$$.Map.Item.Value.Key"
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": [
+      {
+        "Source": "s3://<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+        "Key": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/list-none/a.json"
+      },
+      {
+        "Source": "s3://<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+        "Key": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/list-none/b.json"
+      }
+    ]
+  }
+}

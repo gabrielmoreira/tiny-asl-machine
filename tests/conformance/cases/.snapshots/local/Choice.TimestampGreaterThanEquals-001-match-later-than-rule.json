@@ -1,0 +1,47 @@
+{
+  "runner": "local",
+  "id": "001-match-later-than-rule",
+  "title": "matches when the variable timestamp is later than the rule timestamp",
+  "group": "Choice.TimestampGreaterThanEquals",
+  "hash": "d343699287de3dbc289d503e744791ed8fb89c74f0fc503794a81f22c95488e2",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.detail.timestamp",
+            "TimestampGreaterThanEquals": "2025-01-01T00:00:00.000Z",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "detail": {
+      "timestamp": "2025-01-01T12:00:00.000Z"
+    }
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

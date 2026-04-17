@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "002-timestamp-jsonata-output",
+  "title": "evaluates Wait.Timestamp from a JSONata string and can build output from state input",
+  "group": "Feature.WaitJsonata",
+  "hash": "1829cfd0e39425919244da6e4fc80df1330e496d738d0e70d6b6c3730c0fd9ba",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "WaitUntilExpiry",
+    "States": {
+      "WaitUntilExpiry": {
+        "Type": "Wait",
+        "Timestamp": "{% $states.input.expirydate %}",
+        "Output": "{% {\"expiry\": $states.input.expirydate, \"kind\": \"timestamp\"} %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "expirydate": "2020-01-01T00:00:00Z"
+  },
+  "result": {
+    "output": {
+      "expiry": "2020-01-01T00:00:00Z",
+      "kind": "timestamp"
+    }
+  }
+}

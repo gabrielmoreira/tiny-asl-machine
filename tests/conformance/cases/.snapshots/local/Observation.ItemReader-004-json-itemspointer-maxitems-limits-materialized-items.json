@@ -1,0 +1,49 @@
+{
+  "runner": "local",
+  "id": "004-json-itemspointer-maxitems-limits-materialized-items",
+  "title": "ItemReader JSON + ItemsPointer respects MaxItems when materializing nested items",
+  "group": "Observation.ItemReader",
+  "hash": "5bb7a72b8f7276cc92c32f25de558d167fa1c6560948aa8af18c992584bf6bc0",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "JSON",
+            "ItemsPointer": "/data/items",
+            "MaxItems": 1
+          },
+          "Parameters": {
+            "Bucket": "<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+            "Key": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/json/nested-items.json"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": [
+      {
+        "id": "a"
+      }
+    ]
+  }
+}

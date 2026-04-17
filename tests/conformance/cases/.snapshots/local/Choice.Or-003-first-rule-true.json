@@ -1,0 +1,54 @@
+{
+  "runner": "local",
+  "id": "003-first-rule-true",
+  "title": "still routes to the matching branch when the first nested rule is already true",
+  "group": "Choice.Or",
+  "hash": "769762fa6cf1511f4b16950526d2fb3901755b77e315dcc54f6588f762a35cf4",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Or": [
+              {
+                "Variable": "$.category",
+                "StringEquals": "gold"
+              },
+              {
+                "Variable": "$.points",
+                "NumericGreaterThanEquals": 1000
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "priority"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "standard"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "category": "gold",
+    "points": 10
+  },
+  "result": {
+    "output": {
+      "selected": "priority"
+    }
+  }
+}

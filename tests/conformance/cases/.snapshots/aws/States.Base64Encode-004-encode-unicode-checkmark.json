@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "004-encode-unicode-checkmark",
+  "title": "encodes single BMP Unicode character",
+  "group": "States.Base64Encode",
+  "hash": "64b9e3739daac1fd3640aee95f1e760b60a3353633cf1aad67b519f1488e772b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode($.s)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "✓"
+  },
+  "result": {
+    "output": {
+      "value": "4pyT"
+    }
+  }
+}

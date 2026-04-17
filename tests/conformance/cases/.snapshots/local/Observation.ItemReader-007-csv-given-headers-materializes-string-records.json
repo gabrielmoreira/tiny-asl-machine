@@ -1,0 +1,57 @@
+{
+  "runner": "local",
+  "id": "007-csv-given-headers-materializes-string-records",
+  "title": "ItemReader CSV with GIVEN headers materializes row objects using CSVHeaders",
+  "group": "Observation.ItemReader",
+  "hash": "379aabe684ff2e19e3248321fac12c3cd585a2a270504fac128d60a5d3861843",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "CSV",
+            "CSVHeaderLocation": "GIVEN",
+            "CSVHeaders": [
+              "id",
+              "name"
+            ]
+          },
+          "Parameters": {
+            "Bucket": "<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+            "Key": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/csv/given.csv"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": [
+      {
+        "id": "1",
+        "name": "Alice"
+      },
+      {
+        "id": "2",
+        "name": "Bob"
+      }
+    ]
+  }
+}

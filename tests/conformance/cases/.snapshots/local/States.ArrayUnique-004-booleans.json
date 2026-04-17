@@ -1,0 +1,35 @@
+{
+  "runner": "local",
+  "id": "004-booleans",
+  "title": "Deduplicate booleans",
+  "group": "States.ArrayUnique",
+  "hash": "e981c016f64f4ff318564e142deea8d59d6551d6c4728e9f3763429f5e096551",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      true,
+      false,
+      true,
+      false
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        true,
+        false
+      ]
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "005-states-all-must-appear-last-in-retry",
+  "title": "fails validation when States.ALL is not the last Retry catcher",
+  "group": "Validation.Structure",
+  "hash": "454b7ad518c670f353a0c5032b9ca8bb8e28c9b9a4a54b56519751e267905069",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:sts:getCallerIdentity",
+        "Parameters": {},
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "MaxAttempts": 1
+          },
+          {
+            "ErrorEquals": [
+              "CustomError"
+            ],
+            "MaxAttempts": 1
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "States.ALL must appear alone and at end of list"
+  }
+}

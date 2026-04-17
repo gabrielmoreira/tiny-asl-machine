@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "006-nested-populated-array",
+  "title": "Count populated array produced by nested intrinsic",
+  "group": "States.ArrayLength",
+  "hash": "5a9f8ce1108e3530db51644bdeb7a1dd9731175541e165c4ad6b10865f9cda9d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength(States.Array(1, 2, 3))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 3
+    }
+  }
+}

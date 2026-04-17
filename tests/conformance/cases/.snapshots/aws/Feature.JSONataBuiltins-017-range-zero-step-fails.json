@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "017-range-zero-step-fails",
+  "title": "$range rejects a zero step",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "ba17e4fdf2bb96d8c9ef07f9961633e63223914ff5f3ea36860512b793a96052",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $range(1, 10, 0) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$range(1, 10, 0)' specified for the field 'Output' returned nothing (undefined)."
+  }
+}

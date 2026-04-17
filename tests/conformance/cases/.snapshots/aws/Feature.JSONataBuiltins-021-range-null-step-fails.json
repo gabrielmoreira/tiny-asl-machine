@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "021-range-null-step-fails",
+  "title": "$range rejects a null step argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "5bf09b93ae49a4d66935088c35f33f6bdf585efd76793a16402675ed1bece3c1",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $range(1, 5, null) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$range(1, 5, null)' specified for the field 'Output' threw an error during evaluation. T0410: Argument 3 of function \"range\" does not match function signature"
+  }
+}

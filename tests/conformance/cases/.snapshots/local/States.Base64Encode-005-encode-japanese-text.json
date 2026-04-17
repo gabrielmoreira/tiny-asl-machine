@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "005-encode-japanese-text",
+  "title": "encodes multibyte Unicode string",
+  "group": "States.Base64Encode",
+  "hash": "d79b428e937a697760bb4513fa5ce7742d7f200f6eb5ddd4fce7811715c5acf7",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode($.s)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "こんにちは"
+  },
+  "result": {
+    "output": {
+      "value": "44GT44KT44Gr44Gh44Gv"
+    }
+  }
+}

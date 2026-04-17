@@ -1,0 +1,47 @@
+{
+  "runner": "local",
+  "id": "009-exceed-nesting-limit",
+  "title": "Reject intrinsic nesting deeper than the documented AWS limit",
+  "group": "States.Array",
+  "hash": "7ab26365668ddaa1e49dfdf47e9704c6d6f27ff87536c38f278df7d5b54ee80b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array(States.Array(States.Array(States.Array(States.Array(States.Array(States.Array(States.Array(States.Array(States.Array(States.Array(1)))))))))))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        [
+          [
+            [
+              [
+                [
+                  [
+                    [
+                      [
+                        [
+                          [
+                            1
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    }
+  }
+}

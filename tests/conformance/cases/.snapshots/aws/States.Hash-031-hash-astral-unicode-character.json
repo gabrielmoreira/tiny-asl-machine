@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "031-hash-astral-unicode-character",
+  "title": "hashes astral-plane Unicode character",
+  "group": "States.Hash",
+  "hash": "05821d4129ac9e870d2f19bca72d99f1b06ec7d382a165654bf797a039143aa2",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('🚀', 'SHA-256')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "ebbc0b2870eb323f2b6cffa5c493ceef81ae7eb36afc73d4e0367301631daec5"
+    }
+  }
+}

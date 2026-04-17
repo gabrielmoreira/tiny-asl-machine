@@ -1,0 +1,32 @@
+{
+  "runner": "aws",
+  "id": "011-context-target",
+  "title": "Search for execution-input target value through context",
+  "group": "States.ArrayContains",
+  "hash": "ff56ff4ae7f31e13a854fd8ae322a450834446a68702f0e7bfd0c029daec4eeb",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, $$.Execution.Input.target)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      "alpha",
+      "beta",
+      "gamma"
+    ],
+    "target": "beta"
+  },
+  "result": {
+    "output": {
+      "value": true
+    }
+  }
+}

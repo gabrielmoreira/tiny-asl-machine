@@ -1,0 +1,26 @@
+{
+  "runner": "aws",
+  "id": "002-empty-choices-array-fails-validation",
+  "title": "fails validation when a Choice state declares an empty Choices array",
+  "group": "Feature.ChoiceValidation",
+  "hash": "4bd458fad9ca93fdbf89abe3010fa7dce4da6d9f4204e1ef7eb2c137bbd05be1",
+  "definition": {
+    "StartAt": "Dispatch",
+    "States": {
+      "Dispatch": {
+        "Type": "Choice",
+        "Choices": [],
+        "Default": "Fallback"
+      },
+      "Fallback": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Value cannot be empty"
+  }
+}

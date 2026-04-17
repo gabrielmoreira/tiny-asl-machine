@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "011-literal-pipe-delimiter",
+  "title": "treats a pipe delimiter literally",
+  "group": "States.StringSplit",
+  "hash": "a5bab2456adc3866031099c53b439c1f2ab16efd61011e9c7b2108b17220066c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, '|')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "a|b|c"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "a",
+        "b",
+        "c"
+      ]
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "runner": "aws",
+  "id": "002-fail-error-and-cause-jsonata",
+  "title": "evaluates Fail.Error and Fail.Cause from JSONata strings",
+  "group": "Feature.SucceedFailJsonata",
+  "hash": "6d65095bdae11e04a127ab3aa0445f80dd94baf14d7289bbcaf1c45056fae0f7",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "FailState",
+    "States": {
+      "FailState": {
+        "Type": "Fail",
+        "Error": "{% $states.input.Error %}",
+        "Cause": "{% $states.input.Cause %}"
+      }
+    }
+  },
+  "input": {
+    "Error": "DynamicJsonataError",
+    "Cause": "dynamic fail cause"
+  },
+  "result": {
+    "error": "DynamicJsonataError",
+    "cause": "dynamic fail cause"
+  }
+}

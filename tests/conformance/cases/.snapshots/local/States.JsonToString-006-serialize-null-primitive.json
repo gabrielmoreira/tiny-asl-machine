@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "006-serialize-null-primitive",
+  "title": "serializes a null primitive",
+  "group": "States.JsonToString",
+  "hash": "7808b875a58bed988de1197152ada7767b5a1931553e11de9cd8cd83897b244e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.val)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "val": null
+  },
+  "result": {
+    "output": {
+      "value": "null"
+    }
+  }
+}

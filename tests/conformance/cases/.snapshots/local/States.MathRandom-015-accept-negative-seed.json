@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "015-accept-negative-seed",
+  "title": "accepts a negative seed",
+  "group": "States.MathRandom",
+  "hash": "a2db1d3308e14437e19ce1575da0acf91ee65cc270e070aa1ccdfba220952c6c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1, 10, -10)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 8
+    }
+  }
+}

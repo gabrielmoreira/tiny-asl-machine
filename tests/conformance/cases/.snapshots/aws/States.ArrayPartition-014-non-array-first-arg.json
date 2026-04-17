@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "014-non-array-first-arg",
+  "title": "rejects a literal non-array first argument",
+  "group": "States.ArrayPartition",
+  "hash": "6d65e314849d188219fbbc7f7550965b278ff4ad64d1b0a54cdc219d19af76cd",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition('not-array', 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.ArrayPartition('not-array', 2). Invalid arguments in States.ArrayPartition"
+  }
+}

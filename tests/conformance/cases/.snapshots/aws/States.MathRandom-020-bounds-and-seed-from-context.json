@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "020-bounds-and-seed-from-context",
+  "title": "reads bounds and seed from execution input context",
+  "group": "States.MathRandom",
+  "hash": "b4aee6098adf0c323d0e9cfaf44eaf0040a06f3d99c8884d4f6cc59281079587",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom($$.Execution.Input.start, $$.Execution.Input.end, $$.Execution.Input.seed)",
+          "startFromContext.$": "$$.Execution.Input.start"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "start": 1,
+    "end": 10,
+    "seed": 42
+  },
+  "result": {
+    "output": {
+      "value": 9,
+      "startFromContext": 1
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "runner": "local",
+  "id": "005-local-jsonata-context-projection",
+  "title": "projects $states.input and $states.context in a local task Arguments payload",
+  "group": "Task.State",
+  "hash": "7260be9bee86212f0de40ae881d02f5317a364d847184f502242fab10517b89b",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:task:jsonata-context",
+        "Arguments": {
+          "input": "{% $states.input %}",
+          "context": "{% $states.context %}",
+          "inputString": "{% $string($states.input) %}",
+          "contextString": "{% $string($states.context) %}",
+          "taskToken": "{% $states.context.Task.Token %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "hello": "world",
+    "nested": {
+      "answer": 42
+    }
+  },
+  "result": {
+    "output": {
+      "input": {
+        "hello": "world",
+        "nested": {
+          "answer": 42
+        }
+      },
+      "context": {
+        "Resources": {},
+        "Runtime": {},
+        "StateMachine": {
+          "Id": "machine-89954dc6-1e84-4024-bd04-a25c763f2acd",
+          "Name": "machine"
+        },
+        "Execution": {
+          "StartTime": "2026-04-14T15:57:57.285Z",
+          "Id": "execution-585f455d-9778-40b2-aab7-9a32b3a31e01",
+          "Name": "execution",
+          "RoleArn": "machine-role",
+          "Input": {
+            "hello": "world",
+            "nested": {
+              "answer": 42
+            }
+          },
+          "RedriveCount": 0
+        },
+        "State": {
+          "Name": "Invoke",
+          "EnteredTime": "2026-04-14T15:57:57.285Z",
+          "RetryCount": 0
+        },
+        "Task": {
+          "Token": "TaskToken-08897617-b09b-4e99-9a02-c018ec7d7edb"
+        },
+        "Transition": {
+          "End": true
+        }
+      },
+      "inputString": "{\"hello\":\"world\",\"nested\":{\"answer\":42}}",
+      "contextString": "{\"Resources\":{},\"Runtime\":{},\"StateMachine\":{\"Id\":\"machine-89954dc6-1e84-4024-bd04-a25c763f2acd\",\"Name\":\"machine\"},\"Execution\":{\"StartTime\":\"2026-04-14T15:57:57.285Z\",\"Id\":\"execution-585f455d-9778-40b2-aab7-9a32b3a31e01\",\"Name\":\"execution\",\"RoleArn\":\"machine-role\",\"Input\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"RedriveCount\":0},\"State\":{\"Name\":\"Invoke\",\"EnteredTime\":\"2026-04-14T15:57:57.285Z\",\"RetryCount\":0},\"Task\":{\"Token\":\"TaskToken-08897617-b09b-4e99-9a02-c018ec7d7edb\"}}",
+      "taskToken": "TaskToken-08897617-b09b-4e99-9a02-c018ec7d7edb"
+    }
+  }
+}

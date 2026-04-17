@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "002-repeated-strings",
+  "title": "Deduplicate repeated strings while preserving first-seen order",
+  "group": "States.ArrayUnique",
+  "hash": "1bb3ab564823c5619015da85dbbf636edd53103d90c383453ffaed7d265d6802",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      "a",
+      "b",
+      "a",
+      "c",
+      "b"
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        "a",
+        "b",
+        "c"
+      ]
+    }
+  }
+}

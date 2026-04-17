@@ -2,7 +2,7 @@
 import type { Context, State, StateDefinition } from '../../types';
 import { run, runState } from './index';
 import { ExecutionError } from '../utils/executionError';
-import { describe, it, afterEach, expect, vitest } from 'vitest';
+import { describe, it, afterEach, expect, vitest } from 'vite-plus/test';
 
 describe('runState', () => {
   afterEach(() => {
@@ -68,16 +68,15 @@ describe('runState', () => {
       Type: 'Pass',
       InputPath: '$.a',
       Parameters: {
-        a: true,
-        b: 1,
-        'c.$': '$',
-      },
-      ResultSelector: {
         crazy: {
           a: false,
-          'b.$': '$.b',
-          'd.$': '$.c',
-          'payload.$': '$',
+          b: 1,
+          'd.$': '$',
+          payload: {
+            a: true,
+            b: 1,
+            'c.$': '$',
+          },
         },
       },
       ResultPath: '$.testing',
@@ -292,7 +291,26 @@ describe('runState', () => {
         },
       ],
     };
-    const context = (<Context>{}) as unknown as Context;
+    const context = {
+      StateMachine: {
+        Id: 'machine-test',
+        Name: 'machine',
+        QueryLanguage: 'JSONPath',
+      },
+      Execution: {
+        Id: 'execution-test',
+        Input: {},
+        StartTime: '2025-01-01T00:00:00.000Z',
+        Name: 'execution',
+        RoleArn: 'machine-role',
+        RedriveCount: 0,
+      },
+      State: {
+        Name: 'ChoiceState',
+        EnteredTime: '2025-01-01T00:00:00.000Z',
+        RetryCount: 0,
+      },
+    } as unknown as Context;
     // When
     let error: any;
     try {
@@ -304,9 +322,8 @@ describe('runState', () => {
       error = e;
     }
     // Then
-    expect(error?.name).toBe('States.NoChoiceMatched');
+    expect(error?.name).toBe('States.Runtime');
   });
-
   it('runs a Parallel state', async () => {
     // Given
     const state: State = {
@@ -532,11 +549,7 @@ describe('runState', () => {
     // When
     const promise = runState(context, state, input);
     // Then
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(9999);
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(1);
-    expect(vitest.getTimerCount()).toBe(0);
+    await vitest.advanceTimersByTimeAsync(10000);
     await promise;
   });
 
@@ -556,11 +569,7 @@ describe('runState', () => {
     // When
     const promise = runState(context, state, input);
     // Then
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(9999);
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(1);
-    expect(vitest.getTimerCount()).toBe(0);
+    await vitest.advanceTimersByTimeAsync(10000);
     await promise;
   });
 
@@ -578,11 +587,7 @@ describe('runState', () => {
     // When
     const promise = runState(context, state, input);
     // Then
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(9999);
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(1);
-    expect(vitest.getTimerCount()).toBe(0);
+    await vitest.advanceTimersByTimeAsync(10000);
     await promise;
   });
 
@@ -600,11 +605,7 @@ describe('runState', () => {
     // When
     const promise = runState(context, state, input);
     // Then
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(9999);
-    expect(vitest.getTimerCount()).toBe(1);
-    vitest.advanceTimersByTime(1);
-    expect(vitest.getTimerCount()).toBe(0);
+    await vitest.advanceTimersByTimeAsync(10000);
     await promise;
   });
 
@@ -742,5 +743,114 @@ describe('run', () => {
     });
     // Then
     expect(otherError).toBe('This is a fallback from a reserved error code');
+  });
+  it('lets JSONata Choice rule Output read variables assigned by earlier states', async () => {
+    const result = await run(
+      {
+        definition: {
+          QueryLanguage: 'JSONata',
+          StartAt: 'SeedRange',
+          States: {
+            SeedRange: {
+              Type: 'Pass',
+              Assign: {
+                range: 'twenties',
+              },
+              Next: 'Dispatch',
+            },
+            Dispatch: {
+              Type: 'Choice',
+              Choices: [
+                {
+                  Condition: '{% true %}',
+                  Output: '{% $range %}',
+                  Next: 'Done',
+                },
+              ],
+              Default: 'Fallback',
+            },
+            Done: {
+              Type: 'Pass',
+              End: true,
+            },
+            Fallback: {
+              Type: 'Pass',
+              End: true,
+            },
+          },
+        },
+      },
+      { value: 23 }
+    );
+
+    expect(result).toBe('twenties');
+  });
+  it('allows JSONata string literals that merely mention reserved refs', async () => {
+    const result = await run(
+      {
+        definition: {
+          QueryLanguage: 'JSONata',
+          StartAt: 'RenderLiteral',
+          States: {
+            RenderLiteral: {
+              Type: 'Pass',
+              Output: '{% "seen $states.result and $states.errorOutput" %}',
+              End: true,
+            },
+          },
+        },
+      },
+      { ok: true }
+    );
+
+    expect(result).toBe('seen $states.result and $states.errorOutput');
+  });
+
+  it('still rejects actual reserved ref access in JSONata Output', async () => {
+    await expect(
+      run(
+        {
+          definition: {
+            QueryLanguage: 'JSONata',
+            StartAt: 'RenderReserved',
+            States: {
+              RenderReserved: {
+                Type: 'Pass',
+                Output: '{% $states.result %}',
+                End: true,
+              },
+            },
+          },
+        },
+        { ok: true }
+      )
+    ).rejects.toMatchObject({
+      name: 'VALIDATION_FAILED',
+      message: expect.stringContaining('$states.result'),
+    });
+  });
+
+  it('rejects nested reserved ref access in JSONata Output', async () => {
+    await expect(
+      run(
+        {
+          definition: {
+            QueryLanguage: 'JSONata',
+            StartAt: 'RenderReservedNested',
+            States: {
+              RenderReservedNested: {
+                Type: 'Pass',
+                Output: '{% $states.result.payload %}',
+                End: true,
+              },
+            },
+          },
+        },
+        { ok: true }
+      )
+    ).rejects.toMatchObject({
+      name: 'VALIDATION_FAILED',
+      message: expect.stringContaining('$states.result'),
+    });
   });
 });

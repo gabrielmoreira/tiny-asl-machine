@@ -1,129 +1,202 @@
 # Contributing
 
-We welcome contributions! This project is simple and designed to be easy to extend.
+This repository follows the engineering workflow documented in:
 
-## Getting Started
+- `ENGINEERING_PLAYBOOK.md`
 
-### Prerequisites
+Please read that file first.
 
-- **Node.js** >= 20.0.0
-- **pnpm** >= 10.0.0
+---
 
+## Development Workflow Summary
 
-### Development Setup
+Contributions should follow this model:
 
-```bash
-git clone https://github.com/gabrielmoreira/tiny-asl-machine.git
-cd tiny-asl-machine
+- start from behavior, not implementation
+- define the validation strategy before coding
+- prefer conformance cases as the behavioral specification
+- validate against AWS when behavior is ambiguous
+- implement in small steps
+- run focused checks before and after each meaningful change
+- run broader quality before stopping
+- keep code, tests, and docs aligned
+
+---
+
+## Prerequisites
+
+- Node.js >= 20
+- pnpm >= 10
+- optional AWS credentials if you need AWS-backed conformance
+
+Install dependencies:
+
+```sh
 pnpm install
 ```
 
-### Running Tests
+---
 
-```bash
-# Run all tests
+## Daily Commands
+
+### Format
+
+```sh
+pnpm run format
+pnpm run format:check
+```
+
+### Lint
+
+```sh
+pnpm run lint
+pnpm run lint:fix
+```
+
+### TypeScript compile
+
+```sh
+pnpm run typecheck
+```
+
+### Full local suite without AWS
+
+```sh
+pnpm run test:local
+```
+
+### Default test run (auto-enables AWS when available)
+
+```sh
 pnpm test
-
-# Watch mode
-pnpm test:watch
 ```
 
-### Building
+### Conformance with local + AWS, warning if AWS is unavailable
 
-```bash
-pnpm build
+```sh
+pnpm run test:conformance
 ```
 
-### Code Quality
+### Focused conformance example
 
-```bash
-pnpm lint
-pnpm format
+```sh
+pnpm run test:conformance -- --case='group:"Feature.Catch"'
 ```
 
-## How to Contribute
+---
 
-### Report a Bug
+## AWS Conformance
 
-Create an issue with:
-- What you tried
-- What happened
-- What you expected
-- Minimal code example
+Use AWS when you need real Step Functions behavior.
 
-### Suggest a Feature
+### Create deployment config
 
-Create an issue describing:
-- What problem it solves
-- How you'd use it
-- Example code if applicable
-
-### Submit Code
-
-1. Fork the repo
-2. Create a feature branch: `git checkout -b fix/issue-name`
-3. Make your changes
-4. Add tests for new functionality
-5. Run `pnpm test` and `pnpm lint`
-6. Commit with clear messages
-7. Push and create a Pull Request
-
-## Project Structure
-
-```
-src/
-├── index.ts                # Public API
-├── states/index.ts         # State execution logic
-├── choices/operators.ts    # Choice state operators (30+)
-└── utils/                  # Helper functions
-    ├── parseTemplate.ts
-    ├── selectPath.ts
-    ├── updatePath.ts
-    └── ...
-types/                      # TypeScript definitions
-tests/                      # Test suite
+```sh
+pnpm run aws:create-deployment-config
 ```
 
-## Code Style
+### Deploy AWS harness resources
 
-- Use TypeScript with strict mode
-- Use `const`/`let`, not `var`
-- Use type annotations for functions
-- Export public API from `src/index.ts`
-- Add JSDoc comments for public APIs
-
-## Testing
-
-- Use Vitest
-- Test happy paths and error cases
-- Name tests clearly
-- Example:
-
-```typescript
-it('should execute Pass state and return input', async () => {
-  const definition = {
-    StartAt: 'MyPass',
-    States: { MyPass: { Type: 'Pass', End: true } },
-  };
-  const result = await run({ definition }, { test: 'data' });
-  expect(result).toEqual({ test: 'data' });
-});
+```sh
+pnpm run aws:deploy-stack
 ```
 
-## Areas That Need Help
+### Run AWS-backed conformance
 
-1. **Bug fixes** - Found an issue? Fix it!
-2. **Feature implementation** - Implement missing features
-3. **Tests** - Add edge case tests
-4. **Documentation** - Improve examples
+> Keep the harness deployed when you are doing repeated AWS parity work.
+> Use teardown only when you intentionally want to remove the stack.
 
-## Notes
+```sh
+pnpm run test:conformance:aws
+```
 
-- This library is for **testing only**, not production
-- Keep it simple and lightweight
-- Don't add external dependencies unless absolutely necessary
-- Focus on ASL correctness
+### AWS harness lifecycle
 
-## Questions?
+> The AWS harness is managed through CloudFormation.
 
-Open an issue or start a discussion!
+> Local source of truth: `.local/aws/deployment-config.json`
+
+> Typical flow:
+
+```sh
+pnpm run aws:create-deployment-config
+pnpm run aws:deploy-stack
+pnpm run test:conformance:aws
+# optional cleanup only when you want to tear the harness down
+pnpm run aws:remove-stack
+```
+
+## The deployment config file is the source of truth for later commands; no manual shell export step is required.
+
+---
+
+## Focused Conformance Workflow
+
+If you are working on parity or behavior changes, these commands are the main ones to know.
+
+### Run the full local conformance suite
+
+```sh
+pnpm run test:conformance:local
+```
+
+### Run the AWS-backed conformance suite
+
+```sh
+pnpm run test:conformance:aws
+```
+
+### Run one group or one focused slice
+
+```sh
+pnpm run test:conformance -- --case='group:"Feature.JSONataComposition"'
+pnpm run test:conformance -- --case='group:"States.MathAdd"'
+pnpm run test:conformance -- --case='id:"006-parquet-versionid-is-unsupported"'
+```
+
+The case filter can match fields like:
+
+- `group`
+- `id`
+- `title`
+- `tags`
+
+## How the conformance runners work
+
+### Local conformance
+
+The local runner:
+
+- loads one conformance case
+- runs it through Tiny ASL Machine
+- uses mocked local resources when needed
+- compares output or error with the expected result
+
+### AWS-backed conformance
+
+The AWS runner:
+
+- validates the machine definition with AWS
+- creates a temporary Step Functions state machine
+- starts one execution with the case input
+- waits for completion
+- compares AWS output or AWS error with the expected result
+- deletes the temporary state machine afterward
+
+Use local conformance for fast feedback.
+Use AWS-backed conformance when parity details matter.
+
+## Pull Request Expectations
+
+Pull requests may be rejected if they:
+
+- skip test-first development for behavior changes
+- introduce behavior without clear validation
+- guess AWS behavior instead of observing it
+- leave code, tests, and docs inconsistent
+
+---
+
+## Strong Rule
+
+> If a behavior change is not clearly tested, it is not ready to merge.

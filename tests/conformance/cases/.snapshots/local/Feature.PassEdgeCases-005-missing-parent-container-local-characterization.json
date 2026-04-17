@@ -1,0 +1,41 @@
+{
+  "runner": "local",
+  "id": "005-missing-parent-container-local-characterization",
+  "title": "documents current local behavior when ResultPath targets a missing parent container",
+  "group": "Feature.PassEdgeCases",
+  "hash": "2c042e6f7458a8da0e132ae979404eb8f6252d33aa1a5bda306e7cebaae45926",
+  "definition": {
+    "StartAt": "MaterializeMissingParents",
+    "States": {
+      "MaterializeMissingParents": {
+        "Type": "Pass",
+        "Result": {
+          "score": 7,
+          "verdict": "pass"
+        },
+        "ResultPath": "$.summary.metrics",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-35",
+    "detail": {
+      "existing": true
+    }
+  },
+  "result": {
+    "output": {
+      "requestId": "req-35",
+      "detail": {
+        "existing": true
+      },
+      "summary": {
+        "metrics": {
+          "score": 7,
+          "verdict": "pass"
+        }
+      }
+    }
+  }
+}

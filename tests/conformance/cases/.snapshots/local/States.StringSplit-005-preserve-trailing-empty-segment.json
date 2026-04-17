@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "005-preserve-trailing-empty-segment",
+  "title": "preserves an empty final segment for a trailing delimiter",
+  "group": "States.StringSplit",
+  "hash": "32abb6b6a9a6993c31a05c574fbd2cc7fc7e292eb20c5463182c6189b1946bdf",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, ',')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "a,b,"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "a",
+        "b",
+        ""
+      ]
+    }
+  }
+}

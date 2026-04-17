@@ -1,0 +1,47 @@
+{
+  "runner": "aws",
+  "id": "006-input-pass-through",
+  "title": "preserves nested input structure after a wait completes",
+  "group": "Wait.State",
+  "hash": "df1fad6d1f6c13ebfc22e209aa34fbf549de539b32676b14ff76a25dbe974508",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "Seconds": 1,
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "user": {
+      "id": "user-42",
+      "flags": [
+        "beta",
+        "notify"
+      ]
+    },
+    "counters": {
+      "retries": 0,
+      "attempts": 3
+    },
+    "approved": false
+  },
+  "result": {
+    "output": {
+      "user": {
+        "id": "user-42",
+        "flags": [
+          "beta",
+          "notify"
+        ]
+      },
+      "counters": {
+        "retries": 0,
+        "attempts": 3
+      },
+      "approved": false
+    }
+  }
+}

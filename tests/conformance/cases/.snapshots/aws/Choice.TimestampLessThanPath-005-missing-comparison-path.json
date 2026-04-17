@@ -1,0 +1,44 @@
+{
+  "runner": "aws",
+  "id": "005-missing-comparison-path",
+  "title": "fails with States.Runtime when the comparison path is missing",
+  "group": "Choice.TimestampLessThanPath",
+  "hash": "6b0d7c2a76a2e8e3980a61d97511b30f9604b4ea6a8bdf70a85581d16f6c7616",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampLessThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "2025-01-01T00:00:00.000Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Invalid path '$.right': The choice state's condition path references an invalid value."
+  }
+}

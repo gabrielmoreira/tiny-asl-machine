@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "003-decode-path-sourced-base64-text",
+  "title": "decodes path-sourced Base64 text",
+  "group": "States.Base64Decode",
+  "hash": "c9f397107d01d03b85d384b78574bc9802b0db9cb2ece8775344a5126b3cdb7c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode($.s)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "RGF0YSB0byBlbmNvZGU="
+  },
+  "result": {
+    "output": {
+      "value": "Data to encode"
+    }
+  }
+}

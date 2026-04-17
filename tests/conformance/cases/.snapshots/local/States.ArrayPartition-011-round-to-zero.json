@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "011-round-to-zero",
+  "title": "rounding 0.49 down to zero fails validation",
+  "group": "States.ArrayPartition",
+  "hash": "688af1585ab393badf460194850ddabfee42e5fa0c1df4d29cdad9f40e70ec64",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 0.49)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayPartition($.arr, 0.49). Invalid arguments in States.ArrayPartition, caused by: ArrayPartition chunk size must be a positive integer"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "008-no-default-nonmatch",
+  "title": "fails with States.Runtime when no null rule matches and no Default is present",
+  "group": "Choice.IsNull",
+  "hash": "9a4785f9908d5274370e7c278b55cd5d824a53b45ccdc280b12e577851ad8151",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsNull": true,
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "not-null"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

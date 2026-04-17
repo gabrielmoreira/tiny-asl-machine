@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "005-decode-japanese-text",
+  "title": "decodes multibyte Japanese text",
+  "group": "States.Base64Decode",
+  "hash": "0ad8a94eaf6bca3150315c7f7ca7f03851b6c4e246adf6b3655c4f54406c914d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode('44GT44KT44Gr44Gh44Gv')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "こんにちは"
+    }
+  }
+}

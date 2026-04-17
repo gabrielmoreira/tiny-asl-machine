@@ -1,0 +1,49 @@
+{
+  "runner": "local",
+  "id": "003-inputpath-before-parameters",
+  "title": "applies InputPath before Parameters reshape the task payload",
+  "group": "Feature.InputPath",
+  "hash": "7c7b563f34d6daf52733dea9653607a94f6fd088333abef48228cabca0c34cf8",
+  "definition": {
+    "StartAt": "BuildRequest",
+    "States": {
+      "BuildRequest": {
+        "Type": "Task",
+        "Resource": "local:feature:input-path:echo",
+        "InputPath": "$.request",
+        "Parameters": {
+          "customerId.$": "$.customer.id",
+          "sku.$": "$.item.sku",
+          "quantity.$": "$.item.quantity",
+          "traceId.$": "$$.Execution.Input.meta.traceId"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "meta": {
+      "traceId": "trace-9"
+    },
+    "request": {
+      "customer": {
+        "id": "cust-7"
+      },
+      "item": {
+        "sku": "sku-3",
+        "quantity": 4
+      }
+    },
+    "customer": {
+      "id": "outer-customer"
+    }
+  },
+  "result": {
+    "output": {
+      "customerId": "cust-7",
+      "sku": "sku-3",
+      "quantity": 4,
+      "traceId": "trace-9"
+    }
+  }
+}

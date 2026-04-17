@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "021-uuid-with-state-and-context-fields",
+  "title": "coexists with state and context reads in one evaluation",
+  "group": "States.UUID",
+  "hash": "64af35b1f956beccec5e8f4e60337516a509768962a13b429d57ee706f1eeb68",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "label.$": "$.label",
+          "executionInputLabel.$": "$$.Execution.Input.label",
+          "generated.$": "States.UUID()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "label": "prefix"
+  },
+  "result": {
+    "output": {
+      "generated": "bfca9e7b-608e-419a-8a43-4d699e2fc4c5",
+      "label": "prefix",
+      "executionInputLabel": "prefix"
+    }
+  }
+}

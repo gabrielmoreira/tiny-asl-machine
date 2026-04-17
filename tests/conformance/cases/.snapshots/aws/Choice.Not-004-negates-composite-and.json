@@ -1,0 +1,56 @@
+{
+  "runner": "aws",
+  "id": "004-negates-composite-and",
+  "title": "can negate a nested And rule as a single composite condition",
+  "group": "Choice.Not",
+  "hash": "5d57edd393ff85b92d1c88a7435d1b9209cc4f83b8fe39b95e0e667c7594a310",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Not": {
+              "And": [
+                {
+                  "Variable": "$.country",
+                  "StringEquals": "US"
+                },
+                {
+                  "Variable": "$.vip",
+                  "BooleanEquals": true
+                }
+              ]
+            },
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "manual-review"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "auto-approve"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "country": "US",
+    "vip": false
+  },
+  "result": {
+    "output": {
+      "selected": "manual-review"
+    }
+  }
+}

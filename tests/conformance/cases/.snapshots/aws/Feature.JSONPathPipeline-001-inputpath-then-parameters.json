@@ -1,0 +1,59 @@
+{
+  "runner": "aws",
+  "id": "001-inputpath-then-parameters",
+  "title": "applies InputPath before Parameters build the effective payload",
+  "group": "Feature.JSONPathPipeline",
+  "hash": "ee14f5b972c5ed71d7072046d17af6975f9b07cebefab8ba84cb6472b0c3c332",
+  "definition": {
+    "StartAt": "BuildPayload",
+    "States": {
+      "BuildPayload": {
+        "Type": "Pass",
+        "InputPath": "$.request",
+        "Parameters": {
+          "order": {
+            "id.$": "$.order.id",
+            "firstSku.$": "$.order.lines[0].sku"
+          },
+          "priority.$": "$.flags.priority",
+          "traceId.$": "$$.Execution.Input.meta.traceId",
+          "stage": "prepared"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "meta": {
+      "traceId": "trace-101"
+    },
+    "request": {
+      "order": {
+        "id": "ord-7",
+        "lines": [
+          {
+            "sku": "sku-1",
+            "quantity": 2
+          }
+        ]
+      },
+      "flags": {
+        "priority": "expedited"
+      }
+    },
+    "flags": {
+      "priority": "wrong-scope"
+    }
+  },
+  "result": {
+    "output": {
+      "order": {
+        "firstSku": "sku-1",
+        "id": "ord-7"
+      },
+      "stage": "prepared",
+      "traceId": "trace-101",
+      "priority": "expedited"
+    }
+  }
+}

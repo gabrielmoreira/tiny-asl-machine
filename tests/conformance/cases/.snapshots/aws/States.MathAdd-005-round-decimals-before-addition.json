@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "005-round-decimals-before-addition",
+  "title": "rounds both decimal operands before addition",
+  "group": "States.MathAdd",
+  "hash": "43245ae9b3ad05ba49cc503e2e115c8f96ccc0155397701325615e312c87c7f6",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd($.a, $.b)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": 1.6,
+    "b": 2.7
+  },
+  "result": {
+    "output": {
+      "value": 5
+    }
+  }
+}

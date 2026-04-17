@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "011-catch-resultpath-invalid-syntax-fails-with-resultpathmatchfailure",
+  "title": "Catch ResultPath fails with States.ResultPathMatchFailure when the path syntax is invalid",
+  "group": "Feature.Catch",
+  "hash": "f6576378a54742c6c4b68c3c76a7fdc7926847c7e6008894a577cb0fcec2e627",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:catch:inject-error",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "ValidationError"
+            ],
+            "ResultPath": "not-a-path",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-catch-invalid-resultpath"
+  },
+  "result": {
+    "error": "States.ResultPathMatchFailure",
+    "cause": "ResultPath could not be applied at not-a-path: Lexical error on line 1. Unrecognized text.\nnot-a-path\n---^"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "028-reject-boolean-plus-negative-number",
+  "title": "rejects a boolean operand even when paired with a negative number",
+  "group": "States.MathAdd",
+  "hash": "bf5473dbb371785701019856e6480e917b418f3a96a57c595711fdd8bea92d03",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(false, -1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathAdd(false, -1). Invalid arguments in States.MathAdd"
+  }
+}

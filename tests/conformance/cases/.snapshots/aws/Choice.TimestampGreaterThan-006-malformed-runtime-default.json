@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "006-malformed-runtime-default",
+  "title": "treats a malformed runtime timestamp string as a non-match for greater-than comparison",
+  "group": "Choice.TimestampGreaterThan",
+  "hash": "dd7baac31d96126e4b0d9a6b1ac970ae52804557cc1a730cfd856f8bf052a0ac",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampGreaterThan": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "not-a-timestamp"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

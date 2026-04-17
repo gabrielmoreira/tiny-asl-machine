@@ -1,0 +1,51 @@
+{
+  "runner": "local",
+  "id": "003-catch-resultpath-null-preserves-input",
+  "title": "preserves the original input when Catch ResultPath is null",
+  "group": "Feature.Catch",
+  "hash": "24ead647ccce84ba9e6f9c7910eaf3e6c967bde78fa55f242a540afd5eefafd2",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:catch:null-resultpath",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "TransientError"
+            ],
+            "ResultPath": null,
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "recovered": true
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "jobId": "job-44",
+    "payload": {
+      "step": "charge"
+    }
+  },
+  "result": {
+    "output": {
+      "jobId": "job-44",
+      "payload": {
+        "step": "charge"
+      },
+      "recovery": {
+        "recovered": true
+      }
+    }
+  }
+}

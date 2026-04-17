@@ -1,0 +1,46 @@
+{
+  "runner": "local",
+  "id": "004-default-on-later",
+  "title": "falls through to default when the variable timestamp is later than the comparison path",
+  "group": "Choice.TimestampLessThanPath",
+  "hash": "c2a072ee47395d7fb97fd63c02a9b4e3a99af1c289da6afca0082f51c3e9ad11",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampLessThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "2025-01-02T00:00:00.000Z",
+    "right": "2025-01-01T12:00:00.000Z"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

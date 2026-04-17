@@ -1,0 +1,34 @@
+{
+  "runner": "aws",
+  "id": "013-execution-context",
+  "title": "Read array input from execution context",
+  "group": "States.ArrayUnique",
+  "hash": "041ccd222e08fd8a67ac4919c7cd6006836dcbdf0f030f66aa658352f4ebafdf",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($$.Execution.Input.tags)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "tags": [
+      "x",
+      "x",
+      "y"
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        "x",
+        "y"
+      ]
+    }
+  }
+}

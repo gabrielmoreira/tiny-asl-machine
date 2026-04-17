@@ -1,0 +1,57 @@
+{
+  "runner": "aws",
+  "id": "004-catch-transition-on-local-failure",
+  "title": "transitions via Catch when a task fails",
+  "group": "Task.State",
+  "hash": "b23827a87bc3bbe3a4583f9553835ad4a2cd8cb718dac441b185199dfcb127f9",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "const err = new Error('temporary outage'); err.name = 'TransientError'; throw err;"
+            }
+          }
+        },
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "TransientError"
+            ],
+            "ResultPath": "$.taskError",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "recovered": true
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "jobId": "job-9"
+  },
+  "result": {
+    "output": {
+      "jobId": "job-9",
+      "taskError": {
+        "Error": "TransientError",
+        "Cause": "{\"errorType\":\"TransientError\",\"errorMessage\":\"temporary outage\",\"trace\":[\"TransientError: temporary outage\",\"    at eval (eval at handler (file:///var/task/index.mjs:44:25), <anonymous>:4:13)\",\"    at BufferedInvokeProcessor.handler (file:///var/task/index.mjs:55:16)\",\"    at BufferedInvokeProcessor.processInvoke (file:///var/runtime/index.mjs:1092:33)\",\"    at file:///var/runtime/index.mjs:1178:98\",\"    at InvokeStoreSingle.run (file:///var/runtime/index.mjs:83:12)\",\"    at _Runtime.runWithInvokeContext (file:///var/runtime/index.mjs:1191:24)\",\"    at async _Runtime.processSingleConcurrent (file:///var/runtime/index.mjs:1178:7)\",\"    at async _Runtime.start (file:///var/runtime/index.mjs:1165:7)\",\"    at async ignition (file:///var/runtime/index.mjs:1634:5)\"]}"
+      },
+      "recovery": {
+        "recovered": true
+      }
+    }
+  }
+}

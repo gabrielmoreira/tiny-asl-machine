@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "001-pass-assign-values-visible-in-next-state",
+  "title": "Pass Assign values are visible in the next JSONata state",
+  "group": "Feature.AssignVariables",
+  "hash": "7bc36b4e704479a813ea0517b7f989a6e89266dee420748f1b59bf070817c719",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "SeedVehicle",
+    "States": {
+      "SeedVehicle": {
+        "Type": "Pass",
+        "Assign": {
+          "make": "Infiniti",
+          "model": "G35",
+          "year": 2006
+        },
+        "Next": "DescribeVehicle"
+      },
+      "DescribeVehicle": {
+        "Type": "Pass",
+        "Output": "{% $year & \" \" & $make & \" \" & $model %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": "2006 Infiniti G35"
+  }
+}

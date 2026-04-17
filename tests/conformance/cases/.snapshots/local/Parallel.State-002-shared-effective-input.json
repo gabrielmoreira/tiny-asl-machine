@@ -1,0 +1,92 @@
+{
+  "runner": "local",
+  "id": "002-shared-effective-input",
+  "title": "all branches receive the same effective input",
+  "group": "Parallel.State",
+  "hash": "0ca78b4cd09031cc405ede2ab6e90d3a17e1e31618ff20794c967518c54985ac",
+  "definition": {
+    "StartAt": "FanOut",
+    "States": {
+      "FanOut": {
+        "Type": "Parallel",
+        "InputPath": "$.payload",
+        "Branches": [
+          {
+            "StartAt": "InspectAlpha",
+            "States": {
+              "InspectAlpha": {
+                "Type": "Task",
+                "Resource": "local:inspect-alpha",
+                "Parameters": {
+                  "branch": "alpha",
+                  "snapshot.$": "$"
+                },
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "InspectBeta",
+            "States": {
+              "InspectBeta": {
+                "Type": "Task",
+                "Resource": "local:inspect-beta",
+                "Parameters": {
+                  "branch": "beta",
+                  "snapshot.$": "$"
+                },
+                "End": true
+              }
+            }
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "ignored": {
+      "requestId": "req-9"
+    },
+    "payload": {
+      "user": {
+        "id": "user-1"
+      },
+      "flags": [
+        "red",
+        "blue"
+      ],
+      "count": 3
+    }
+  },
+  "result": {
+    "output": [
+      {
+        "branch": "alpha",
+        "snapshot": {
+          "user": {
+            "id": "user-1"
+          },
+          "flags": [
+            "red",
+            "blue"
+          ],
+          "count": 3
+        }
+      },
+      {
+        "branch": "beta",
+        "snapshot": {
+          "user": {
+            "id": "user-1"
+          },
+          "flags": [
+            "red",
+            "blue"
+          ],
+          "count": 3
+        }
+      }
+    ]
+  }
+}

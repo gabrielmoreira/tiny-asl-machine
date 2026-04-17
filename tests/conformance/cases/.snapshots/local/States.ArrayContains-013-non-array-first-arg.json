@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "013-non-array-first-arg",
+  "title": "Reject non-array first argument",
+  "group": "States.ArrayContains",
+  "hash": "9bc8fe4b8a857da2bbf12d5208c0d419b6d3dc28ae3ce190abd2b4895078224c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains('not-array', 'x')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayContains('not-array', 'x'). Invalid arguments in States.ArrayContains, caused by: States.ArrayContains expected an array, got string"
+  }
+}

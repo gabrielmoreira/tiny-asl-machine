@@ -1,0 +1,29 @@
+{
+  "runner": "aws",
+  "id": "014-reject-extra-arguments",
+  "title": "rejects extra arguments beyond arity",
+  "group": "States.JsonToString",
+  "hash": "39c86fbc0155262d8f5346693a83b04b1184912ef74dcea01ee20879435c087d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.a, $.b)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "x": 1
+    },
+    "b": "unused"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.JsonToString($.a, $.b). Invalid arguments in States.JsonToString: only a single argument is allowed."
+  }
+}

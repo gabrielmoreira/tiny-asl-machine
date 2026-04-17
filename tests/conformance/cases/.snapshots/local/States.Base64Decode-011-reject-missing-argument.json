@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "011-reject-missing-argument",
+  "title": "rejects missing argument",
+  "group": "States.Base64Decode",
+  "hash": "747c5aa5c0e5b1e77cb60d2a2c228ee17ea06682aac41eeaa1f663a4b7e7c25d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.Base64Decode expects 1 argument(s) but received 0."
+  }
+}

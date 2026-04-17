@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "020-reject-zero-argument-invocation",
+  "title": "rejects zero-argument invocation",
+  "group": "States.StringSplit",
+  "hash": "4efa306f5dc97e63260f48a78da736948dbbf0ed501163dab92f0dbe59887be1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.StringSplit expects 2 argument(s) but received 0."
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "001-larger-match",
+  "title": "matches when the input number is larger than the rule value",
+  "group": "Choice.NumericGreaterThan",
+  "hash": "d18cbe86e0203806a54be2035584a15843da91eb5025e2e16099cb56dd0e8298",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericGreaterThan": 10,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 11
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

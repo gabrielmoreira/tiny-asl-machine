@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "031-reject-negative-string-plus-number",
+  "title": "rejects a negative numeric-looking string instead of coercing it",
+  "group": "States.MathAdd",
+  "hash": "4b553b91b584066c8d0d43151be47ea5fa04bf45ed12f89db7d5e5041fa88b7a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd('-1', 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.MathAdd('-1', 2). Invalid arguments in States.MathAdd, caused by: States.MathAdd expected a number, got string"
+  }
+}

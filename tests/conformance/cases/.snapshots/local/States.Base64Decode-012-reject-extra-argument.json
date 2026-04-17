@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "012-reject-extra-argument",
+  "title": "rejects extra argument",
+  "group": "States.Base64Decode",
+  "hash": "d17a6b3ed9d6e38a04ef67f1d1c27ea5a6fed5506434e23333dc009f8d2c911f",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode('aGVsbG8=', 'extra')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.Base64Decode expects 1 argument(s) but received 2."
+  }
+}

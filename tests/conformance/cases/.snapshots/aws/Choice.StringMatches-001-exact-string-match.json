@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "001-exact-string-match",
+  "title": "matches an exact string",
+  "group": "Choice.StringMatches",
+  "hash": "24e3c540342a2feebd7ab924822d14b182cca341993c31af9268b835c039436d",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringMatches": "invoice-2025.json",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "exact-pattern"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "no-pattern-match"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "invoice-2025.json"
+  },
+  "result": {
+    "output": {
+      "selected": "exact-pattern"
+    }
+  }
+}

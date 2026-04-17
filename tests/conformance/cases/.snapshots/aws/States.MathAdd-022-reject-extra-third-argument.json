@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "022-reject-extra-third-argument",
+  "title": "rejects an extra third argument",
+  "group": "States.MathAdd",
+  "hash": "25d868f1c3c8dfec349cede40c4f70130c554e5756034c4ea0f0617968602b21",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(1, 2, 999)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathAdd(1, 2, 999). Invalid arguments in States.MathAdd"
+  }
+}

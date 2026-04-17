@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "031-hash-extra-argument-fails",
+  "title": "$hash rejects an extra third argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "c3ab6c760bb982ca82338189b056d86ae10efe3824d417542f004c1dda4af6a9",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $hash(\"hello\", \"SHA-256\", \"extra\") %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$hash(\"hello\", \"SHA-256\", \"extra\")' specified for the field 'Output' threw an error during evaluation. T0410: Argument 3 of function \"hash\" does not match function signature"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "017-reject-missing-third-argument",
+  "title": "rejects a missing third argument",
+  "group": "States.JsonMerge",
+  "hash": "88e6279e99c7815d5bed70f7b7c9aa8d72975ea28bca489150a5388c7f5e8f74",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {},
+    "b": {}
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.JsonMerge expects 3 argument(s) but received 2."
+  }
+}

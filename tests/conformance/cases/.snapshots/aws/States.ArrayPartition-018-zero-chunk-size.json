@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "018-zero-chunk-size",
+  "title": "rejects literal zero chunk size",
+  "group": "States.ArrayPartition",
+  "hash": "a59fd7b553d33a9dbf01dc6fca6dd8fe5c0e19f6bde1bbaae0099cee7997bc6b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 0)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.ArrayPartition($.arr, 0). Invalid arguments in States.ArrayPartition"
+  }
+}

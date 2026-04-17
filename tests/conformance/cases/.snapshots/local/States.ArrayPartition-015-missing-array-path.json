@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "015-missing-array-path",
+  "title": "missing array path resolves to non-array input and fails validation",
+  "group": "States.ArrayPartition",
+  "hash": "dcc96eddc401b3552a9c4d76253578d9e94e8f5902e93f95bd12939e81b803f6",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.missing, 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayPartition($.missing, 2). Invalid arguments in States.ArrayPartition, caused by: States.ArrayPartition expected an array, got undefined"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "015-fail-misplaced-internal-padding",
+  "title": "fails on misplaced internal padding",
+  "group": "States.Base64Decode",
+  "hash": "a173e209f0bd6da9f41ffaa448ada7c18d7e8bdf4820fbab6dd55b892a9397bd",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode('ab==cd')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Base64Decode('ab==cd'). Invalid arguments in States.Base64Decode, caused by: Invalid Base64 input"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "runner": "aws",
+  "id": "006-earlier-no-default",
+  "title": "fails with States.Runtime when the variable timestamp is earlier than the rule timestamp and no default is configured",
+  "group": "Choice.TimestampGreaterThanEquals",
+  "hash": "39f402361fbdb500524d4485da3a4c7f353ab06ceb698cd5c758d436ab230303",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampGreaterThanEquals": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "2025-01-01T00:00:00.000Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

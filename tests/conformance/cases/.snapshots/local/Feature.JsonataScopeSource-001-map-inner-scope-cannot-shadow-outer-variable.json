@@ -1,0 +1,48 @@
+{
+  "runner": "local",
+  "id": "001-map-inner-scope-cannot-shadow-outer-variable",
+  "title": "Map inner scope cannot assign a variable name already assigned in an outer scope",
+  "group": "Feature.JsonataScopeSource",
+  "hash": "023065490a43bd08e3303858be9de46dfd67f8ebccafdcdabd60761e433e7373",
+  "definition": {
+    "QueryLanguage": "JSONPath",
+    "StartAt": "SeedOuter",
+    "States": {
+      "SeedOuter": {
+        "Type": "Pass",
+        "QueryLanguage": "JSONata",
+        "Assign": {
+          "shared": "outer"
+        },
+        "Next": "Iterate"
+      },
+      "Iterate": {
+        "Type": "Map",
+        "ItemsPath": "$.items",
+        "Iterator": {
+          "StartAt": "Shadow",
+          "States": {
+            "Shadow": {
+              "Type": "Pass",
+              "QueryLanguage": "JSONata",
+              "Assign": {
+                "shared": "inner"
+              },
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "items": [
+      1
+    ]
+  },
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "The variable name 'shared' was already defined in a parent scope."
+  }
+}

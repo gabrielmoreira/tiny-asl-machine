@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "005-parse-boolean-json",
+  "title": "parses boolean JSON text",
+  "group": "States.StringToJson",
+  "hash": "3d4c0c2f9be2bea8aced87b9aed5836b6d6859760b2214c5f0244a17776db222",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "true"
+  },
+  "result": {
+    "output": {
+      "value": true
+    }
+  }
+}

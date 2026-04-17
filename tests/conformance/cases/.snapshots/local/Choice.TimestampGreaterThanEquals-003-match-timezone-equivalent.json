@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "003-match-timezone-equivalent",
+  "title": "matches when the variable timestamp is equivalent after timezone normalization",
+  "group": "Choice.TimestampGreaterThanEquals",
+  "hash": "a5f261604f153267fccffe5325979db279ffb444efbb263dea4401acdd6d1b61",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampGreaterThanEquals": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "2025-01-01T07:00:00.000-05:00"
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

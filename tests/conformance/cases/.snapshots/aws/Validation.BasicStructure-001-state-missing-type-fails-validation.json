@@ -1,0 +1,20 @@
+{
+  "runner": "aws",
+  "id": "001-state-missing-type-fails-validation",
+  "title": "fails validation when a state omits Type",
+  "group": "Validation.BasicStructure",
+  "hash": "13aa09c1b8fba52df4761dca75a232f5ea29d4c40e19a3925b5430da1f340c98",
+  "definition": {
+    "StartAt": "First",
+    "States": {
+      "First": {
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "The field 'Type' is required; Workflow has no terminal state"
+  }
+}

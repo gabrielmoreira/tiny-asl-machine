@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "004-keep-template-without-placeholders",
+  "title": "returns the template unchanged when it has no placeholders",
+  "group": "States.Format",
+  "hash": "eb9d4ee24c614d11b9578467576bd9fa0cc5473dd11761df3806b1ddcc193578",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('no placeholders')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "no placeholders"
+    }
+  }
+}

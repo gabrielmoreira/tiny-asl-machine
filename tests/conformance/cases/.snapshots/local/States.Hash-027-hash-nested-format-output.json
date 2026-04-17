@@ -1,0 +1,28 @@
+{
+  "runner": "local",
+  "id": "027-hash-nested-format-output",
+  "title": "hashes nested States.Format output",
+  "group": "States.Hash",
+  "hash": "a309f6876a24c1e8bde78d36fc5d57dafc1b2f37ca617d76f59e295d5f4f03e4",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash(States.Format('{}:{}', $.a, $.b), 'SHA-256')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": "x",
+    "b": "y"
+  },
+  "result": {
+    "output": {
+      "value": "1274e286686b54fe765ec40735665b4bf789cee2a5b22124c5e0491a88e15271"
+    }
+  }
+}

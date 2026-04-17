@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "007-hash-empty-string-sha-256",
+  "title": "hashes empty string with SHA-256",
+  "group": "States.Hash",
+  "hash": "78818f822bf4978d64181be96ece53ffb88713f1daa375df592d336ca4ed4f00",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('', 'SHA-256')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

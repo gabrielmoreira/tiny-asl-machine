@@ -1,0 +1,36 @@
+{
+  "runner": "aws",
+  "id": "009-no-default-nonmatch",
+  "title": "fails with States.Runtime when the pattern does not match and there is no default",
+  "group": "Choice.StringMatches",
+  "hash": "07d0102c5a77616163c468b0aaf6766b955dabb85f7b946fd77e6faf97361f1a",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringMatches": "invoice-*.json",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "report-2025.json"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

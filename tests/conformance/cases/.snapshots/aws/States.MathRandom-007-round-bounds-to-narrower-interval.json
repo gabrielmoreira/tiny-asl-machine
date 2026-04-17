@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "007-round-bounds-to-narrower-interval",
+  "title": "rounds bounds to a narrower interval",
+  "group": "States.MathRandom",
+  "hash": "b9735eeac67e99dd0d77cfe8e6e3e4f145f1648dcf4b108278260365af4accc7",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1.6, 5.4)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 1
+    }
+  }
+}

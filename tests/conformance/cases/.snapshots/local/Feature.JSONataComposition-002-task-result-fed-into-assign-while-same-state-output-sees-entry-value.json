@@ -1,0 +1,65 @@
+{
+  "runner": "local",
+  "id": "002-task-result-fed-into-assign-while-same-state-output-sees-entry-value",
+  "title": "Task result can feed Assign while same-state Output still sees the state-entry snapshot",
+  "group": "Feature.JSONataComposition",
+  "hash": "d9aeb52176b43d1ea5684dd1fa5218e6c673d144e8d6bc78863abb136fba2765",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "SeedStage",
+    "States": {
+      "SeedStage": {
+        "Type": "Pass",
+        "Assign": {
+          "stage": "entry"
+        },
+        "Next": "Invoke"
+      },
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Arguments": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "return { stage: \"fresh\", status: \"done\" };"
+            },
+            "payload": {
+              "seed": "{% $stage %}"
+            }
+          }
+        },
+        "Assign": {
+          "stage": "{% $states.result.Payload.stage %}",
+          "status": "{% $states.result.Payload.status %}"
+        },
+        "Output": {
+          "stageSeenByOutput": "{% $stage %}",
+          "statusFromResult": "{% $states.result.Payload.status %}",
+          "nextStage": "{% $states.result.Payload.stage %}",
+          "nextStatus": "{% $states.result.Payload.status %}"
+        },
+        "Next": "Observe"
+      },
+      "Observe": {
+        "Type": "Pass",
+        "Output": {
+          "stage": "{% $stage %}",
+          "status": "{% $status %}",
+          "priorOutputStage": "{% $states.input.stageSeenByOutput %}",
+          "rawStatus": "{% $states.input.statusFromResult %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "stage": "fresh",
+      "status": "done",
+      "priorOutputStage": "entry",
+      "rawStatus": "done"
+    }
+  }
+}

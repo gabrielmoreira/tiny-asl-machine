@@ -1,0 +1,41 @@
+{
+  "runner": "aws",
+  "id": "008-object-key-order",
+  "title": "Treat object key order variants as duplicates",
+  "group": "States.ArrayUnique",
+  "hash": "6896dfa88f2b582161b6e621d125ce984e4332369ddf5ba05b0825e3bbcf923c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      {
+        "a": 1,
+        "b": 2
+      },
+      {
+        "b": 2,
+        "a": 1
+      }
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        {
+          "a": 1,
+          "b": 2
+        }
+      ]
+    }
+  }
+}

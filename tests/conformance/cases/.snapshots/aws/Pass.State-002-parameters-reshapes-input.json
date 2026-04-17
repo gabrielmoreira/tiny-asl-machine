@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "002-parameters-reshapes-input",
+  "title": "uses Parameters to reshape selected input into a new object",
+  "group": "Pass.State",
+  "hash": "a2a8ce12957e59ed5c36c34531e597af9640c3d7bcc43e35108e6e2ec2e6ddbd",
+  "definition": {
+    "StartAt": "ReshapeInput",
+    "States": {
+      "ReshapeInput": {
+        "Type": "Pass",
+        "Parameters": {
+          "userId": 7,
+          "name.$": "$.profile.name",
+          "role.$": "$.profile.role",
+          "isActive.$": "$.flags.active",
+          "metadata": {
+            "source": "pass-state"
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "profile": {
+      "name": "Ada",
+      "role": "admin"
+    },
+    "flags": {
+      "active": true
+    },
+    "ignored": "value"
+  },
+  "result": {
+    "output": {
+      "userId": 7,
+      "metadata": {
+        "source": "pass-state"
+      },
+      "role": "admin",
+      "name": "Ada",
+      "isActive": true
+    }
+  }
+}

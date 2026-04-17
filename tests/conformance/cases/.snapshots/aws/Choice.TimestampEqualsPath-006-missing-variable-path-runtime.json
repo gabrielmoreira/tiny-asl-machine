@@ -1,0 +1,44 @@
+{
+  "runner": "aws",
+  "id": "006-missing-variable-path-runtime",
+  "title": "fails with States.Runtime when the variable path is missing",
+  "group": "Choice.TimestampEqualsPath",
+  "hash": "d07ba8aef7570bfa8189fb31f12b6580c315254ec68256f48fd6649c2aa48d1a",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "right": "2025-01-01T12:00:00.000Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Invalid path '$.left': The choice state's condition path references an invalid value."
+  }
+}

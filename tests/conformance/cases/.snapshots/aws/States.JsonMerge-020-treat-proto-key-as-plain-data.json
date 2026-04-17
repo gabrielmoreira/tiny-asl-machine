@@ -1,0 +1,39 @@
+{
+  "runner": "aws",
+  "id": "020-treat-proto-key-as-plain-data",
+  "title": "treats dangerous __proto__ keys as plain data during shallow merge",
+  "group": "States.JsonMerge",
+  "hash": "638c7d0ff2530ad4db829a9dd652422362f6f4b0e7154d8772b5128f827cba19",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "__proto__": {
+        "polluted": true
+      }
+    },
+    "b": {
+      "x": 1
+    }
+  },
+  "result": {
+    "output": {
+      "value": {
+        "x": 1,
+        "__proto__": {
+          "polluted": true
+        }
+      }
+    }
+  }
+}

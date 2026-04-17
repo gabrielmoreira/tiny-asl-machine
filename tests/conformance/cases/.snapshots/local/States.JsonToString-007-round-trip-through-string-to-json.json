@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "007-round-trip-through-string-to-json",
+  "title": "round-trips through StringToJson",
+  "group": "States.JsonToString",
+  "hash": "f6c8242f303a502ed20eb96770884bb0592b2bc4c984a38cda69aa87e64684b6",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString(States.StringToJson($.json))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "{\"a\":1}"
+  },
+  "result": {
+    "output": {
+      "value": "{\"a\":1}"
+    }
+  }
+}

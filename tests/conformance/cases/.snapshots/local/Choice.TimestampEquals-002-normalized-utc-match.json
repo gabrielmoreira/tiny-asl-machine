@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "002-normalized-utc-match",
+  "title": "treats equivalent UTC timestamps with and without milliseconds as equal",
+  "group": "Choice.TimestampEquals",
+  "hash": "9283e751cff76a2f0dd273f279789819cd422315b19170f74e78093b74fe9f6b",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampEquals": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "2025-01-01T12:00:00Z"
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

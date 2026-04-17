@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "012-reject-string-seed",
+  "title": "rejects a string seed",
+  "group": "States.MathRandom",
+  "hash": "89a834374007c9931f6a0f13102772862d01041c8953a50fd64ab3abbb2927ac",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1, 10, 'seed')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathRandom(1, 10, 'seed'). Invalid arguments in States.MathRandom"
+  }
+}

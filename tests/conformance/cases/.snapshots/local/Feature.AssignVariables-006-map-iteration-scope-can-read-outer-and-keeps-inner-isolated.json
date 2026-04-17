@@ -1,0 +1,77 @@
+{
+  "runner": "local",
+  "id": "006-map-iteration-scope-can-read-outer-and-keeps-inner-isolated",
+  "title": "Map iterations can read outer variables and keep per-iteration inner scope isolated",
+  "group": "Feature.AssignVariables",
+  "hash": "90758595c63e9dc6e512e6afb3eed64b7b37509a885d59a321614694099bc389",
+  "definition": {
+    "QueryLanguage": "JSONPath",
+    "StartAt": "SeedOuter",
+    "States": {
+      "SeedOuter": {
+        "Type": "Pass",
+        "QueryLanguage": "JSONata",
+        "Assign": {
+          "outer": "hello"
+        },
+        "Next": "GreetEach"
+      },
+      "GreetEach": {
+        "Type": "Map",
+        "ItemsPath": "$.items",
+        "Iterator": {
+          "StartAt": "Prepare",
+          "States": {
+            "Prepare": {
+              "Type": "Pass",
+              "QueryLanguage": "JSONata",
+              "Assign": {
+                "inner": "{% \"item-\" & $states.input %}",
+                "seenOuter": "{% $outer %}"
+              },
+              "Next": "Emit"
+            },
+            "Emit": {
+              "Type": "Pass",
+              "QueryLanguage": "JSONata",
+              "Output": "{% {\"input\": $states.input, \"outer\": $outer, \"inner\": $inner, \"seenOuter\": $seenOuter} %}",
+              "End": true
+            }
+          }
+        },
+        "Next": "Summarize"
+      },
+      "Summarize": {
+        "Type": "Pass",
+        "QueryLanguage": "JSONata",
+        "Output": "{% {\"outer\": $outer, \"results\": $states.input} %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "items": [
+      1,
+      2
+    ]
+  },
+  "result": {
+    "output": {
+      "outer": "hello",
+      "results": [
+        {
+          "input": 1,
+          "outer": "hello",
+          "inner": "item-1",
+          "seenOuter": "hello"
+        },
+        {
+          "input": 2,
+          "outer": "hello",
+          "inner": "item-2",
+          "seenOuter": "hello"
+        }
+      ]
+    }
+  }
+}

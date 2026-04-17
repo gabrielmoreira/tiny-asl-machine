@@ -1,0 +1,57 @@
+{
+  "runner": "local",
+  "id": "002-parameters-into-task-resultselector",
+  "title": "feeds Parameters output into a task and then reshapes the task result with ResultSelector",
+  "group": "Feature.JSONPathPipeline",
+  "hash": "2916048654d5d08bd47180153b9af1b537e6337e74bfe7d06504f4f97945bc06",
+  "definition": {
+    "StartAt": "InvokeAndShape",
+    "States": {
+      "InvokeAndShape": {
+        "Type": "Task",
+        "Resource": "arn:local:jsonpath-pipeline:shape-task-result",
+        "Parameters": {
+          "request": {
+            "orderId.$": "$.order.id",
+            "quantity.$": "$.order.quantity"
+          },
+          "expedite.$": "$.flags.expedite",
+          "stamp": "prepared"
+        },
+        "ResultSelector": {
+          "summary": {
+            "orderId.$": "$.receipt.orderId",
+            "quantity.$": "$.receipt.quantity",
+            "accepted.$": "$.receipt.accepted"
+          },
+          "observedStamp.$": "$.audit.stamp",
+          "stage": "selected"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "order": {
+      "id": "ord-9",
+      "quantity": 3
+    },
+    "flags": {
+      "expedite": true
+    },
+    "ignored": {
+      "orderId": "wrong-order"
+    }
+  },
+  "result": {
+    "output": {
+      "summary": {
+        "orderId": "ord-9",
+        "quantity": 3,
+        "accepted": true
+      },
+      "stage": "selected",
+      "observedStamp": "prepared"
+    }
+  }
+}

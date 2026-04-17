@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "002-missing-path-default",
+  "title": "returns Default when the variable path is missing and IsPresent is true",
+  "group": "Choice.IsPresent",
+  "hash": "89dc9e85df27e0be39d7bdf0e33af111986d528951e32b20f79a3a64de8dfd2c",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.missing",
+            "IsPresent": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 1
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "014-fail-mod-4-short-input",
+  "title": "fails on mod-4 short Base64 input",
+  "group": "States.Base64Decode",
+  "hash": "9b38c1ee9fcea96d28207fb634c46a98eab07202705c77ffd66a4e12ac365f4d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode('abc')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Base64Decode('abc'). Invalid arguments in States.Base64Decode, caused by: Invalid Base64 input"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "016-rounded-zero-step",
+  "title": "rejects a step that rounds to zero",
+  "group": "States.ArrayRange",
+  "hash": "bcb5c94177c72f07548a086aa932236bdc17f6206d9ce17f023a8c2d7d6553a4",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(1, 10, 0.49)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayRange(1, 10, 0.49). Invalid arguments in States.ArrayRange, caused by: ArrayRange step must not be zero"
+  }
+}

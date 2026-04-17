@@ -1,0 +1,46 @@
+{
+  "runner": "local",
+  "id": "006-malformed-variable-path",
+  "title": "falls back to Default when the variable path contains a non-timestamp string",
+  "group": "Choice.TimestampLessThanEqualsPath",
+  "hash": "3588fee024055848175589335d7327c0d54850b1a1b53cc91bc892a7fa05d466",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampLessThanEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "not-a-timestamp",
+    "right": "2025-01-01T00:00:10Z"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

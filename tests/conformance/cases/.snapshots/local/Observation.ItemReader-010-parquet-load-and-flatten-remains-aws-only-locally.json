@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "010-parquet-load-and-flatten-remains-aws-only-locally",
+  "title": "ItemReader PARQUET with LOAD_AND_FLATTEN remains AWS-only in the local runner",
+  "group": "Observation.ItemReader",
+  "hash": "be6b843f88b51fc124b91590c2a480fb9249a85744b1e739d3694d20f77a89ca",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:listObjectsV2",
+          "ReaderConfig": {
+            "InputType": "PARQUET",
+            "Transformation": "LOAD_AND_FLATTEN"
+          },
+          "Parameters": {
+            "Bucket": "<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+            "Prefix": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/load-and-flatten/"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Local ItemReader does not support PARQUET input."
+  }
+}

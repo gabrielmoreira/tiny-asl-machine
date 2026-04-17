@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "004-projects-array-element",
+  "title": "OutputPath can project a specific array element from the final output",
+  "group": "Feature.OutputPath",
+  "hash": "fd627dbf4b94cea5b9ded4ccfcd1fb4e0d896cbcfab161b2542b6a184bfe753f",
+  "definition": {
+    "StartAt": "BuildItems",
+    "States": {
+      "BuildItems": {
+        "Type": "Pass",
+        "Result": {
+          "items": [
+            {
+              "id": "first",
+              "quantity": 1
+            },
+            {
+              "id": "second",
+              "quantity": 2
+            }
+          ]
+        },
+        "OutputPath": "$.items[1]",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "id": "second",
+      "quantity": 2
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "015-extra-third-arg",
+  "title": "Reject extra third argument",
+  "group": "States.ArrayContains",
+  "hash": "6ade9499a43b5ddbf814f227a6ba47564ea6d3fa67f30549f45d32dc64d0c961",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, 2, 999)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.ArrayContains expects 2 argument(s) but received 3."
+  }
+}
