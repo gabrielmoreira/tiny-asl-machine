@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "004-escaped-asterisk-literal",
+  "title": "treats an escaped asterisk as a literal character",
+  "group": "Choice.StringMatches",
+  "hash": "cbcd5ed93b8456c298ec8ddca22e61f314018d37fed2192bc8fee017c6027183",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringMatches": "file\\*name.txt",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "escaped-asterisk-literal"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "no-pattern-match"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "file*name.txt"
+  },
+  "result": {
+    "output": {
+      "selected": "escaped-asterisk-literal"
+    }
+  }
+}

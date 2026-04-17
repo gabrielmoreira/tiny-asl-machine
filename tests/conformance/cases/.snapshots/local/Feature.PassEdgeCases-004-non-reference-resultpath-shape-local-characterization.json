@@ -1,0 +1,47 @@
+{
+  "runner": "local",
+  "id": "004-non-reference-resultpath-shape-local-characterization",
+  "title": "documents current local behavior for a wildcard ResultPath shape that is not an AWS reference path",
+  "group": "Feature.PassEdgeCases",
+  "hash": "ef9a72d32ee94aab9b54c1edf62686950edb793bb76458b6cb234a03adb1d021",
+  "definition": {
+    "StartAt": "WriteThroughWildcard",
+    "States": {
+      "WriteThroughWildcard": {
+        "Type": "Pass",
+        "Result": {
+          "replaced": true
+        },
+        "ResultPath": "$.items[*]",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "items": [
+      {
+        "id": "first",
+        "keep": true
+      },
+      {
+        "id": "second",
+        "keep": true
+      }
+    ],
+    "requestId": "req-34"
+  },
+  "result": {
+    "output": {
+      "items": [
+        {
+          "replaced": true
+        },
+        {
+          "id": "second",
+          "keep": true
+        }
+      ],
+      "requestId": "req-34"
+    }
+  }
+}

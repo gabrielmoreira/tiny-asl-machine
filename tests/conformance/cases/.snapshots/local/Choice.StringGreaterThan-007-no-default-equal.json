@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "007-no-default-equal",
+  "title": "StringGreaterThan fails with States.Runtime without Default when the input equals the comparison string",
+  "group": "Choice.StringGreaterThan",
+  "hash": "13670ecfb7ef1cdb4ad07dc210341e7344eee673202a3110606b323c460cd85b",
+  "definition": {
+    "StartAt": "Compare",
+    "States": {
+      "Compare": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringGreaterThan": "bravo",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "bravo"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

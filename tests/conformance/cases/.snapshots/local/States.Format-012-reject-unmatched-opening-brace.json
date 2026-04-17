@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "012-reject-unmatched-opening-brace",
+  "title": "rejects an unmatched opening brace in the template",
+  "group": "States.Format",
+  "hash": "41b33001eb128a222c086bb52ab1076d1e46422044ffec54559eeeee9568c03c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('Hello {', $.a)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": "x"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Format('Hello {', $.a). Invalid template in States.Format: matching '}' not found for '{' at index 8 in \"'Hello {'\""
+  }
+}

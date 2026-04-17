@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "038-parse-missing-argument-fails",
+  "title": "$parse rejects a missing argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "d2b2927e95c7bf439c661d31bd4af63842e92819b29cdf21f8cb45c879668a2c",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $parse() %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $parse(). [object Object]"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "runner": "aws",
+  "id": "003-choice-rule-assign-visible-in-next-state",
+  "title": "Choice rule Assign values are visible in the next state when the rule matches",
+  "group": "Feature.AssignVariables",
+  "hash": "9391902ac6fe1dd32514e3e90017189f2897aec94a4e058025412ab9566cc70a",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Dispatch",
+    "States": {
+      "Dispatch": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Condition": "{% $states.input.value >= 20 and $states.input.value < 30 %}",
+            "Assign": {
+              "range": "twenties"
+            },
+            "Next": "ReportRange"
+          }
+        ],
+        "Default": "Fallback"
+      },
+      "ReportRange": {
+        "Type": "Pass",
+        "Output": "{% $range %}",
+        "End": true
+      },
+      "Fallback": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 23
+  },
+  "result": {
+    "output": "twenties"
+  }
+}

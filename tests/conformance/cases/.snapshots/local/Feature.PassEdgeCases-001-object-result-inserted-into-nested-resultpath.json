@@ -1,0 +1,51 @@
+{
+  "runner": "local",
+  "id": "001-object-result-inserted-into-nested-resultpath",
+  "title": "inserts an object Result into a nested ResultPath while preserving surrounding input data",
+  "group": "Feature.PassEdgeCases",
+  "hash": "f6fdd8bad311c9d8262e6d12ac950a2e069bec66fd3f03b779554bab7d609098",
+  "definition": {
+    "StartAt": "AnnotateReview",
+    "States": {
+      "AnnotateReview": {
+        "Type": "Pass",
+        "Result": {
+          "approved": true,
+          "reviewer": "sam"
+        },
+        "ResultPath": "$.workflow.audit.final",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-31",
+    "workflow": {
+      "step": "review",
+      "audit": {
+        "startedBy": "alex"
+      }
+    },
+    "untouched": [
+      "keep"
+    ]
+  },
+  "result": {
+    "output": {
+      "requestId": "req-31",
+      "workflow": {
+        "step": "review",
+        "audit": {
+          "startedBy": "alex",
+          "final": {
+            "approved": true,
+            "reviewer": "sam"
+          }
+        }
+      },
+      "untouched": [
+        "keep"
+      ]
+    }
+  }
+}

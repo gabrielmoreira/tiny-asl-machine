@@ -1,0 +1,44 @@
+{
+  "runner": "local",
+  "id": "005-missing-variable-path",
+  "title": "fails with States.Runtime when the variable path is missing",
+  "group": "Choice.TimestampLessThanEquals",
+  "hash": "4b06436a7acf9b775a87ca736bdc0c108ca2f07417618df0a267603b5a0215c2",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampLessThanEquals": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "otherTimestamp": "2025-01-01T00:00:00.000Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid path '$.timestamp': The choice state's condition path references an invalid value."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "005-missing-left-path-no-default",
+  "title": "fails with States.Runtime when the variable path is missing and there is no Default",
+  "group": "Choice.NumericEqualsPath",
+  "hash": "0fdc9594fdf3a65fcc0b5254497c38eaf5a8d2dc198dbb82c1a16efe74accced",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericEqualsPath": "$.right",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "right": 7
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid path '$.left': The choice state's condition path references an invalid value."
+  }
+}

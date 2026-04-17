@@ -1,0 +1,51 @@
+{
+  "runner": "local",
+  "id": "001-parameters-through-resultpath-and-outputpath",
+  "title": "composes nested intrinsics in Parameters before ResultPath and OutputPath projection",
+  "group": "Feature.IntrinsicComposition",
+  "hash": "f374dc50fc90f997a7becb1198798c8b450b07acb5f725e62f1beff40e89caf2",
+  "definition": {
+    "StartAt": "ComposeAudit",
+    "States": {
+      "ComposeAudit": {
+        "Type": "Pass",
+        "InputPath": "$.request",
+        "Parameters": {
+          "audit": {
+            "message.$": "States.Format('user:{} roles={}', $.user.id, States.JsonToString(States.Array($.roles[0], $.roles[1])))",
+            "roleCount.$": "States.ArrayLength($.roles)",
+            "originalUser.$": "$.user"
+          },
+          "trace": "composed"
+        },
+        "ResultPath": "$.analysis",
+        "OutputPath": "$.analysis.audit",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "request": {
+      "user": {
+        "id": "user-7",
+        "tier": "gold"
+      },
+      "roles": [
+        "admin",
+        "editor"
+      ],
+      "ignored": true
+    },
+    "outer": "dropped-by-input-path"
+  },
+  "result": {
+    "output": {
+      "message": "user:user-7 roles=[\"admin\",\"editor\"]",
+      "roleCount": 2,
+      "originalUser": {
+        "id": "user-7",
+        "tier": "gold"
+      }
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "runner": "local",
+  "id": "004-nested-ascending-match",
+  "title": "matches when nested decimal paths resolve in ascending order",
+  "group": "Choice.NumericLessThanPath",
+  "hash": "6f39bb79c4258e08f570c16f8b775f36ed963fb07c6274481a2b0f4baa442c15",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.payload.range.lower",
+            "NumericLessThanPath": "$.payload.range.upper",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "payload": {
+      "range": {
+        "lower": -1.5,
+        "upper": -1.25
+      }
+    }
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

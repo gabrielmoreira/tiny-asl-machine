@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "017-reject-stray-closing-parenthesis",
+  "title": "rejects a stray closing parenthesis form",
+  "group": "States.UUID",
+  "hash": "1e00f66fc4c6069cebb3b836bdfb95b692b60d5232512f2f630263391058d960",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "The value for the field 'value.$' must be a valid JSONPath or a valid intrinsic function call"
+  }
+}

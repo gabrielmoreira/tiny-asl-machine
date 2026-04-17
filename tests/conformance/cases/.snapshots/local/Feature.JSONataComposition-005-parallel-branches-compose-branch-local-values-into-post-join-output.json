@@ -1,0 +1,95 @@
+{
+  "runner": "local",
+  "id": "005-parallel-branches-compose-branch-local-values-into-post-join-output",
+  "title": "Parallel branches can keep branch-local JSONata variables and feed a post-join output summary",
+  "group": "Feature.JSONataComposition",
+  "hash": "4afd26929b7fe480f5adfe3f69ee8dec38df7012ac904c6ba2da01c672c76e0e",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "SeedOuter",
+    "States": {
+      "SeedOuter": {
+        "Type": "Pass",
+        "Assign": {
+          "outer": "shared"
+        },
+        "Next": "FanOut"
+      },
+      "FanOut": {
+        "Type": "Parallel",
+        "Branches": [
+          {
+            "StartAt": "PrepareA",
+            "States": {
+              "PrepareA": {
+                "Type": "Pass",
+                "Assign": {
+                  "branchLocal": "alpha"
+                },
+                "Next": "EmitA"
+              },
+              "EmitA": {
+                "Type": "Pass",
+                "Output": "{% {\"branch\": \"A\", \"outer\": $outer, \"local\": $branchLocal} %}",
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "PrepareB",
+            "States": {
+              "PrepareB": {
+                "Type": "Pass",
+                "Assign": {
+                  "branchLocal": "beta"
+                },
+                "Next": "EmitB"
+              },
+              "EmitB": {
+                "Type": "Pass",
+                "Output": "{% {\"branch\": \"B\", \"outer\": $outer, \"local\": $branchLocal} %}",
+                "End": true
+              }
+            }
+          }
+        ],
+        "Output": "{% {\"outer\": $outer, \"branchNames\": [$states.result[0].branch, $states.result[1].branch], \"locals\": [$states.result[0].local, $states.result[1].local], \"results\": $states.result} %}",
+        "Next": "Done"
+      },
+      "Done": {
+        "Type": "Pass",
+        "Output": "{% {\"outer\": $outer, \"summary\": $states.input} %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "outer": "shared",
+      "summary": {
+        "outer": "shared",
+        "branchNames": [
+          "A",
+          "B"
+        ],
+        "locals": [
+          "alpha",
+          "beta"
+        ],
+        "results": [
+          {
+            "branch": "A",
+            "outer": "shared",
+            "local": "alpha"
+          },
+          {
+            "branch": "B",
+            "outer": "shared",
+            "local": "beta"
+          }
+        ]
+      }
+    }
+  }
+}

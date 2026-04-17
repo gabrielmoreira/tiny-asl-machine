@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "001-missing-terminal-state-fails-validation",
+  "title": "fails validation when no terminal state is reachable",
+  "group": "Validation.Structure",
+  "hash": "3cb081256e96c0dd30eafe7530447488619cb75c55a1182bf3cc3d1023fe7b06",
+  "definition": {
+    "StartAt": "First",
+    "States": {
+      "First": {
+        "Type": "Pass",
+        "Next": "Second"
+      },
+      "Second": {
+        "Type": "Pass",
+        "Next": "First"
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Workflow has no terminal state"
+  }
+}

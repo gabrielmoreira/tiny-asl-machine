@@ -1,0 +1,57 @@
+{
+  "runner": "local",
+  "id": "006-nested-arrays",
+  "title": "partitions arrays containing nested arrays without flattening them",
+  "group": "States.ArrayPartition",
+  "hash": "f4cf50cbff9c1a64c5e790374a5078762c07b69625b1564a381eb77c40f27e6c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      [
+        1
+      ],
+      [
+        2
+      ],
+      [
+        3
+      ],
+      [
+        4
+      ]
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        [
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        [
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ]
+      ]
+    }
+  }
+}

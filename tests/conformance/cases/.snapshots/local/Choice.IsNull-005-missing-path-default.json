@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "005-missing-path-default",
+  "title": "falls back to Default when the path is missing and IsNull is true",
+  "group": "Choice.IsNull",
+  "hash": "e75f578ee94d4687e18b6e27e0881f682502b696479d7b57a387c5706fe4e9ad",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.missing",
+            "IsNull": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 1
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

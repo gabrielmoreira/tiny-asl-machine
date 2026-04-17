@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "008-ignore-string-argument",
+  "title": "still returns a UUID when given a string argument",
+  "group": "States.UUID",
+  "hash": "2d2e03c901d383ae007dbca75db5002a6e362d084789b31513a9ca6c716b9f20",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID('x')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "63433d11-80b3-4ce9-9973-a7be3faa9753"
+    }
+  }
+}

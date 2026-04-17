@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "018-decode-string-with-nul-byte",
+  "title": "decodes string containing NUL byte",
+  "group": "States.Base64Decode",
+  "hash": "54de6ad6245afa9f16965b1e0b71923506f37a320c9ad58ff8e6f2d3f3714b47",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode($.s)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "YWJjAGRlZg=="
+  },
+  "result": {
+    "output": {
+      "value": "abc\u0000def"
+    }
+  }
+}

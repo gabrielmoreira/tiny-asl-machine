@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "001-projects-nested-object",
+  "title": "OutputPath projects a nested object from the post-processed state output",
+  "group": "Feature.OutputPath",
+  "hash": "5668df118b997fee26855a77b9f9881a6f28a7d8b8d8b71f5f46c6c31d8fe006",
+  "definition": {
+    "StartAt": "BuildEnvelope",
+    "States": {
+      "BuildEnvelope": {
+        "Type": "Pass",
+        "Result": {
+          "envelope": {
+            "customer": {
+              "id": "cust-22",
+              "plan": "pro"
+            },
+            "request": {
+              "region": "eu-central-1"
+            }
+          }
+        },
+        "OutputPath": "$.envelope.customer",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "ignored": true
+  },
+  "result": {
+    "output": {
+      "id": "cust-22",
+      "plan": "pro"
+    }
+  }
+}

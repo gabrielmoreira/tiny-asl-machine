@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "005-boolean-default",
+  "title": "routes to Default for a boolean value",
+  "group": "Choice.IsString",
+  "hash": "2f80cbd7cf78313b8387cc097322eefa1f6b8e7c5266c2147e19d6738c2e9138",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsString": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": false
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

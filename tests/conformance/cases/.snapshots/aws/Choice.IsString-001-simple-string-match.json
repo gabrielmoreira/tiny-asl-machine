@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "001-simple-string-match",
+  "title": "matches a simple string value",
+  "group": "Choice.IsString",
+  "hash": "dc506b665a9d574a88fefb3fc002882b8f19a6c309564fca695f28217c2e5300",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsString": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "hello"
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "011-ignore-null-argument",
+  "title": "still returns a UUID when given a null argument",
+  "group": "States.UUID",
+  "hash": "6b5ba20e971226764fa8d2c0930bfd53701de8871645c50d1a5734b35e463ffd",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID(null)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "d3077249-b00d-4877-a60b-0ec0b6751b73"
+    }
+  }
+}

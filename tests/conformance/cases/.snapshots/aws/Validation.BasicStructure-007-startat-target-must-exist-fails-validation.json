@@ -1,0 +1,21 @@
+{
+  "runner": "aws",
+  "id": "007-startat-target-must-exist-fails-validation",
+  "title": "fails validation when StartAt references a missing state",
+  "group": "Validation.BasicStructure",
+  "hash": "db90b53d357e97429102bc5c2113f49537a468fd4b959b9d533f148fea1b4df0",
+  "definition": {
+    "StartAt": "MissingState",
+    "States": {
+      "First": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Missing 'Next' target: MissingState; State \"First\" is not reachable."
+  }
+}

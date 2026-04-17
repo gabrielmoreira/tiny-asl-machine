@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "027-reject-null-end-bound",
+  "title": "rejects a null end bound from input",
+  "group": "States.MathRandom",
+  "hash": "30d0730cd53fa267ad12b5f10746edf8c8752d6937c753d3a9944247a87c52a1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom($.start, $.end)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "start": 1,
+    "end": null
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.MathRandom($.start, $.end). Invalid arguments in States.MathRandom, caused by: States.MathRandom expected a number, got object"
+  }
+}

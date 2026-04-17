@@ -1,0 +1,49 @@
+{
+  "runner": "local",
+  "id": "009-nested-arrays",
+  "title": "Compare nested arrays structurally and positionally",
+  "group": "States.ArrayUnique",
+  "hash": "db23f01de0cd4550249b634d6dc0932bc80fda13e2a1becc8f326576b79ed03d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        1
+      ]
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ]
+    }
+  }
+}

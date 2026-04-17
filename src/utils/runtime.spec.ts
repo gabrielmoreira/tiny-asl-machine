@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vite-plus/test';
 import { createDefaultRuntime, createTestRuntime } from './runtime';
 
 describe('runtime adapters', () => {
@@ -27,7 +27,9 @@ describe('runtime adapters', () => {
       // When
       const uuid = runtime.randomUUID();
       // Then
-      expect(uuid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+      expect(uuid).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+      );
     });
 
     it('random(1, 100) returns an integer in [1, 100) (end-exclusive)', () => {

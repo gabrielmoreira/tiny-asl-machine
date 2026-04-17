@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "008-hash-unicode-checkmark-sha-256",
+  "title": "hashes Unicode checkmark with SHA-256",
+  "group": "States.Hash",
+  "hash": "0ba43820d6e4b45db3f58d10f07cd850d91a05f3ccfe360deda753d7b9105016",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash($.s, 'SHA-256')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "✓"
+  },
+  "result": {
+    "output": {
+      "value": "1dabba21cdad44541f6b15796f8d22978fc7ea10c46aeceeeeb66c23b3ac7604"
+    }
+  }
+}

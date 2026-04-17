@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "021-reject-missing-second-argument",
+  "title": "rejects a missing second argument",
+  "group": "States.MathAdd",
+  "hash": "ba9e43565ad915ca96f68993bf3c97f353c95039fc692f6e41c6608aa25481b1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.MathAdd expects 2 argument(s) but received 1."
+  }
+}

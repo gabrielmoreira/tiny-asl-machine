@@ -1,0 +1,80 @@
+{
+  "runner": "aws",
+  "id": "004-catch-resultpath-preserves-structured-error-after-retry",
+  "title": "catcher ResultPath preserves structured error output after retry exhaustion",
+  "group": "Feature.RetryCatchComposition",
+  "hash": "ad008d4a86f0e2e5892732ae89b037e828d53cd12addfaf093aa4e9bfb9df1e1",
+  "definition": {
+    "StartAt": "InvokeFixture",
+    "States": {
+      "InvokeFixture": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "throw new Error(`downstream-${payload.orderId}`);"
+            },
+            "payload": {
+              "orderId.$": "$.order.id"
+            }
+          }
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 1,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.diagnostics.lastError",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "handled": true
+        },
+        "ResultPath": "$.diagnostics.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "order": {
+      "id": "ord-9"
+    },
+    "diagnostics": {
+      "previous": "keep-me"
+    }
+  },
+  "result": {
+    "output": {
+      "order": {
+        "id": "ord-9"
+      },
+      "diagnostics": {
+        "previous": "keep-me",
+        "lastError": {
+          "Error": "Error",
+          "Cause": "{\"errorType\":\"Error\",\"errorMessage\":\"downstream-ord-9\",\"trace\":[\"Error: downstream-ord-9\",\"    at eval (eval at handler (file:///var/task/index.mjs:44:25), <anonymous>:4:7)\",\"    at BufferedInvokeProcessor.handler (file:///var/task/index.mjs:55:16)\",\"    at BufferedInvokeProcessor.processInvoke (file:///var/runtime/index.mjs:1092:33)\",\"    at file:///var/runtime/index.mjs:1178:98\",\"    at InvokeStoreSingle.run (file:///var/runtime/index.mjs:83:12)\",\"    at _Runtime.runWithInvokeContext (file:///var/runtime/index.mjs:1191:24)\",\"    at async _Runtime.processSingleConcurrent (file:///var/runtime/index.mjs:1178:7)\",\"    at async _Runtime.start (file:///var/runtime/index.mjs:1165:7)\",\"    at async ignition (file:///var/runtime/index.mjs:1634:5)\"]}"
+        },
+        "recovery": {
+          "handled": true
+        }
+      }
+    }
+  }
+}

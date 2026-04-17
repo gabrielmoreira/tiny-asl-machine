@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "007-positive-half-step-rounding",
+  "title": "documents positive half-step rounding behavior",
+  "group": "States.MathAdd",
+  "hash": "4bcbe0105b10216b1ec8a47b705fba50a462d20bed66d4678ae24381f5041a0a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(1.4, 2.5)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 4
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "004-serialize-number-primitive",
+  "title": "serializes a number primitive",
+  "group": "States.JsonToString",
+  "hash": "9c37bd8632a3c9f96fb02404c957d1c4901bfac79758de8a1660b5ca872fb9b8",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.num)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "num": 123
+  },
+  "result": {
+    "output": {
+      "value": "123"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "runner": "local",
+  "id": "002-select-nested-object-from-input-path",
+  "title": "selects a nested object from the input path",
+  "group": "Feature.JSONPath",
+  "hash": "07735f3c4e5952f837c6c8870a133f76f211e2359d0082f0660529838b2bb462",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "$.profile.contact"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "profile": {
+      "contact": {
+        "email": "ada@example.com",
+        "verified": true
+      }
+    }
+  },
+  "result": {
+    "output": {
+      "value": {
+        "email": "ada@example.com",
+        "verified": true
+      }
+    }
+  }
+}

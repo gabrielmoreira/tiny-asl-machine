@@ -1,0 +1,33 @@
+{
+  "runner": "local",
+  "id": "019-no-string-number-coercion-with-boundaries",
+  "title": "does not coerce numeric-looking strings to boundary numbers",
+  "group": "States.ArrayContains",
+  "hash": "fec7d1883b49ae4791462c17ae7e421f9e5505efe8d17fbbed9358e12a2b89fd",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, $.target)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      "-1",
+      "-1.5",
+      "-9007199254740991",
+      "9007199254740991"
+    ],
+    "target": 9007199254740991
+  },
+  "result": {
+    "output": {
+      "value": false
+    }
+  }
+}

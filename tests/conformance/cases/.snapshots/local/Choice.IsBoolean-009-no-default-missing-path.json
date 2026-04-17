@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "009-no-default-missing-path",
+  "title": "fails with States.Runtime when the path is missing and there is no Default",
+  "group": "Choice.IsBoolean",
+  "hash": "4f9a75449c3bd1f932a096028aa8a435d1e99f28a3d691fc16eabccc84b401a9",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.missing",
+            "IsBoolean": true,
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": true
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

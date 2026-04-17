@@ -1,0 +1,36 @@
+{
+  "runner": "aws",
+  "id": "008-no-default-null",
+  "title": "StringGreaterThanEquals fails with States.Runtime without Default for a non-matching null runtime value",
+  "group": "Choice.StringGreaterThanEquals",
+  "hash": "d255845666df54abc19861712a7850ade49c6324ced54e637b21223b226a6b00",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringGreaterThanEquals": "bravo",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": null
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

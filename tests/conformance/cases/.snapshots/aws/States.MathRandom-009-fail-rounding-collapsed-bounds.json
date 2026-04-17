@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "009-fail-rounding-collapsed-bounds",
+  "title": "fails when rounding collapses bounds to the same integer",
+  "group": "States.MathRandom",
+  "hash": "df1fe5ebed663bf955c61901022229c40491d295f3f888281c9f053ba690dc6d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1.49, 1.49)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathRandom(1.49, 1.49). Invalid arguments in States.MathRandom"
+  }
+}

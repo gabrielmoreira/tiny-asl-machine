@@ -1,0 +1,33 @@
+{
+  "runner": "aws",
+  "id": "002-delimiter-set-semantics",
+  "title": "uses delimiter-set semantics for multi-character delimiter strings",
+  "group": "States.StringSplit",
+  "hash": "d2299b4842b5ccf889b9c61f52dca6d718fc5e651b1b21c43185abc9e4dfd9c7",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, $.delim)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "1+2,3.4",
+    "delim": ".+,"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    }
+  }
+}

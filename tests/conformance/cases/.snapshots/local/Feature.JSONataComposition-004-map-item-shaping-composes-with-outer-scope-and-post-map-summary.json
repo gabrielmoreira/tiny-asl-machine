@@ -1,0 +1,81 @@
+{
+  "runner": "local",
+  "id": "004-map-item-shaping-composes-with-outer-scope-and-post-map-summary",
+  "title": "Map item shaping composes with outer-scope variables and a downstream JSONata summary",
+  "group": "Feature.JSONataComposition",
+  "hash": "faef703549c689b3e8672c47ca70a6a581f1cedef5b0e0f63cbdc39976d1e8ea",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "SeedOuter",
+    "States": {
+      "SeedOuter": {
+        "Type": "Pass",
+        "Assign": {
+          "prefix": "item"
+        },
+        "Next": "Iterate"
+      },
+      "Iterate": {
+        "Type": "Map",
+        "Items": "{% $states.input.values %}",
+        "ItemSelector": {
+          "idx": "{% $states.context.Map.Item.Index %}",
+          "value": "{% $states.context.Map.Item.Value %}",
+          "seenPrefix": "{% $prefix %}"
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "INLINE"
+          },
+          "StartAt": "Prepare",
+          "States": {
+            "Prepare": {
+              "Type": "Pass",
+              "Assign": {
+                "localLabel": "{% $states.input.seenPrefix & \"-\" & $string($states.input.idx) %}"
+              },
+              "Next": "Emit"
+            },
+            "Emit": {
+              "Type": "Pass",
+              "Output": "{% {\"value\": $states.input.value, \"idx\": $states.input.idx, \"label\": $localLabel, \"outer\": $states.input.seenPrefix} %}",
+              "End": true
+            }
+          }
+        },
+        "Next": "Summarize"
+      },
+      "Summarize": {
+        "Type": "Pass",
+        "Output": "{% {\"outer\": $prefix, \"count\": $count($states.input), \"results\": $states.input} %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "values": [
+      "a",
+      "b"
+    ]
+  },
+  "result": {
+    "output": {
+      "outer": "item",
+      "count": 2,
+      "results": [
+        {
+          "value": "a",
+          "idx": 0,
+          "label": "item-0",
+          "outer": "item"
+        },
+        {
+          "value": "b",
+          "idx": 1,
+          "label": "item-1",
+          "outer": "item"
+        }
+      ]
+    }
+  }
+}

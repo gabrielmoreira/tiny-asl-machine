@@ -1,0 +1,43 @@
+{
+  "runner": "aws",
+  "id": "008-partition-fractional-chunk-size-2-6",
+  "title": "$partition truncates a fractional chunk size of 2.6",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "47bac9099babf9416be17a74718ded41a5ce40696ef110bc81ed7fac1b1f9cd7",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $partition($states.input.arr, $states.input.size) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "size": 2.6
+  },
+  "result": {
+    "output": [
+      [
+        1,
+        2
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        5
+      ]
+    ]
+  }
+}

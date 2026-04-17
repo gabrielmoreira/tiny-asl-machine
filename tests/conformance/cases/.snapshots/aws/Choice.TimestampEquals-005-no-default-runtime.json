@@ -1,0 +1,36 @@
+{
+  "runner": "aws",
+  "id": "005-no-default-runtime",
+  "title": "fails with States.Runtime when no timestamp equality rule matches and no default exists",
+  "group": "Choice.TimestampEquals",
+  "hash": "67b2c31da93e361181358e68b20ce46d70fc4dcef2127cda46ec3962f4df5c40",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampEquals": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "2025-01-01T00:00:00.000Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

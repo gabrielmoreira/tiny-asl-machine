@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "007-no-default-all-rules-fail",
+  "title": "fails with States.Runtime when no Or branch matches and there is no default",
+  "group": "Choice.Or",
+  "hash": "2b40a7d3e1b3eb97370c11e1944a5ade0e0c4d001dbde8ef9c2259ea63072005",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Or": [
+              {
+                "Variable": "$.category",
+                "StringEquals": "gold"
+              },
+              {
+                "Variable": "$.points",
+                "NumericGreaterThanEquals": 1000
+              }
+            ],
+            "Next": "Priority"
+          }
+        ]
+      },
+      "Priority": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "priority"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "category": "silver",
+    "points": 999
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

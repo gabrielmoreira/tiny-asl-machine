@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "002-equal-match",
+  "title": "StringLessThanEquals selects the matched branch when the input equals the comparison string",
+  "group": "Choice.StringLessThanEquals",
+  "hash": "37c1ca351dc0c511bb6aa40fb5229f63587e9fd7cbfa4ffcfa637814d1100484",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringLessThanEquals": "bravo",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "bravo"
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

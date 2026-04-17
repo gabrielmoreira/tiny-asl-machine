@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "013-reject-doubled-brace-ambiguity",
+  "title": "rejects doubled brace ambiguity in the template",
+  "group": "States.Format",
+  "hash": "f41e81a8b06482b6983920803b3b781b236a6111915030df6a1ba95f0365283b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('Hello {{}}', $.a)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": "x"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Format('Hello {{}}', $.a). Invalid template in States.Format: matching '}' not found for '{' at index 8 in \"'Hello {{}}'\""
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "runner": "aws",
+  "id": "001-branch-failure-fails-parallel",
+  "title": "branch failure causes the whole parallel state to fail",
+  "group": "Feature.ParallelErrors",
+  "hash": "4ecda1a541aa4ec2e56c5e74e7d875ba204e79a67174695e6754ec6303652e13",
+  "definition": {
+    "StartAt": "FanOut",
+    "States": {
+      "FanOut": {
+        "Type": "Parallel",
+        "Branches": [
+          {
+            "StartAt": "HealthyBranch",
+            "States": {
+              "HealthyBranch": {
+                "Type": "Pass",
+                "Result": {
+                  "branch": "healthy",
+                  "status": "ok"
+                },
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "FailingBranch",
+            "States": {
+              "FailingBranch": {
+                "Type": "Fail",
+                "Error": "BranchFailure",
+                "Cause": "parallel branch exploded"
+              }
+            }
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "parallel-error-1"
+  },
+  "result": {
+    "error": "BranchFailure",
+    "cause": "parallel branch exploded"
+  }
+}

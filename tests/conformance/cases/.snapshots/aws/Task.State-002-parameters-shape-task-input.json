@@ -1,0 +1,65 @@
+{
+  "runner": "aws",
+  "id": "002-parameters-shape-task-input",
+  "title": "applies Parameters before invoking the task resource",
+  "group": "Task.State",
+  "hash": "e0be9e6d953b2ca9b9678a9198ba663a8a14d44bb9cb3a8e33c270a7eabdcbaa",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "return payload;"
+            },
+            "payload": {
+              "action": "validate",
+              "request": {
+                "customerId.$": "$.customer.id",
+                "sku.$": "$.item.sku",
+                "quantity.$": "$.item.quantity"
+              },
+              "original.$": "$"
+            }
+          }
+        },
+        "OutputPath": "$.Payload",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "customer": {
+      "id": "cust-7",
+      "tier": "gold"
+    },
+    "item": {
+      "sku": "sku-1",
+      "quantity": 3
+    }
+  },
+  "result": {
+    "output": {
+      "action": "validate",
+      "request": {
+        "quantity": 3,
+        "customerId": "cust-7",
+        "sku": "sku-1"
+      },
+      "original": {
+        "customer": {
+          "id": "cust-7",
+          "tier": "gold"
+        },
+        "item": {
+          "sku": "sku-1",
+          "quantity": 3
+        }
+      }
+    }
+  }
+}

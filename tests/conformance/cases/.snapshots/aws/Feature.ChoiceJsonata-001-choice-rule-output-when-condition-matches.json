@@ -1,0 +1,43 @@
+{
+  "runner": "aws",
+  "id": "001-choice-rule-output-when-condition-matches",
+  "title": "uses Choice rule Output when a JSONata Condition matches",
+  "group": "Feature.ChoiceJsonata",
+  "hash": "1dd65ac380857329c9a98d0033e5dcff73ee831d255d36218abea923f0635f6c",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Dispatch",
+    "States": {
+      "Dispatch": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Condition": "{% $states.input.rating >= $states.input.auditThreshold %}",
+            "Output": {
+              "excess": "{% $states.input.rating - $states.input.auditThreshold %}"
+            },
+            "Next": "Done"
+          }
+        ],
+        "Default": "Fallback"
+      },
+      "Done": {
+        "Type": "Pass",
+        "End": true
+      },
+      "Fallback": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "rating": 17,
+    "auditThreshold": 10
+  },
+  "result": {
+    "output": {
+      "excess": 7
+    }
+  }
+}

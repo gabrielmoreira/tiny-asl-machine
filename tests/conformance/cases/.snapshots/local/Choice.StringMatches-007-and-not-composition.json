@@ -1,0 +1,56 @@
+{
+  "runner": "local",
+  "id": "007-and-not-composition",
+  "title": "supports StringMatches inside And together with Not",
+  "group": "Choice.StringMatches",
+  "hash": "3c0d375f7f45e146c45fb18ecf94f15ef549344e790585c49eecd332c4acc17b",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "And": [
+              {
+                "Variable": "$.value",
+                "StringMatches": "D"
+              },
+              {
+                "Not": {
+                  "Variable": "$.somethingElse",
+                  "NumericEquals": 1
+                }
+              }
+            ],
+            "Next": "ItsD"
+          }
+        ],
+        "Default": "UnknownValue"
+      },
+      "ItsD": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "its-d"
+        },
+        "End": true
+      },
+      "UnknownValue": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "unknown-value"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "D",
+    "somethingElse": 2
+  },
+  "result": {
+    "output": {
+      "branch": "its-d"
+    }
+  }
+}

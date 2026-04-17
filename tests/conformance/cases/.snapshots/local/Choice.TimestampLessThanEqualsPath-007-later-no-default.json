@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "007-later-no-default",
+  "title": "fails with States.Runtime when the left timestamp is later than the right path timestamp and no default is configured",
+  "group": "Choice.TimestampLessThanEqualsPath",
+  "hash": "0622f14fcf9f1bf22fa5a2b0f47bded1e51fb14345f0b546cc3a0d3db4a9e459",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "TimestampLessThanEqualsPath": "$.right",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "2025-01-01T00:00:20Z",
+    "right": "2025-01-01T00:00:10Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

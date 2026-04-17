@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "024-reject-md-5-variant",
+  "title": "rejects MD-5 spelling variant",
+  "group": "States.Hash",
+  "hash": "2916e621bd850209e43a56fce8eb1acc3eb2b5b1206b9936c55f9a324681c605",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('data', 'MD-5')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Hash('data', 'MD-5'). Invalid arguments in States.Hash, caused by: Unsupported hash algorithm: MD-5"
+  }
+}

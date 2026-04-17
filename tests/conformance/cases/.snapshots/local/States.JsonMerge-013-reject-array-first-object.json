@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "013-reject-array-first-object",
+  "title": "rejects an array as the first object argument",
+  "group": "States.JsonMerge",
+  "hash": "4b3b0136e300d138d4495ea1123657993ec9b79944a42b73dab3a4a3dd93525b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": [],
+    "b": {}
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.JsonMerge($.a, $.b, false). Invalid arguments in States.JsonMerge, caused by: JsonMerge expected a JSON object as first argument"
+  }
+}

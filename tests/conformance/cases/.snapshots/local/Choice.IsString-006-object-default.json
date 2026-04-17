@@ -1,0 +1,47 @@
+{
+  "runner": "local",
+  "id": "006-object-default",
+  "title": "routes to Default for an object value",
+  "group": "Choice.IsString",
+  "hash": "c56d1901506ee60ccf64e12983a51a0c1a415adaf81851bf817c0c583012759f",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsString": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": {
+      "text": "hello"
+    }
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

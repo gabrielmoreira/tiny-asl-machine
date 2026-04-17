@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "002-different-default",
+  "title": "takes the default branch for a different string value",
+  "group": "Choice.StringEquals",
+  "hash": "dd5939751c7b8a08d73ffdc932bd9be8e6fc152b6208881d57ea460cbdfb0bad",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringEquals": "hello",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "world"
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

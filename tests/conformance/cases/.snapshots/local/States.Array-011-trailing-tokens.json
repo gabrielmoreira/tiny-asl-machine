@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "011-trailing-tokens",
+  "title": "Reject trailing tokens after a valid call",
+  "group": "States.Array",
+  "hash": "745184079f16d07840f96118cc97f84038e1a2e9565d253e1be41be22575d725",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array($.a) trailing"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": 1
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: unexpected trailing characters at index 18 in \"States.Array($.a) trailing\""
+  }
+}

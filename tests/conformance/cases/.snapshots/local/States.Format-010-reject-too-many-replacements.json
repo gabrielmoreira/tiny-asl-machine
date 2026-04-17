@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "010-reject-too-many-replacements",
+  "title": "rejects too many replacement arguments for the placeholder count",
+  "group": "States.Format",
+  "hash": "f96203e66ba4ba5f5aa5d691600b053c46e59bdb7564f35fe9623e18cd1ae0ec",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('{}', $.a, $.b)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": "x",
+    "b": "y"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Format('{}', $.a, $.b). Invalid arguments in States.Format, caused by: Invalid arguments in States.Format: number of arguments do not match the occurrences of {}."
+  }
+}

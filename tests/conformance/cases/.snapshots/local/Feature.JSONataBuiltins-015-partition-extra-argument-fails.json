@@ -1,0 +1,29 @@
+{
+  "runner": "local",
+  "id": "015-partition-extra-argument-fails",
+  "title": "$partition rejects an extra third argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "49143bcd7af61a3949ed6827363e56181a052d918d833124ca771080dd67ea07",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $partition($states.input.arr, 2, 99) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $partition($states.input.arr, 2, 99). [object Object]"
+  }
+}

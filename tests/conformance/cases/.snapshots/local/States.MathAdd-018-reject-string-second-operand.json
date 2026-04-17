@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "018-reject-string-second-operand",
+  "title": "rejects a string second operand",
+  "group": "States.MathAdd",
+  "hash": "187281ed9325ab131e762d9e98cdaec0526caf61eb5260a7bac7e14cbffb1318",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(1, 'b')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.MathAdd(1, 'b'). Invalid arguments in States.MathAdd, caused by: States.MathAdd expected a number, got string"
+  }
+}

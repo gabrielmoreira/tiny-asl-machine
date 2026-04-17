@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "007-malformed-rule-timestamp",
+  "title": "treats a malformed timestamp literal in the rule as a non-match for less-than comparison",
+  "group": "Choice.TimestampLessThan",
+  "hash": "f19021cbf352d143553bea3bfbe62b3f14c9e40ea56c59fc48e94199d1a3d931",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampLessThan": "not-a-timestamp",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "2025-01-01T12:00:00.000Z"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

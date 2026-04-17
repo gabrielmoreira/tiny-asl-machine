@@ -1,0 +1,63 @@
+{
+  "runner": "local",
+  "id": "005-default-numeric-type-mismatch",
+  "title": "does not match when a numeric member rule receives a string runtime value",
+  "group": "Choice.And",
+  "hash": "1139e1d6ce96fdf544e90e94ea049fec43f7e3cbc1ef8b90b4625feeea7fe3c6",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "And": [
+              {
+                "Or": [
+                  {
+                    "Variable": "$.tier",
+                    "StringEquals": "gold"
+                  },
+                  {
+                    "Variable": "$.expedited",
+                    "BooleanEquals": true
+                  }
+                ]
+              },
+              {
+                "Variable": "$.amount",
+                "NumericGreaterThan": 50
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "fast-track"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "standard-track"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "tier": "silver",
+    "expedited": true,
+    "amount": "75"
+  },
+  "result": {
+    "output": {
+      "selected": "standard-track"
+    }
+  }
+}

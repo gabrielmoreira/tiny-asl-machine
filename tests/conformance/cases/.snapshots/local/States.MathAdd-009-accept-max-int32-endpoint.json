@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "009-accept-max-int32-endpoint",
+  "title": "accepts the maximum int32 endpoint",
+  "group": "States.MathAdd",
+  "hash": "7a3c7d89a16e32fffc9cfd3f61b3584ab9466d02a878d0ad405e4d447c89c674",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(2147483647, 0)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 2147483647
+    }
+  }
+}

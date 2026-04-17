@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "005-object-from-path",
+  "title": "Find structurally equal object from input path",
+  "group": "States.ArrayContains",
+  "hash": "d1b1bf6e7c6b3ac72d8babb7ee82445a707efd8fd577775a9f7a79c70b297d70",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, $.target)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      {
+        "a": 1
+      },
+      {
+        "b": 2
+      }
+    ],
+    "target": {
+      "a": 1
+    }
+  },
+  "result": {
+    "output": {
+      "value": true
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "022-range-missing-argument-fails",
+  "title": "$range rejects a missing third argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "85befa4333e64191eb3f31c56b08f931cdb32e75340353aa5e6acda5852ac823",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $range(1, 5) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$range(1, 5)' specified for the field 'Output' returned nothing (undefined)."
+  }
+}

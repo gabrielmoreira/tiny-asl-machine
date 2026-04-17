@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "044-random-null-seed-behavior",
+  "title": "$random with null seed follows the AWS-observed null-seed semantics",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "1248f3a489af319ee372173c7e580fabca16878ed3a947cd2f2d57190218877a",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $random(null) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$random(null)' specified for the field 'Output' threw an error during evaluation. T0410: Argument 1 of function \"random\" does not match function signature"
+  }
+}

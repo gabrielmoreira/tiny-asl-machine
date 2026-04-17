@@ -1,0 +1,62 @@
+{
+  "runner": "local",
+  "id": "013-listobjectsv2-load-and-flatten-maxitems-limits-materialized-records",
+  "title": "ItemReader ListObjectsV2 with LOAD_AND_FLATTEN respects MaxItems",
+  "group": "Observation.ItemReader",
+  "hash": "f30f25f258672a8aefe38c6b1ba81ee43090334b96778f62e604f072920de2b5",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:listObjectsV2",
+          "ReaderConfig": {
+            "InputType": "JSON",
+            "Transformation": "LOAD_AND_FLATTEN",
+            "MaxItems": 2
+          },
+          "Parameters": {
+            "Bucket": "<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+            "Prefix": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/load-and-flatten/"
+          }
+        },
+        "ItemSelector": {
+          "Source.$": "$$.Map.Item.Source",
+          "Value.$": "$$.Map.Item.Value"
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": [
+      {
+        "Source": "s3://<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>/itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/load-and-flatten/one.json",
+        "Value": {
+          "id": "one-a"
+        }
+      },
+      {
+        "Source": "s3://<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>/itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/load-and-flatten/one.json",
+        "Value": {
+          "id": "one-b"
+        }
+      }
+    ]
+  }
+}

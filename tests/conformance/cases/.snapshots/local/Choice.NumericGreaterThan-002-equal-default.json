@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "002-equal-default",
+  "title": "takes the default branch when the input equals the rule value",
+  "group": "Choice.NumericGreaterThan",
+  "hash": "fe026bf024754b12f50705412b8a72fc83d045ef5ac54b84c81deab3f6106407",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericGreaterThan": 10,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 10
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

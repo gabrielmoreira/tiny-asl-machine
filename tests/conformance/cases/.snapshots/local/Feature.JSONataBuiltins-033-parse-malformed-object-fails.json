@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "033-parse-malformed-object-fails",
+  "title": "$parse rejects malformed object JSON",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "2f1b5a0563b595f892917470f4774ef06beca17cc70467e7c242508a30d30ea8",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $parse($states.input.json) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "{bad json}"
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $parse($states.input.json). Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "runner": "local",
+  "id": "004-full-pipeline-across-flow",
+  "title": "composes InputPath, Parameters, ResultSelector, ResultPath, and OutputPath across one state-machine flow",
+  "group": "Feature.JSONPathPipeline",
+  "hash": "8a29b4e02307b3ad5800888aee356d48336c88dcddb487d6b4c203ae05b00b82",
+  "definition": {
+    "StartAt": "PrepareRequest",
+    "States": {
+      "PrepareRequest": {
+        "Type": "Pass",
+        "InputPath": "$.request",
+        "Parameters": {
+          "pipeline": {
+            "request": {
+              "customerId.$": "$.customer.id",
+              "firstSku.$": "$.items[0].sku",
+              "priority.$": "$.flags.priority"
+            },
+            "meta": {
+              "traceId.$": "$$.Execution.Input.meta.traceId"
+            }
+          }
+        },
+        "Next": "AnnotateResult"
+      },
+      "AnnotateResult": {
+        "Type": "Pass",
+        "Result": {
+          "service": {
+            "decision": {
+              "code": "APPROVED",
+              "reviewer": "system"
+            }
+          },
+          "emittedAt": "2024-01-01T00:00:00Z"
+        },
+        "ResultSelector": {
+          "decision": {
+            "code.$": "$.service.decision.code",
+            "reviewer.$": "$.service.decision.reviewer"
+          },
+          "emittedAt.$": "$.emittedAt"
+        },
+        "ResultPath": "$.pipeline.result",
+        "OutputPath": "$.pipeline",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "meta": {
+      "traceId": "trace-44"
+    },
+    "request": {
+      "customer": {
+        "id": "cust-77"
+      },
+      "items": [
+        {
+          "sku": "sku-9",
+          "quantity": 1
+        }
+      ],
+      "flags": {
+        "priority": "rush"
+      }
+    }
+  },
+  "result": {
+    "output": {
+      "request": {
+        "customerId": "cust-77",
+        "firstSku": "sku-9",
+        "priority": "rush"
+      },
+      "meta": {
+        "traceId": "trace-44"
+      },
+      "result": {
+        "decision": {
+          "code": "APPROVED",
+          "reviewer": "system"
+        },
+        "emittedAt": "2024-01-01T00:00:00Z"
+      }
+    }
+  }
+}

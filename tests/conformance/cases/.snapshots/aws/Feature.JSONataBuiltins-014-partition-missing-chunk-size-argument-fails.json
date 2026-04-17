@@ -1,0 +1,34 @@
+{
+  "runner": "aws",
+  "id": "014-partition-missing-chunk-size-argument-fails",
+  "title": "$partition rejects a missing chunk-size argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "291908fe0ec20112a087f1c22602250f53ccbfb33286e1624014737d67d6b14d",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $partition($states.input.arr) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "output": [
+      [
+        1,
+        2,
+        3
+      ]
+    ]
+  }
+}

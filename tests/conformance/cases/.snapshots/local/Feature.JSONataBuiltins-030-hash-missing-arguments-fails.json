@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "030-hash-missing-arguments-fails",
+  "title": "$hash rejects missing arguments",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "0d3a80207bc79a3b81d42e73322782b888dd942d58b77ca169220c3c9f4aa932",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $hash() %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $hash(). [object Object]"
+  }
+}

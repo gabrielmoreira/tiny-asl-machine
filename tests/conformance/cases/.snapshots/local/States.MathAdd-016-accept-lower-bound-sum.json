@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "016-accept-lower-bound-sum",
+  "title": "accepts a just-inside lower-bound sum",
+  "group": "States.MathAdd",
+  "hash": "a81efa0e58e66dafaf297f8bfbc5936c89ea6ba977ecdb63555f2fa550464f16",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(-2147483647, -1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": -2147483648
+    }
+  }
+}

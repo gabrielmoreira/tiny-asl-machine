@@ -1,0 +1,35 @@
+{
+  "runner": "local",
+  "id": "009-catch-resultpath-invalid-target-fails-with-resultpathmatchfailure",
+  "title": "Catch ResultPath fails with States.ResultPathMatchFailure when applied to a non-object input",
+  "group": "Feature.Catch",
+  "hash": "a54e6a4b00ba9bf38ef32aea8db361b4e3201025cc477a0584d2c1ad71308a06",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:catch:inject-error",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "ValidationError"
+            ],
+            "ResultPath": "$.taskError",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": "not-an-object",
+  "result": {
+    "error": "States.ResultPathMatchFailure",
+    "cause": "ResultPath could not be applied at $.taskError: obj needs to be an object"
+  }
+}

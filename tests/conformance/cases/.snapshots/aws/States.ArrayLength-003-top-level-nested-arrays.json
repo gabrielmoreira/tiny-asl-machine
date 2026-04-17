@@ -1,0 +1,37 @@
+{
+  "runner": "aws",
+  "id": "003-top-level-nested-arrays",
+  "title": "Count top-level nested arrays only",
+  "group": "States.ArrayLength",
+  "hash": "983df8cf9634c904890fa0e27679ddbffec9733cd4b4586a9778814ea4385d5b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      [
+        1
+      ],
+      [
+        2
+      ],
+      [
+        3
+      ]
+    ]
+  },
+  "result": {
+    "output": {
+      "value": 3
+    }
+  }
+}

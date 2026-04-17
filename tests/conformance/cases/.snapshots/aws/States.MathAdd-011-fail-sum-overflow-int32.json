@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "011-fail-sum-overflow-int32",
+  "title": "fails when the sum overflows int32",
+  "group": "States.MathAdd",
+  "hash": "e6f0a047c0b35c096ce713de62073d1644844c616c8cfc7bf695bece740d4078",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(2147483647, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathAdd(2147483647, 1). Invalid arguments in States.MathAdd"
+  }
+}

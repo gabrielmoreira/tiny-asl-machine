@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "004-null-inverse-default",
+  "title": "falls back to Default when the variable is null and IsNull is false",
+  "group": "Choice.IsNull",
+  "hash": "4904638c2463de17de56da8b48557ad1dbd32258e8eaca59299abb10438ee203",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsNull": false,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": null
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

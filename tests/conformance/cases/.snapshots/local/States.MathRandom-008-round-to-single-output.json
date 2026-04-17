@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "008-round-to-single-output",
+  "title": "rounds into a single possible output interval",
+  "group": "States.MathRandom",
+  "hash": "6b07b43ec6ce3ee8df7a3f4c1e4371e9053d32b492667092a41f43b11b91f82c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1.4, 1.6)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 1
+    }
+  }
+}

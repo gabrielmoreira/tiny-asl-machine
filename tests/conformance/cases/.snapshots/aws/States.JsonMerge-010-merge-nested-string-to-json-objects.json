@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "010-merge-nested-string-to-json-objects",
+  "title": "merges objects produced by nested StringToJson calls",
+  "group": "States.JsonMerge",
+  "hash": "b416ada55c0b946bd76b1ea9306c43e44ee05a1da87f00ee8c6937dce91461a8",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge(States.StringToJson($.a), States.StringToJson($.b), false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": "{\"left\":1}",
+    "b": "{\"right\":2}"
+  },
+  "result": {
+    "output": {
+      "value": {
+        "left": 1,
+        "right": 2
+      }
+    }
+  }
+}

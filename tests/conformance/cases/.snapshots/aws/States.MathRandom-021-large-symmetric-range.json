@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "021-large-symmetric-range",
+  "title": "handles a large symmetric range around zero",
+  "group": "States.MathRandom",
+  "hash": "5f779e431eb6199f2ffce993229d7163d20efccd91daafae569ea3e8a9176eb5",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom($.start, $.end)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "start": -1000000,
+    "end": 1000000
+  },
+  "result": {
+    "output": {
+      "value": 992531
+    }
+  }
+}

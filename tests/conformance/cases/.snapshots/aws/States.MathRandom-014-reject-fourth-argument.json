@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "014-reject-fourth-argument",
+  "title": "rejects a fourth argument beyond the documented signature",
+  "group": "States.MathRandom",
+  "hash": "507ef78d6812d713e74ee447edc5fccfd0e718676e54b48ee0b2d103008a0ef7",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1, 10, 5, 99)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathRandom(1, 10, 5, 99). Invalid arguments in States.MathRandom"
+  }
+}

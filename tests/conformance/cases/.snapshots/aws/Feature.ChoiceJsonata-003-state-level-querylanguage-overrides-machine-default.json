@@ -1,0 +1,43 @@
+{
+  "runner": "aws",
+  "id": "003-state-level-querylanguage-overrides-machine-default",
+  "title": "allows a Choice state to override the machine query language to JSONata",
+  "group": "Feature.ChoiceJsonata",
+  "hash": "a24c451e4b2c05349f6f40ac3b99d47c30fa03d042ee336fa4ffdf8c44692a43",
+  "definition": {
+    "QueryLanguage": "JSONPath",
+    "StartAt": "Dispatch",
+    "States": {
+      "Dispatch": {
+        "Type": "Choice",
+        "QueryLanguage": "JSONata",
+        "Choices": [
+          {
+            "Condition": "{% $states.input.total > 10 %}",
+            "Output": {
+              "bucket": "large"
+            },
+            "Next": "Done"
+          }
+        ],
+        "Default": "Fallback"
+      },
+      "Done": {
+        "Type": "Pass",
+        "End": true
+      },
+      "Fallback": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "total": 15
+  },
+  "result": {
+    "output": {
+      "bucket": "large"
+    }
+  }
+}

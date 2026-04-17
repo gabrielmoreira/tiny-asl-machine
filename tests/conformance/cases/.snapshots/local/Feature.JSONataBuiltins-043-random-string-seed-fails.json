@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "043-random-string-seed-fails",
+  "title": "$random rejects a string seed",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "ecd6de318b718373c4cd08679817d3905f62e2d71cb31ef4a725e0262772cd87",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $random(\"seed\") %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $random(\"seed\"). [object Object]"
+  }
+}

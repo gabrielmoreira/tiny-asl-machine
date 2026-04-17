@@ -1,0 +1,44 @@
+{
+  "runner": "aws",
+  "id": "005-missing-left-path",
+  "title": "fails with States.Runtime when the variable path is missing",
+  "group": "Choice.NumericGreaterThanEqualsPath",
+  "hash": "5ad3f3d8c4cd8ec7a6bfa1aeb33fe30f53fb366ef1e10aaecd655492a9db1036",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericGreaterThanEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "right": 8
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Invalid path '$.left': The choice state's condition path references an invalid value."
+  }
+}

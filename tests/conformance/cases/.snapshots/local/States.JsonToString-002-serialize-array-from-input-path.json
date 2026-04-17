@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "002-serialize-array-from-input-path",
+  "title": "serializes an array from an input path",
+  "group": "States.JsonToString",
+  "hash": "900443398acb695d2996e8fe588006c1a70f39dcde8090ca0983d43c12469f28",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "output": {
+      "value": "[1,2,3]"
+    }
+  }
+}

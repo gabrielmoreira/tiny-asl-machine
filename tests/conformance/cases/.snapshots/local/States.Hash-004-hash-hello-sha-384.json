@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "004-hash-hello-sha-384",
+  "title": "hashes hello with SHA-384",
+  "group": "States.Hash",
+  "hash": "7482ba7709f87920628a85e4dbc7457b771ddf31a4a48c1b3b4fcd91d2b2463c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('hello', 'SHA-384')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "59e1748777448c69de6b800d7a33bbfb9ff1b463e44354c3553bcdb9c666fa90125a3c79f90397bdf5f6a13de828684f"
+    }
+  }
+}

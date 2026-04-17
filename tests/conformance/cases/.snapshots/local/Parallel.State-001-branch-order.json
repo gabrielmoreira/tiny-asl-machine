@@ -1,0 +1,59 @@
+{
+  "runner": "local",
+  "id": "001-branch-order",
+  "title": "aggregates branch outputs in declaration order",
+  "group": "Parallel.State",
+  "hash": "5b49a92fa77eddca2a20a86f4064fe55f8549dfb64e455775977632b8a1de8d1",
+  "definition": {
+    "StartAt": "FanOut",
+    "States": {
+      "FanOut": {
+        "Type": "Parallel",
+        "Branches": [
+          {
+            "StartAt": "SlowBranch",
+            "States": {
+              "SlowBranch": {
+                "Type": "Task",
+                "Resource": "local:slow-branch",
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "FastBranch",
+            "States": {
+              "FastBranch": {
+                "Type": "Task",
+                "Resource": "local:fast-branch",
+                "End": true
+              }
+            }
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 4
+  },
+  "result": {
+    "output": [
+      {
+        "branch": "slow",
+        "seen": {
+          "value": 4
+        },
+        "completionOrder": 2
+      },
+      {
+        "branch": "fast",
+        "seen": {
+          "value": 4
+        },
+        "completionOrder": 1
+      }
+    ]
+  }
+}

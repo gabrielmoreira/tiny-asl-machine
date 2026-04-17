@@ -1,0 +1,54 @@
+{
+  "runner": "local",
+  "id": "006-nested-and-match",
+  "title": "supports BooleanEquals inside a nested And rule",
+  "group": "Choice.BooleanEquals",
+  "hash": "fc5230db42d5bb3166a27f95fb30c99fa5e24ea32fc4b50763181dff7ea4dfe5",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "And": [
+              {
+                "Variable": "$.kind",
+                "StringEquals": "order"
+              },
+              {
+                "Variable": "$.confirmed",
+                "BooleanEquals": true
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "kind": "order",
+    "confirmed": true
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

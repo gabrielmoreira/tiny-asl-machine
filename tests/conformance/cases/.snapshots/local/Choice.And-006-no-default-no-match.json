@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "006-no-default-no-match",
+  "title": "fails with States.Runtime when no And branch matches and there is no default",
+  "group": "Choice.And",
+  "hash": "69aa277c69399e16f9aacfb1e2c9003264118e4709bfad65cd4948241c2b44c4",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "And": [
+              {
+                "Variable": "$.status",
+                "StringEquals": "READY"
+              },
+              {
+                "Variable": "$.attempt",
+                "NumericGreaterThanEquals": 2
+              }
+            ],
+            "Next": "Approved"
+          }
+        ]
+      },
+      "Approved": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "approved"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "status": "READY",
+    "attempt": 1
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

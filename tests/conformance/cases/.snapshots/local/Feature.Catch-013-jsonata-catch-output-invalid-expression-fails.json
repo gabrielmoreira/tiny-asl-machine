@@ -1,0 +1,38 @@
+{
+  "runner": "local",
+  "id": "013-jsonata-catch-output-invalid-expression-fails",
+  "title": "JSONata Catch Output fails when the output expression is invalid",
+  "group": "Feature.Catch",
+  "hash": "aee95ef943e4ec73e8fccff9c329cae031f82fc7b30c0348d44afb157d4723bc",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:catch:inject-error",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "ValidationError"
+            ],
+            "Output": "{% $doesNotParse( %}",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-jsonata-catch-invalid-output"
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $doesNotParse(. [object Object]"
+  }
+}

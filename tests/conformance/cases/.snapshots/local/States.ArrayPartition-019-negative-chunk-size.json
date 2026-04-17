@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "019-negative-chunk-size",
+  "title": "rejects negative integer chunk size",
+  "group": "States.ArrayPartition",
+  "hash": "619e5242caa2a0cb3f229e3d3fffdea41d5a8e05803f2c18ea264d0168424052",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, -1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayPartition($.arr, -1). Invalid arguments in States.ArrayPartition, caused by: ArrayPartition chunk size must be a positive integer"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "runner": "local",
+  "id": "003-iterator-parameters-can-read-map-context",
+  "title": "Iterator Parameters can read $$.Map.Item.Index and $$.Map.Item.Value",
+  "group": "Map.State",
+  "hash": "2a2197e06ccff9e3b7dc0aed689af31c6a3388939afaaa92eadd6735a187bc70",
+  "definition": {
+    "StartAt": "AnnotateItems",
+    "States": {
+      "AnnotateItems": {
+        "Type": "Map",
+        "ItemsPath": "$.colors",
+        "Parameters": {
+          "position.$": "$$.Map.Item.Index",
+          "color.$": "$$.Map.Item.Value",
+          "region.$": "$.region"
+        },
+        "Iterator": {
+          "StartAt": "EchoAnnotatedItem",
+          "States": {
+            "EchoAnnotatedItem": {
+              "Type": "Task",
+              "Resource": "arn:local:map:echo-annotated-item",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "region": "<REDACTED_VAR:REGION>",
+    "colors": [
+      "red",
+      "blue",
+      "green"
+    ]
+  },
+  "result": {
+    "output": [
+      {
+        "position": 0,
+        "color": "red",
+        "region": "<REDACTED_VAR:REGION>"
+      },
+      {
+        "position": 1,
+        "color": "blue",
+        "region": "<REDACTED_VAR:REGION>"
+      },
+      {
+        "position": 2,
+        "color": "green",
+        "region": "<REDACTED_VAR:REGION>"
+      }
+    ]
+  }
+}

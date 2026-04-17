@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "015-accept-upper-bound-sum",
+  "title": "accepts a just-inside upper-bound sum",
+  "group": "States.MathAdd",
+  "hash": "975fc30f9e478b619d2ca8a40171a0af9c081690216b2f3441357a6a7fcbacc8",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(2147483646, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 2147483647
+    }
+  }
+}

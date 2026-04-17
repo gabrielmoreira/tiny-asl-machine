@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "007-boolean-nonmatch",
+  "title": "does not match a boolean runtime value",
+  "group": "Choice.NumericGreaterThanEquals",
+  "hash": "328b1ceda7abe91f6c792114ca7f18e2bce9826dc7c9f3774f9af41e39ce051d",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericGreaterThanEquals": 10,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": false
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

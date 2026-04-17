@@ -1,0 +1,54 @@
+{
+  "runner": "aws",
+  "id": "002-default-all-rules-false",
+  "title": "takes the default branch when every nested rule evaluates to false",
+  "group": "Choice.Or",
+  "hash": "9ebe9c614d25df49918e4a2e95e7cc4ab1f583559b3699daf9e05496194f72d7",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Or": [
+              {
+                "Variable": "$.category",
+                "StringEquals": "gold"
+              },
+              {
+                "Variable": "$.points",
+                "NumericGreaterThanEquals": 1000
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "priority"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "standard"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "category": "silver",
+    "points": 999
+  },
+  "result": {
+    "output": {
+      "selected": "standard"
+    }
+  }
+}

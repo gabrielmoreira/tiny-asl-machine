@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "009-timeoutseconds-jsonata-undefined-fails",
+  "title": "Task TimeoutSeconds rejects a JSONata expression that evaluates to undefined",
+  "group": "Feature.JSONataValidation",
+  "hash": "061a7a2ac2dc4097c9c4a4a0f3678f09ba4a237c8fa3720d65d7fdcd3139c931",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:sts:getCallerIdentity",
+        "TimeoutSeconds": "{% $states.input.missing %}",
+        "Arguments": {},
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Invoke' (entered at the event id #2). The JSONata expression '$states.input.missing' specified for the field 'TimeoutSeconds' returned nothing (undefined)."
+  }
+}

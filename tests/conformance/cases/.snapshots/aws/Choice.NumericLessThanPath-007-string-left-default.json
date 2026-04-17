@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "007-string-left-default",
+  "title": "falls through to Default when the variable path resolves to a string runtime value",
+  "group": "Choice.NumericLessThanPath",
+  "hash": "ab8144593b30076d4529fb192805d072408a9b7290f6ae6d890d019a1a3e58bf",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericLessThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "7",
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

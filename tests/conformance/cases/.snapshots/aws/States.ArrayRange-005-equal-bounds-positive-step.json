@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "005-equal-bounds-positive-step",
+  "title": "equal bounds with positive step produce a singleton result",
+  "group": "States.ArrayRange",
+  "hash": "a271c0041ec573522494d1bc28bbc335df4cac04b0cfc2a37c9b599845744ae9",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(3, 3, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        3
+      ]
+    }
+  }
+}

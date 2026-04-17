@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "012-ignore-numeric-fake-seed",
+  "title": "still returns a UUID when given a numeric fake seed argument",
+  "group": "States.UUID",
+  "hash": "96e2df278ef71c61ce0eaa7c5c939b512c6b95e71cc4ee93ec0f7fe6d6fae1d0",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID(123)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "1f1260d7-5bb5-4f85-8f9c-5a981cdffddd"
+    }
+  }
+}

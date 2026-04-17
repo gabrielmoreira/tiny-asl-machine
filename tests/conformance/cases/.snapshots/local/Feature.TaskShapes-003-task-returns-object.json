@@ -1,0 +1,28 @@
+{
+  "runner": "local",
+  "id": "003-task-returns-object",
+  "title": "task can return a plain object result as the state output",
+  "group": "Feature.TaskShapes",
+  "hash": "a4cbdc65a6d73413157fed3eb14fb07a7e3feaa5e687be001ae6c58dcc6e5fed",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:task-shapes:object",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-33"
+  },
+  "result": {
+    "output": {
+      "status": "ok",
+      "metrics": {
+        "count": 2
+      }
+    }
+  }
+}

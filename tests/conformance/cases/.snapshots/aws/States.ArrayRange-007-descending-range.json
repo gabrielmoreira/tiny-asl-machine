@@ -1,0 +1,29 @@
+{
+  "runner": "aws",
+  "id": "007-descending-range",
+  "title": "descending range with negative step",
+  "group": "States.ArrayRange",
+  "hash": "4f39890363632d6830fd28fbca32ee00af01728e4bec0bdd11fe4d6cd4f274a6",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(5, 1, -2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        5,
+        3,
+        1
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "020-descending-limit-exceeded",
+  "title": "1001 descending items exceed the documented cap",
+  "group": "States.ArrayRange",
+  "hash": "f4e9a0e90767f305346e5b7d001f169dcb1d65b21e8c10066582f8e6bbb20e5f",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(1001, 1, -1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayRange(1001, 1, -1). Invalid arguments in States.ArrayRange, caused by: ArrayRange result must not exceed 1000 items"
+  }
+}

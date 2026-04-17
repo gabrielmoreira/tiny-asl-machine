@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "006-string-left-default",
+  "title": "falls through to Default when the variable path resolves to a string instead of a number",
+  "group": "Choice.NumericEqualsPath",
+  "hash": "463d3bb237849b16b7b276fb3332322c488c71bd5f4a89b7803ef59885a0833a",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": "7",
+    "right": 7
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "013-round-to-negative-one",
+  "title": "rounding -0.6 to -1 fails validation",
+  "group": "States.ArrayPartition",
+  "hash": "db37fb08e781f27c5a7ad4737b32935f16b763393079a11c6f0c04a1cb8b5354",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, -0.6)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.ArrayPartition($.arr, -0.6). Invalid arguments in States.ArrayPartition"
+  }
+}

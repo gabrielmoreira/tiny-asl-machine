@@ -1,0 +1,29 @@
+{
+  "runner": "local",
+  "id": "025-trailing-comma",
+  "title": "trailing comma with missing second argument is malformed intrinsic syntax",
+  "group": "States.ArrayPartition",
+  "hash": "4e5c008b01b11b12dee089579976ba846377f8b6ca059e540d8569f7cffcf14f",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, )"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: expected argument after comma at index 29 in \"States.ArrayPartition($.arr, )\""
+  }
+}

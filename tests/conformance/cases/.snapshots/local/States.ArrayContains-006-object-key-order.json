@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "006-object-key-order",
+  "title": "Treat object key order as structurally equal",
+  "group": "States.ArrayContains",
+  "hash": "605398ed859bcdb06929c8a905c9fc61f1bfaa0d224b4a6ee8fd377f5c1eed8d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, $.target)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      {
+        "a": 1,
+        "b": 2
+      }
+    ],
+    "target": {
+      "b": 2,
+      "a": 1
+    }
+  },
+  "result": {
+    "output": {
+      "value": true
+    }
+  }
+}

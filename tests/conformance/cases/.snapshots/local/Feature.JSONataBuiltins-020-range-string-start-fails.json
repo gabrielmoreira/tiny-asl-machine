@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "020-range-string-start-fails",
+  "title": "$range rejects a string start argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "c8ebd5ea2de4a3ade4063302879fedfd8ac300b041b8beb672f9e6b8f4277625",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $range(\"a\", 5, 1) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $range(\"a\", 5, 1). [object Object]"
+  }
+}

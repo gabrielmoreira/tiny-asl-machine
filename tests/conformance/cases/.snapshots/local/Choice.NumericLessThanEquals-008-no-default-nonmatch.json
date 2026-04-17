@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "008-no-default-nonmatch",
+  "title": "fails with States.NoChoiceMatched when no branch matches and there is no default",
+  "group": "Choice.NumericLessThanEquals",
+  "hash": "b6b4ad71d2640da42a450997628e87d1c3aaf003b415511bd018769a68086e4a",
+  "definition": {
+    "StartAt": "CheckValue",
+    "States": {
+      "CheckValue": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericLessThanEquals": 10,
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 11
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

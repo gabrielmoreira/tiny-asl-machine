@@ -1,0 +1,93 @@
+{
+  "runner": "aws",
+  "id": "007-parallel-branches-can-read-outer-and-keep-branch-local-scope",
+  "title": "Parallel branches can read outer variables while keeping branch-local scope isolated",
+  "group": "Feature.AssignVariables",
+  "hash": "89fea9180692589b0d0b321090254a36dcfa89a4510a7689f3ec21a71afa1f57",
+  "definition": {
+    "QueryLanguage": "JSONPath",
+    "StartAt": "SeedOuter",
+    "States": {
+      "SeedOuter": {
+        "Type": "Pass",
+        "QueryLanguage": "JSONata",
+        "Assign": {
+          "outer": "hello"
+        },
+        "Next": "FanOut"
+      },
+      "FanOut": {
+        "Type": "Parallel",
+        "Branches": [
+          {
+            "StartAt": "PrepareA",
+            "States": {
+              "PrepareA": {
+                "Type": "Pass",
+                "QueryLanguage": "JSONata",
+                "Assign": {
+                  "inner": "alpha",
+                  "seenOuter": "{% $outer %}"
+                },
+                "Next": "EmitA"
+              },
+              "EmitA": {
+                "Type": "Pass",
+                "QueryLanguage": "JSONata",
+                "Output": "{% {\"branch\": \"A\", \"outer\": $outer, \"inner\": $inner, \"seenOuter\": $seenOuter} %}",
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "PrepareB",
+            "States": {
+              "PrepareB": {
+                "Type": "Pass",
+                "QueryLanguage": "JSONata",
+                "Assign": {
+                  "inner": "beta",
+                  "seenOuter": "{% $outer %}"
+                },
+                "Next": "EmitB"
+              },
+              "EmitB": {
+                "Type": "Pass",
+                "QueryLanguage": "JSONata",
+                "Output": "{% {\"branch\": \"B\", \"outer\": $outer, \"inner\": $inner, \"seenOuter\": $seenOuter} %}",
+                "End": true
+              }
+            }
+          }
+        ],
+        "Next": "Summarize"
+      },
+      "Summarize": {
+        "Type": "Pass",
+        "QueryLanguage": "JSONata",
+        "Output": "{% {\"outer\": $outer, \"results\": $states.input} %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "outer": "hello",
+      "results": [
+        {
+          "branch": "A",
+          "outer": "hello",
+          "inner": "alpha",
+          "seenOuter": "hello"
+        },
+        {
+          "branch": "B",
+          "outer": "hello",
+          "inner": "beta",
+          "seenOuter": "hello"
+        }
+      ]
+    }
+  }
+}

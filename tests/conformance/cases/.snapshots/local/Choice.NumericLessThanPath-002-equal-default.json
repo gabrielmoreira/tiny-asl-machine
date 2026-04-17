@@ -1,0 +1,46 @@
+{
+  "runner": "local",
+  "id": "002-equal-default",
+  "title": "falls through to Default when both numeric paths resolve to the same value",
+  "group": "Choice.NumericLessThanPath",
+  "hash": "c3aae77f0716d52b6c1143d798dcfcbbfa0f75ad71b28b42104cfafb0d3c96db",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericLessThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 8,
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

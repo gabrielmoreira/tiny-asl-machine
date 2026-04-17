@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "035-parse-numeric-input",
+  "title": "$parse with numeric input follows the AWS-observed coercion or failure semantics",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "30b078c0efa2e483f72615d40f12552f29bd6f8b7ecf1db228a4ec767054b420",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $parse($states.input.json) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": 123
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $parse($states.input.json). [object Object]"
+  }
+}

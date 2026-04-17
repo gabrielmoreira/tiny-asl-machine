@@ -1,0 +1,21 @@
+{
+  "runner": "local",
+  "id": "002-missing-next-target-fails-validation",
+  "title": "fails validation when a Next target does not exist",
+  "group": "Validation.Structure",
+  "hash": "bc650db0404108eec2b30bf978b649764f80cf7404e46bd6ba1658d2d0b5b540",
+  "definition": {
+    "StartAt": "First",
+    "States": {
+      "First": {
+        "Type": "Pass",
+        "Next": "MissingState"
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Missing 'Next' target: MissingState"
+  }
+}

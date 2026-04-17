@@ -1,0 +1,44 @@
+{
+  "runner": "local",
+  "id": "003-map-itemselector-jsonata-reads-map-item-source-state-data",
+  "title": "Map ItemSelector can read Map.Item.Source as STATE_DATA for normal state-input iteration",
+  "group": "Feature.JsonataScopeSource",
+  "hash": "708ac399b774e67e1c631ee6f22a5830e21098b2e0129721e007ed911a6e9259",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Annotate",
+    "States": {
+      "Annotate": {
+        "Type": "Map",
+        "Items": "{% $states.input.values %}",
+        "ItemSelector": {
+          "source": "{% $states.context.Map.Item.Source %}",
+          "value": "{% $states.context.Map.Item.Value %}"
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "INLINE"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "values": [
+      "a",
+      "b"
+    ]
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "JSONata expression evaluated to undefined: $states.context.Map.Item.Source"
+  }
+}

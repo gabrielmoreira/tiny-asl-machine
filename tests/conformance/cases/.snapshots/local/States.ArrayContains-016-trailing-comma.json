@@ -1,0 +1,28 @@
+{
+  "runner": "local",
+  "id": "016-trailing-comma",
+  "title": "Reject malformed call with trailing comma",
+  "group": "States.ArrayContains",
+  "hash": "a2e437dcc02aa7264fc458422d0954da491685521f18f1dc2423aa6de4153c7e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, )"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: Invalid JSONPath expression: expected argument after comma at index 28 in \"States.ArrayContains($.arr, )\""
+  }
+}

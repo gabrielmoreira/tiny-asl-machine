@@ -1,0 +1,40 @@
+{
+  "runner": "local",
+  "id": "017-format-serialized-mixed-probe-array",
+  "title": "formats a serialized mixed-value probe array",
+  "group": "States.Format",
+  "hash": "3d436e65712924b125009e37dcaa6bf0b588845f5695f37e461aeaaf642145bc",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('probe={}', States.JsonToString($.probe))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "probe": [
+      null,
+      "",
+      " ",
+      0,
+      1,
+      true,
+      false,
+      [
+        0,
+        1,
+        false
+      ]
+    ]
+  },
+  "result": {
+    "output": {
+      "value": "probe=[null,\"\",\" \",0,1,true,false,[0,1,false]]"
+    }
+  }
+}

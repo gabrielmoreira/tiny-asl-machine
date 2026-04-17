@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "010-index-equals-length",
+  "title": "Reject index equal to array length",
+  "group": "States.ArrayGetItem",
+  "hash": "7b93612b43e79321686ceb3f952ad867defdca05006dc72fe956c265291d751d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($.arr, 3)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      10,
+      20,
+      30
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayGetItem($.arr, 3). Invalid arguments in States.ArrayGetItem, caused by: ArrayGetItem index 3 out of bounds for array of length 3"
+  }
+}

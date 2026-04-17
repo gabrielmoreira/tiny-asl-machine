@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "010-false-non-string-match",
+  "title": "matches a non-string value when IsString is false",
+  "group": "Choice.IsString",
+  "hash": "f286a3f86f942742582b0283a0d3e144ebedc241b75559f4dd38b3b7d23a8bcd",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsString": false,
+            "Next": "Matched0"
+          }
+        ]
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 7
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

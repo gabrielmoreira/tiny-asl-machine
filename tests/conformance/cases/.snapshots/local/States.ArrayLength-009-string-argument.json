@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "009-string-argument",
+  "title": "Reject string argument",
+  "group": "States.ArrayLength",
+  "hash": "9d7693761fd8da3061676c3b41082531f6904dd7b61a96a1c26d7a72e3c8e1a8",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength('not-array')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayLength('not-array'). Invalid arguments in States.ArrayLength, caused by: States.ArrayLength expected an array, got string"
+  }
+}

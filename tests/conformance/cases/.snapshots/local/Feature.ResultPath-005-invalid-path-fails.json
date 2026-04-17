@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "005-invalid-path-fails",
+  "title": "ResultPath fails when given an invalid JSONPath string",
+  "group": "Feature.ResultPath",
+  "hash": "94efadb301620c02aadccbf5df51733ee1babe6d2015c3680f865272329f925a",
+  "definition": {
+    "StartAt": "InvalidResultPath",
+    "States": {
+      "InvalidResultPath": {
+        "Type": "Pass",
+        "Result": {
+          "unreachable": true
+        },
+        "ResultPath": "not-a-path",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-15"
+  },
+  "result": {
+    "error": "States.ResultPathMatchFailure",
+    "cause": "ResultPath could not be applied at not-a-path: Lexical error on line 1. Unrecognized text.\nnot-a-path\n---^"
+  }
+}

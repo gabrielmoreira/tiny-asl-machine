@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "008-preserve-template-whitespace",
+  "title": "preserves leading and trailing whitespace in the template",
+  "group": "States.Format",
+  "hash": "d4c0d0a8b56d74c7f7255d85337d1918dd57b1c986928f8f8f59210e3054d049",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('  {}  ', $.a)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": "x"
+  },
+  "result": {
+    "output": {
+      "value": "  x  "
+    }
+  }
+}

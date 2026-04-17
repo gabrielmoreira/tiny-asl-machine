@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "019-reject-null-delimiter",
+  "title": "rejects a null delimiter",
+  "group": "States.StringSplit",
+  "hash": "cb73c90c014e589e32c33e04a11759b8c0bbd4f75b61dda3c88db9d32220289c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, $.d)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "a,b",
+    "d": null
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.StringSplit($.str, $.d). Invalid arguments in States.StringSplit, caused by: States.StringSplit expected a string, got object"
+  }
+}

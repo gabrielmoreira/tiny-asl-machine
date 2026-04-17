@@ -1,0 +1,47 @@
+{
+  "runner": "local",
+  "id": "004-state-level-querylanguage-jsonata-map-with-items",
+  "title": "Map state can override QueryLanguage to JSONata at state level with Items field",
+  "group": "Feature.MapJsonata",
+  "hash": "fff02e4ccee38b23cd105cd26120b43d0effb2bc675f7d63bfcf1a3f193f928d",
+  "definition": {
+    "QueryLanguage": "JSONPath",
+    "StartAt": "Iterate",
+    "States": {
+      "Iterate": {
+        "Type": "Map",
+        "QueryLanguage": "JSONata",
+        "Items": "{% $states.input.nums %}",
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "INLINE"
+          },
+          "StartAt": "Square",
+          "States": {
+            "Square": {
+              "Type": "Pass",
+              "QueryLanguage": "JSONata",
+              "Output": "{% $states.input * $states.input %}",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "nums": [
+      2,
+      3,
+      4
+    ]
+  },
+  "result": {
+    "output": [
+      4,
+      9,
+      16
+    ]
+  }
+}

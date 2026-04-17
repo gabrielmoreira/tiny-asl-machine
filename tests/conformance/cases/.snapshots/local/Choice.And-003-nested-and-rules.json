@@ -1,0 +1,63 @@
+{
+  "runner": "local",
+  "id": "003-nested-and-rules",
+  "title": "supports nested And rules inside another And",
+  "group": "Choice.And",
+  "hash": "bf8bb8925eca71cd94e1ae2037533909a7b1f6916a2b375895d34e54423409ff",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "And": [
+              {
+                "And": [
+                  {
+                    "Variable": "$.kind",
+                    "StringEquals": "order"
+                  },
+                  {
+                    "Variable": "$.confirmed",
+                    "BooleanEquals": true
+                  }
+                ]
+              },
+              {
+                "Variable": "$.total",
+                "NumericGreaterThan": 100
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "high-value-order"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "fallback"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "kind": "order",
+    "confirmed": true,
+    "total": 150
+  },
+  "result": {
+    "output": {
+      "selected": "high-value-order"
+    }
+  }
+}

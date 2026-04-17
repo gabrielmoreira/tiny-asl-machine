@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "003-projects-after-resultpath",
+  "title": "OutputPath projects from the structure produced after ResultPath insertion",
+  "group": "Feature.OutputPath",
+  "hash": "5d8d50112242df84b705ab42e8b561ec38fd3a77e1e8170c669323ee8c401378",
+  "definition": {
+    "StartAt": "InsertAndProject",
+    "States": {
+      "InsertAndProject": {
+        "Type": "Pass",
+        "Result": {
+          "status": "ready",
+          "code": 201
+        },
+        "ResultPath": "$.service.response",
+        "OutputPath": "$.service.response.status",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-22",
+    "service": {
+      "name": "billing"
+    }
+  },
+  "result": {
+    "output": "ready"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "runner": "local",
+  "id": "003-rule-without-comparator-fails-validation",
+  "title": "fails validation when a Choice rule has Variable and Next but no comparator",
+  "group": "Feature.ChoiceValidation",
+  "hash": "4af7c07fc22cd896bad720c3e241088f2367f9be5916fe55ba07fbde1af1230a",
+  "definition": {
+    "StartAt": "Dispatch",
+    "States": {
+      "Dispatch": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.status",
+            "Next": "Matched"
+          }
+        ],
+        "Default": "Fallback"
+      },
+      "Matched": {
+        "Type": "Pass",
+        "End": true
+      },
+      "Fallback": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "status": "READY"
+  },
+  "result": {
+    "output": {
+      "status": "READY"
+    }
+  }
+}

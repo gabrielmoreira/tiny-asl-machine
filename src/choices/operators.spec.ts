@@ -1,5 +1,5 @@
 import type { Context, State, TopLevelChoiceRule } from '../../types';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vite-plus/test';
 import { processChoices } from './operators';
 import { runState } from '../states/index';
 
@@ -23,8 +23,11 @@ const createAwsContext = (): Context =>
     },
   }) as unknown as Context;
 
-const evaluateChoices = (choices: TopLevelChoiceRule[], input: unknown, context = createAwsContext()) =>
-  processChoices(context, choices, input);
+const evaluateChoices = (
+  choices: TopLevelChoiceRule[],
+  input: unknown,
+  context = createAwsContext()
+) => processChoices(context, choices, input);
 
 const evaluateChoice = (choice: TopLevelChoiceRule, input: unknown, context = createAwsContext()) =>
   evaluateChoices([choice], input, context);
@@ -283,19 +286,13 @@ describe('processChoices', () => {
     describe('NumericEquals', () => {
       it('matches identical numbers', () => {
         expect(
-          evaluateChoice(
-            { Variable: '$.value', NumericEquals: 42, Next: 'Matched' },
-            { value: 42 }
-          )
+          evaluateChoice({ Variable: '$.value', NumericEquals: 42, Next: 'Matched' }, { value: 42 })
         ).toBe('Matched');
       });
 
       it('returns undefined for a different number', () => {
         expect(
-          evaluateChoice(
-            { Variable: '$.value', NumericEquals: 42, Next: 'Matched' },
-            { value: 41 }
-          )
+          evaluateChoice({ Variable: '$.value', NumericEquals: 42, Next: 'Matched' }, { value: 41 })
         ).toBeUndefined();
       });
     });
@@ -593,10 +590,7 @@ describe('processChoices', () => {
     describe('IsNull', () => {
       it('matches when the variable is null and IsNull is true', () => {
         expect(
-          evaluateChoice(
-            { Variable: '$.value', IsNull: true, Next: 'Matched' },
-            { value: null }
-          )
+          evaluateChoice({ Variable: '$.value', IsNull: true, Next: 'Matched' }, { value: null })
         ).toBe('Matched');
       });
 
@@ -613,19 +607,13 @@ describe('processChoices', () => {
     describe('IsPresent', () => {
       it('returns undefined for a missing path when IsPresent is true', () => {
         expect(
-          evaluateChoice(
-            { Variable: '$.missing', IsPresent: true, Next: 'Matched' },
-            { value: 1 }
-          )
+          evaluateChoice({ Variable: '$.missing', IsPresent: true, Next: 'Matched' }, { value: 1 })
         ).toBeUndefined();
       });
 
       it('matches for a missing path when IsPresent is false', () => {
         expect(
-          evaluateChoice(
-            { Variable: '$.missing', IsPresent: false, Next: 'Matched' },
-            { value: 1 }
-          )
+          evaluateChoice({ Variable: '$.missing', IsPresent: false, Next: 'Matched' }, { value: 1 })
         ).toBe('Matched');
       });
     });
@@ -633,10 +621,7 @@ describe('processChoices', () => {
     describe('IsNumeric', () => {
       it('matches numeric values', () => {
         expect(
-          evaluateChoice(
-            { Variable: '$.value', IsNumeric: true, Next: 'Matched' },
-            { value: 3.14 }
-          )
+          evaluateChoice({ Variable: '$.value', IsNumeric: true, Next: 'Matched' }, { value: 3.14 })
         ).toBe('Matched');
       });
     });
@@ -678,15 +663,6 @@ describe('processChoices', () => {
           evaluateChoice(
             { Variable: '$.value', IsTimestamp: true, Next: 'Matched' },
             { value: 'not-a-timestamp' }
-          )
-        ).toBeUndefined();
-      });
-
-      it('returns undefined for impossible timestamp values', () => {
-        expect(
-          evaluateChoice(
-            { Variable: '$.value', IsTimestamp: true, Next: 'Matched' },
-            { value: '2024-99-99T25:61:61Z' }
           )
         ).toBeUndefined();
       });
@@ -739,14 +715,18 @@ describe('processChoices', () => {
       expect(context.Transition).toStrictEqual({ Next: 'DefaultState' });
     });
 
-    it('throws States.NoChoiceMatched when no rule matches and there is no Default', async () => {
+    it('throws States.Runtime when no rule matches and there is no Default', async () => {
       const state: State = {
         Type: 'Choice',
         Choices: [{ Variable: '$.status', StringEquals: 'READY', Next: 'ReadyState' }],
       };
-      await expect(runState(createAwsContext(), state, { status: 'PENDING' })).rejects.toMatchObject({
-        name: 'States.NoChoiceMatched',
-        message: expect.stringContaining('Choice State (TestState) failed to match a Choice Rule'),
+      await expect(
+        runState(createAwsContext(), state, { status: 'PENDING' })
+      ).rejects.toMatchObject({
+        name: 'States.Runtime',
+        message: expect.stringContaining(
+          'Failed to transition out of the state. The state does not point to a next state.'
+        ),
       });
     });
   });

@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "011-reject-non-string-template",
+  "title": "rejects a non-string template value",
+  "group": "States.Format",
+  "hash": "9894b7bf3cb07f7099aaad77285974fa59b6aff4c0cca7cb8db7f635728d641f",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format($.template, $.name)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "template": 123,
+    "name": "Ada"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Format($.template, $.name). Invalid arguments in States.Format, caused by: States.Format expected a string, got number"
+  }
+}

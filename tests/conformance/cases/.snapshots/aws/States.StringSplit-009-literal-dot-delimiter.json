@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "009-literal-dot-delimiter",
+  "title": "treats a dot delimiter literally",
+  "group": "States.StringSplit",
+  "hash": "463e233d9fdda887e687dc7265d932f1f7a57ca7c0cc85ea2c1402b5a4d04ce7",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, '.')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "a.b.c"
+  },
+  "result": {
+    "output": {
+      "value": [
+        "a",
+        "b",
+        "c"
+      ]
+    }
+  }
+}

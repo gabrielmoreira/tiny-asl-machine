@@ -1,0 +1,37 @@
+{
+  "runner": "local",
+  "id": "022-nested-intrinsic-array",
+  "title": "partitions an array produced by a nested intrinsic",
+  "group": "States.ArrayPartition",
+  "hash": "42910661bb0b8643c1e852b0c07de3a153d1fcd3a71581f9437911bd07159235",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition(States.Array(1,2,3,4,5), 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          5
+        ]
+      ]
+    }
+  }
+}

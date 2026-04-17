@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "018-forward-limit-exceeded",
+  "title": "1001 forward items exceed the documented cap",
+  "group": "States.ArrayRange",
+  "hash": "d752000bd8e85bc67c9d9389502bb78a33df5d695ebb8a22687f10beec341521",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(1, 1001, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayRange(1, 1001, 1). Invalid arguments in States.ArrayRange, caused by: ArrayRange result must not exceed 1000 items"
+  }
+}

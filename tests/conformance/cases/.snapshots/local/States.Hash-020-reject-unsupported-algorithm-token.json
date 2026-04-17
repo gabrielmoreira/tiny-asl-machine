@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "020-reject-unsupported-algorithm-token",
+  "title": "rejects unsupported algorithm token",
+  "group": "States.Hash",
+  "hash": "8c5ed8e9bc95363e1af9193d3c068350dd9d09ccce93a81a5294468035bd0d4b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('data', 'UNSUPPORTED')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Hash('data', 'UNSUPPORTED'). Invalid arguments in States.Hash, caused by: Unsupported hash algorithm: UNSUPPORTED"
+  }
+}

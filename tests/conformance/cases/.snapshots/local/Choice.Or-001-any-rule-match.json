@@ -1,0 +1,54 @@
+{
+  "runner": "local",
+  "id": "001-any-rule-match",
+  "title": "routes to Priority when at least one nested rule evaluates to true",
+  "group": "Choice.Or",
+  "hash": "eb419d9ba9959f9cf47cf7a919fe0483e9037f975fd6d8327eefb498a057a22b",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Or": [
+              {
+                "Variable": "$.category",
+                "StringEquals": "gold"
+              },
+              {
+                "Variable": "$.points",
+                "NumericGreaterThanEquals": 1000
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "priority"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "standard"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "category": "silver",
+    "points": 1000
+  },
+  "result": {
+    "output": {
+      "selected": "priority"
+    }
+  }
+}

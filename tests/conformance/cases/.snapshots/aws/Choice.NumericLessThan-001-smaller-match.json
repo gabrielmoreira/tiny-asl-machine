@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "001-smaller-match",
+  "title": "matches when the input number is smaller than the rule value",
+  "group": "Choice.NumericLessThan",
+  "hash": "fae616a63b179e2d2f1aa3a89286e324610813daf90a14bc4037b8d945f511cc",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericLessThan": 10,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 9
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

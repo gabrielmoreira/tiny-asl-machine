@@ -1,0 +1,39 @@
+{
+  "runner": "aws",
+  "id": "008-repeat-path-value",
+  "title": "Repeat the same path value multiple times",
+  "group": "States.Array",
+  "hash": "82b9339cca864d9de4fed171cc000b9f090ffafd754c68d5c8914728ef6831dc",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array($.a, $.a, $.a)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "x": 1
+    }
+  },
+  "result": {
+    "output": {
+      "value": [
+        {
+          "x": 1
+        },
+        {
+          "x": 1
+        },
+        {
+          "x": 1
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "runner": "local",
+  "id": "004-choice-state-assign-visible-on-default-path",
+  "title": "Choice state Assign applies when no rule matches and default is taken",
+  "group": "Feature.AssignVariables",
+  "hash": "c34224b69171c746bf12cfe0cd9e29241426d90f72fba3c99f9b77f63ba95346",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Dispatch",
+    "States": {
+      "Dispatch": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Condition": "{% $states.input.value > 100 %}",
+            "Next": "Unexpected"
+          }
+        ],
+        "Assign": {
+          "range": "default"
+        },
+        "Default": "ReportRange"
+      },
+      "Unexpected": {
+        "Type": "Pass",
+        "End": true
+      },
+      "ReportRange": {
+        "Type": "Pass",
+        "Output": "{% $range %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 5
+  },
+  "result": {
+    "output": "default"
+  }
+}

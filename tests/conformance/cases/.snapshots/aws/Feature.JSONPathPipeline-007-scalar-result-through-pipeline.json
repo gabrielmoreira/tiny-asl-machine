@@ -1,0 +1,40 @@
+{
+  "runner": "aws",
+  "id": "007-scalar-result-through-pipeline",
+  "title": "carries a scalar result through ResultPath and OutputPath after earlier Parameters shaping",
+  "group": "Feature.JSONPathPipeline",
+  "hash": "0a5aa25ffbe78cb247a8e13d217731022c376e4083ab7ad5c2000fa2c5973ca2",
+  "definition": {
+    "StartAt": "PrepareNumbers",
+    "States": {
+      "PrepareNumbers": {
+        "Type": "Pass",
+        "Parameters": {
+          "calculations": {
+            "base.$": "$.numbers.base"
+          }
+        },
+        "Next": "EmitScalar"
+      },
+      "EmitScalar": {
+        "Type": "Pass",
+        "Result": 9,
+        "ResultPath": "$.calculations.total",
+        "OutputPath": "$.calculations",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "numbers": {
+      "base": 4
+    },
+    "ignored": true
+  },
+  "result": {
+    "output": {
+      "base": 4,
+      "total": 9
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "runner": "local",
+  "id": "011-max-concurrency-literal-takes-precedence-over-path",
+  "title": "MaxConcurrency literal takes precedence over MaxConcurrencyPath",
+  "group": "Map.State",
+  "hash": "4652fe4c834ed61b16827644da4af1e5a7219ce09aa8412ffc5ff28ebf076d56",
+  "definition": {
+    "StartAt": "Iterate",
+    "States": {
+      "Iterate": {
+        "Type": "Map",
+        "ItemsPath": "$.items",
+        "MaxConcurrency": 1,
+        "MaxConcurrencyPath": "$.limits.map",
+        "Iterator": {
+          "StartAt": "Observe",
+          "States": {
+            "Observe": {
+              "Type": "Task",
+              "Resource": "arn:local:map:max-concurrency-precedence",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "items": [
+      1,
+      2,
+      3
+    ],
+    "limits": {
+      "map": 3
+    }
+  },
+  "result": {
+    "output": [
+      1,
+      2,
+      3
+    ]
+  }
+}

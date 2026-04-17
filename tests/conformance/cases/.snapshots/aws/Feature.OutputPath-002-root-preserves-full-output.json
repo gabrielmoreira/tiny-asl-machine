@@ -1,0 +1,34 @@
+{
+  "runner": "aws",
+  "id": "002-root-preserves-full-output",
+  "title": "OutputPath dollar returns the entire post-processed output unchanged",
+  "group": "Feature.OutputPath",
+  "hash": "b99a23d40d3e7285be44bdeb61181ecfef1b851fb7cfef0f79987af1ab269e3a",
+  "definition": {
+    "StartAt": "KeepAllOutput",
+    "States": {
+      "KeepAllOutput": {
+        "Type": "Pass",
+        "Result": {
+          "status": "ok",
+          "counts": {
+            "processed": 2
+          }
+        },
+        "OutputPath": "$",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-21"
+  },
+  "result": {
+    "output": {
+      "status": "ok",
+      "counts": {
+        "processed": 2
+      }
+    }
+  }
+}

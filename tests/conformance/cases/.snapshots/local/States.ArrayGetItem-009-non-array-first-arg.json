@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "009-non-array-first-arg",
+  "title": "Reject non-array first argument",
+  "group": "States.ArrayGetItem",
+  "hash": "12896747f5dccd5cae755f955be8e906318cdfdd6ff8874812365d6d6afc9bdc",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem('not-array', 0)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayGetItem('not-array', 0). Invalid arguments in States.ArrayGetItem, caused by: States.ArrayGetItem expected an array, got string"
+  }
+}

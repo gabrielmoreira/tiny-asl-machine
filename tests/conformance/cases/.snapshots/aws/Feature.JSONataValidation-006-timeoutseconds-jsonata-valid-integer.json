@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "006-timeoutseconds-jsonata-valid-integer",
+  "title": "Task TimeoutSeconds accepts a valid JSONata integer expression",
+  "group": "Feature.JSONataValidation",
+  "hash": "69e0100082975856abd571f1f8545c0538cbdfbdde06f83c4587ee9003800fc8",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:sts:getCallerIdentity",
+        "TimeoutSeconds": "{% $states.input.timeout %}",
+        "Arguments": {},
+        "Output": "{% {\"ok\": true, \"timeout\": $states.input.timeout} %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timeout": 3
+  },
+  "result": {
+    "output": {
+      "ok": true,
+      "timeout": 3
+    }
+  }
+}

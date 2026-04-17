@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "023-decode-context-execution-name",
+  "title": "decodes execution name from context when it is Base64",
+  "group": "States.Base64Decode",
+  "hash": "e9497ee4b6c80f1977f249c5c5e95115b71891dd869e24cab2022b0b31a8da3c",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode($$.Execution.Name)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Base64Decode($$.Execution.Name). Invalid arguments in States.Base64Decode, caused by: Invalid Base64 input"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "005-decimal-above",
+  "title": "matches decimal numbers above the threshold",
+  "group": "Choice.NumericGreaterThan",
+  "hash": "7577a6c80e0b696508cdb8b7cf9b2ebb086bb7864acc19154ff68893eb8c4eac",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericGreaterThan": 10.25,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 10.5
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

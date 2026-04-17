@@ -1,0 +1,48 @@
+{
+  "runner": "local",
+  "id": "008-array-right-default",
+  "title": "falls through to Default when the comparison path resolves to an array runtime value",
+  "group": "Choice.NumericGreaterThanPath",
+  "hash": "299312f075eab4e48f6c7afa5367a3e84aac74a2783ec5c5bdb380e9c9bb191a",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericGreaterThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 7,
+    "right": [
+      6
+    ]
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

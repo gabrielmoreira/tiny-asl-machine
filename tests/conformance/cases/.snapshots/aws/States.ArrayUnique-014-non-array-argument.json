@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "014-non-array-argument",
+  "title": "Reject a literal non-array argument",
+  "group": "States.ArrayUnique",
+  "hash": "c7fd6fa565eeb5533392940357fabb81881495482b25f8a49f26e2d780fbc420",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique('not-array')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.ArrayUnique('not-array'). Invalid arguments in States.ArrayUnique"
+  }
+}

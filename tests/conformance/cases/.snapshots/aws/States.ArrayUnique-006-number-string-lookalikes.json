@@ -1,0 +1,36 @@
+{
+  "runner": "aws",
+  "id": "006-number-string-lookalikes",
+  "title": "Distinguish numeric and string lookalikes while collapsing equivalent numbers",
+  "group": "States.ArrayUnique",
+  "hash": "f952a1512665d6512fc4a583bf1d4112c4ce05b1313f7c0dbe997b3d834e9ac0",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      "1",
+      1,
+      "01"
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        1,
+        "1",
+        "01"
+      ]
+    }
+  }
+}

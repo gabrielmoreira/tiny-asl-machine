@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "002-absent-number",
+  "title": "Return false for absent numeric primitive",
+  "group": "States.ArrayContains",
+  "hash": "c4af6a9df0eff3bc409f3d6047d4e61b17f0dec731e8bd09d8ce2139b5c7c7ca",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, 5)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "output": {
+      "value": false
+    }
+  }
+}

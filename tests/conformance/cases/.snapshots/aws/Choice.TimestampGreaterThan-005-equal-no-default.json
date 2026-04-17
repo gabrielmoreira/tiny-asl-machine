@@ -1,0 +1,36 @@
+{
+  "runner": "aws",
+  "id": "005-equal-no-default",
+  "title": "fails with States.Runtime when the timestamps are equal and no default exists",
+  "group": "Choice.TimestampGreaterThan",
+  "hash": "22fd2b616dde2acd46c581749c00e6521dd9dc852205b08148069c667996cf12",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampGreaterThan": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "branch": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "2025-01-01T12:00:00.000Z"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Check' (entered at the event id #2). Failed to transition out of the state. The state does not point to a next state."
+  }
+}

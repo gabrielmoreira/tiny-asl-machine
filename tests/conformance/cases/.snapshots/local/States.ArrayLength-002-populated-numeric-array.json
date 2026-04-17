@@ -1,0 +1,33 @@
+{
+  "runner": "local",
+  "id": "002-populated-numeric-array",
+  "title": "Return count for populated numeric array",
+  "group": "States.ArrayLength",
+  "hash": "b9e77ea92846e32093bd06a912ac2f324f9ac16057991b8ed5de9803f0027df9",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "result": {
+    "output": {
+      "value": 5
+    }
+  }
+}

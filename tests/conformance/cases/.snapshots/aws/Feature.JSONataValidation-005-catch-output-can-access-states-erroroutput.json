@@ -1,0 +1,41 @@
+{
+  "runner": "aws",
+  "id": "005-catch-output-can-access-states-erroroutput",
+  "title": "Catch Output can access $states.errorOutput",
+  "group": "Feature.JSONataValidation",
+  "hash": "b948133a0e36844aa7567b61fac0709c0e173e1db484ac05d8086910e28bfed5",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Arguments": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": "{% $states.input %}"
+        },
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Output": "{% $states.errorOutput.Error %}",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-jsonata-catch-access"
+  },
+  "result": {
+    "output": "Error"
+  }
+}

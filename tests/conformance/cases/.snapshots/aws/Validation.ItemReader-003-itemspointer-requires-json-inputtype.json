@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "003-itemspointer-requires-json-inputtype",
+  "title": "fails validation when ItemsPointer is used with non-JSON InputType",
+  "group": "Validation.ItemReader",
+  "hash": "b3a974221a6fb8843e1024846dc90b46c09a1680a917cbedf8a3d447467f3ae4",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "CSV",
+            "ItemsPointer": "/data/items"
+          },
+          "Parameters": {
+            "Bucket": "amzn-s3-demo-bucket",
+            "Key": "dataset/file.csv"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "The field 'CSVHeaderLocation' is required"
+  }
+}

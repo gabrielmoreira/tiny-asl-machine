@@ -1,0 +1,35 @@
+{
+  "runner": "local",
+  "id": "006-max-delay-seconds-zero-caps-all-delays-to-zero",
+  "title": "MaxDelaySeconds zero caps all retry delays to zero",
+  "group": "Feature.Retry",
+  "hash": "87a9252d57129d173807c4af2962827b79263e2af583184fd700d6dc00e3e989",
+  "definition": {
+    "StartAt": "FlakyTask",
+    "States": {
+      "FlakyTask": {
+        "Type": "Task",
+        "Resource": "arn:local:retry:max-delay-zero",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "BackoffRate": 3,
+            "MaxAttempts": 2,
+            "MaxDelaySeconds": 0
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "ok": true,
+      "attempts": 3
+    }
+  }
+}

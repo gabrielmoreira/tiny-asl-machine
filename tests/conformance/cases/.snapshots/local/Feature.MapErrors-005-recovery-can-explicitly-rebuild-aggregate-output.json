@@ -1,0 +1,78 @@
+{
+  "runner": "local",
+  "id": "005-recovery-can-explicitly-rebuild-aggregate-output",
+  "title": "recovery can explicitly rebuild aggregate output after a map failure",
+  "group": "Feature.MapErrors",
+  "hash": "c350640f71272b5249ec6633449feacab952f854f4350754f9762c584c5bf15e",
+  "definition": {
+    "StartAt": "ProcessItems",
+    "States": {
+      "ProcessItems": {
+        "Type": "Map",
+        "ItemsPath": "$.items",
+        "ResultPath": "$.processed",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.mapError",
+            "Next": "BuildFallbackAggregate"
+          }
+        ],
+        "Iterator": {
+          "StartAt": "DoWork",
+          "States": {
+            "DoWork": {
+              "Type": "Task",
+              "Resource": "arn:local:feature:map-errors:aggregate-recovery",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      },
+      "BuildFallbackAggregate": {
+        "Type": "Pass",
+        "Result": [
+          {
+            "id": "fallback",
+            "status": "map-recovered"
+          }
+        ],
+        "ResultPath": "$.processed",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-map-errors-5",
+    "items": [
+      {
+        "id": "broken",
+        "fail": true
+      }
+    ]
+  },
+  "result": {
+    "output": {
+      "requestId": "req-map-errors-5",
+      "items": [
+        {
+          "id": "broken",
+          "fail": true
+        }
+      ],
+      "mapError": {
+        "Error": "SyntheticAggregateMapError",
+        "Cause": "processor failed for broken"
+      },
+      "processed": [
+        {
+          "id": "fallback",
+          "status": "map-recovered"
+        }
+      ]
+    }
+  }
+}

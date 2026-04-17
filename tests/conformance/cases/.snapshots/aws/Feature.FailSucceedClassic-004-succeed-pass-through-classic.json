@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "004-succeed-pass-through-classic",
+  "title": "classic Succeed returns its input unchanged and terminates execution",
+  "group": "Feature.FailSucceedClassic",
+  "hash": "409983f1c589a2d563efb3be15637a720f2f4c25a27e183a0251e98d7078102d",
+  "definition": {
+    "StartAt": "SuccessState",
+    "States": {
+      "SuccessState": {
+        "Type": "Succeed"
+      }
+    }
+  },
+  "input": {
+    "status": "ok",
+    "requestId": "req-succeed-classic",
+    "nested": {
+      "count": 1
+    }
+  },
+  "result": {
+    "output": {
+      "status": "ok",
+      "requestId": "req-succeed-classic",
+      "nested": {
+        "count": 1
+      }
+    }
+  }
+}

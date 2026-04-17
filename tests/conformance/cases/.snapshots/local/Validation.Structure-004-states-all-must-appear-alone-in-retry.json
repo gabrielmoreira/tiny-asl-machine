@@ -1,0 +1,32 @@
+{
+  "runner": "local",
+  "id": "004-states-all-must-appear-alone-in-retry",
+  "title": "fails validation when States.ALL is combined with other Retry errors",
+  "group": "Validation.Structure",
+  "hash": "3eea0a9b194578cc7d256855d0516727cf5aed0048a47ca1bf14e42d778021ce",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:sts:getCallerIdentity",
+        "Parameters": {},
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL",
+              "CustomError"
+            ],
+            "MaxAttempts": 1
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "States.ALL must appear alone and at end of list"
+  }
+}

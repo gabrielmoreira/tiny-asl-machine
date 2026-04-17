@@ -1,0 +1,22 @@
+{
+  "runner": "aws",
+  "id": "004-uuid-returns-v4-uuid-string",
+  "title": "$uuid() returns a v4 UUID",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "6dd69a3a4ff5fc4f71f46142bb998db11c12000b05036a2b449bca9e93d1a87c",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $uuid() %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": "71b556df-554a-4c37-9ed5-ebeed22bfd20"
+  }
+}

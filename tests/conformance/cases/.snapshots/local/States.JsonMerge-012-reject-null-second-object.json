@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "012-reject-null-second-object",
+  "title": "rejects null as the second object argument",
+  "group": "States.JsonMerge",
+  "hash": "f8d17bcf84832d813a21f01f68f9e54e6f6db30136a282f2cfeb8491ef2d4dcc",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {},
+    "b": null
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.JsonMerge($.a, $.b, false). Invalid arguments in States.JsonMerge, caused by: JsonMerge expected a JSON object as second argument"
+  }
+}

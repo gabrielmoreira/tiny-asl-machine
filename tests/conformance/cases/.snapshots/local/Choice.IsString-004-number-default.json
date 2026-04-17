@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "004-number-default",
+  "title": "routes to Default for a numeric value",
+  "group": "Choice.IsString",
+  "hash": "2bedad386fda6357b8fc87f0bb1b7e0c04a875f622b7b40bba6f8b43a43e9043",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsString": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 42
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

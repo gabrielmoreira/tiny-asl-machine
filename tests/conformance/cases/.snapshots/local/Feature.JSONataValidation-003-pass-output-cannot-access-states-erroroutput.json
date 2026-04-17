@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "003-pass-output-cannot-access-states-erroroutput",
+  "title": "Pass state Output cannot access $states.errorOutput",
+  "group": "Feature.JSONataValidation",
+  "hash": "45ae04b78f7a79a3f616694c0ff20b6963a9a174483c3d063c4f9e22aa51edf3",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "InvalidPass",
+    "States": {
+      "InvalidPass": {
+        "Type": "Pass",
+        "Output": "{% $states.errorOutput %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Field references unsupported reserved variable access: $states.errorOutput"
+  }
+}

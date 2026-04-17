@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "004-nested-resultselector-failure-surfaces-runtime-error",
+  "title": "surfaces a runtime error when a nested ResultSelector intrinsic fails during selector evaluation",
+  "group": "Feature.IntrinsicComposition",
+  "hash": "28c8e0c5032dc66b03e0df1a510f13cc7eea7fa7f8b3ca8404857464b85420ee",
+  "definition": {
+    "StartAt": "FailNestedSelector",
+    "States": {
+      "FailNestedSelector": {
+        "Type": "Task",
+        "Resource": "arn:local:intrinsic-composition:failing-selector",
+        "ResultSelector": {
+          "broken.$": "States.ArrayLength(States.JsonToString($.payload))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-32"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayLength(States.JsonToString($.payload)). Invalid arguments in States.ArrayLength, caused by: States.ArrayLength expected an array, got string"
+  }
+}

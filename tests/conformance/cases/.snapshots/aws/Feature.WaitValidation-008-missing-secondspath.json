@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "008-missing-secondspath",
+  "title": "fails with States.Runtime when SecondsPath is missing from the input",
+  "group": "Feature.WaitValidation",
+  "hash": "0233dd27b76f632a738e6f08b8ce72ed2ba0ebef3735793eb44e2326a48b96a9",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "SecondsPath": "$.waitSeconds",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-missing-seconds"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'WaitHere' (entered at the event id #2). The SecondsPath parameter does not reference an input value: $.waitSeconds"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "004-negative-equal",
+  "title": "matches negative numbers that equal the threshold",
+  "group": "Choice.NumericLessThanEquals",
+  "hash": "362aaf20ba091a721656e0d56d5e60e2c9b77cb5f908718eeb47f4fb0505c29f",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericLessThanEquals": -2,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": -2
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "015-reject-number-input",
+  "title": "rejects number input instead of a string",
+  "group": "States.StringToJson",
+  "hash": "7e58696e7264dc051ff058b9e8b7b9bd701d269c0b21844700b8568801b7444e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": 123
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.StringToJson($.json). Invalid arguments in States.StringToJson, caused by: States.StringToJson expected a string, got number"
+  }
+}

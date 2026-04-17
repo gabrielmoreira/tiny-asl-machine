@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "006-states-all-must-appear-alone-in-catch",
+  "title": "fails validation when States.ALL is combined with other Catch errors",
+  "group": "Validation.Structure",
+  "hash": "d4953437e8c66178ee305077e463906f82f0d8ced4fdf0b3c71b159002acb618",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:sts:getCallerIdentity",
+        "Parameters": {},
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL",
+              "CustomError"
+            ],
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "States.ALL must appear alone and at end of list"
+  }
+}

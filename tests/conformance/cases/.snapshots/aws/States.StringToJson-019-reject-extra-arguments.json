@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "019-reject-extra-arguments",
+  "title": "rejects extra arguments beyond arity",
+  "group": "States.StringToJson",
+  "hash": "fd8bbbb734543b172bf55203fddbb46c57b1d4c30d136b6442953cb7b1ab46d1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.a, $.b)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": "{\"x\":1}",
+    "b": "unused"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.StringToJson($.a, $.b). Invalid arguments in States.StringToJson"
+  }
+}

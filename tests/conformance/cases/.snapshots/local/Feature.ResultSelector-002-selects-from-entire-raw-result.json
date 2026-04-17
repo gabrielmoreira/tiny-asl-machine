@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "002-selects-from-entire-raw-result",
+  "title": "ResultSelector can select both nested fields and the entire raw result",
+  "group": "Feature.ResultSelector",
+  "hash": "c0859189f419ad283996bca9a5b76b8bc0532fc11acb02b0c088450fbc99c09e",
+  "definition": {
+    "StartAt": "CaptureRawResult",
+    "States": {
+      "CaptureRawResult": {
+        "Type": "Task",
+        "Resource": "arn:local:result-selector:capture-raw-result",
+        "ResultSelector": {
+          "response": {
+            "payload.$": "$.payload",
+            "code.$": "$.statusCode"
+          },
+          "raw.$": "$"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "ignored": true
+  },
+  "result": {
+    "output": {
+      "response": {
+        "payload": {
+          "approved": true,
+          "reviewer": "ada"
+        },
+        "code": 200
+      },
+      "raw": {
+        "statusCode": 200,
+        "payload": {
+          "approved": true,
+          "reviewer": "ada"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "runner": "local",
+  "id": "003-larger-default",
+  "title": "falls through to Default when the left numeric path resolves to a larger value",
+  "group": "Choice.NumericLessThanPath",
+  "hash": "98a4d414de2f6894826c71c048eb3bb4e9fd5537d5c66f2bb40694274408d114",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericLessThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 9,
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

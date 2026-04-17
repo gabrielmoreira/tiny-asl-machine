@@ -1,0 +1,40 @@
+{
+  "runner": "local",
+  "id": "005-mixed-comparators-in-one-rule-fails-validation",
+  "title": "fails validation when one Choice rule mixes incompatible comparator shapes",
+  "group": "Feature.ChoiceValidation",
+  "hash": "3c5061397976baf7a8d3bbb8514828131e1e1cd8b139bd231b79b3c154a38392",
+  "definition": {
+    "StartAt": "Dispatch",
+    "States": {
+      "Dispatch": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringEquals": "1",
+            "NumericGreaterThan": 0,
+            "Next": "Matched"
+          }
+        ],
+        "Default": "Fallback"
+      },
+      "Matched": {
+        "Type": "Pass",
+        "End": true
+      },
+      "Fallback": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "1"
+  },
+  "result": {
+    "output": {
+      "value": "1"
+    }
+  }
+}

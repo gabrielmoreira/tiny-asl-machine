@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "001-equal-integer-match",
+  "title": "matches when both numeric paths resolve to the same integer",
+  "group": "Choice.NumericGreaterThanEqualsPath",
+  "hash": "22268bb203e0f6a1b399a043032ea71c072976e5f0144eaee3f2b3f4a2259aad",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericGreaterThanEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 8,
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

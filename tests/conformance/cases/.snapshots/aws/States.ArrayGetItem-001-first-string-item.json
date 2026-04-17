@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "001-first-string-item",
+  "title": "Return first item from string array",
+  "group": "States.ArrayGetItem",
+  "hash": "55b285d81327b389552c82069d9510c3fa941d839c4e359facce1abc9f70bb01",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($.arr, 0)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  "result": {
+    "output": {
+      "value": "a"
+    }
+  }
+}

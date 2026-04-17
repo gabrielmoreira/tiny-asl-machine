@@ -1,0 +1,21 @@
+{
+  "runner": "aws",
+  "id": "002-no-timing-field",
+  "title": "rejects a Wait state with no timing field configured",
+  "group": "Feature.WaitValidation",
+  "hash": "b709f57c0dcb426ac53d66b5d0ff21503b7c00aeacc6154a42d87f7809408d21",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "This object should have only one of the following fields: [SecondsPath, Seconds, TimestampPath, Timestamp]"
+  }
+}

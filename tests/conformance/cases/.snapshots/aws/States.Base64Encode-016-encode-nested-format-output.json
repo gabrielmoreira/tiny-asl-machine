@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "016-encode-nested-format-output",
+  "title": "encodes nested States.Format output",
+  "group": "States.Base64Encode",
+  "hash": "d7a9752aa02efe953329bedcafd5d2e4a51fd8115dfdacfe32566d0cff67b73f",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode(States.Format('{}-{}', $.a, $.b))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": "x",
+    "b": "y"
+  },
+  "result": {
+    "output": {
+      "value": "eC15"
+    }
+  }
+}

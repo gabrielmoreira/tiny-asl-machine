@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "012-empty-array-out-of-range",
+  "title": "Reject far out-of-range index on empty array",
+  "group": "States.ArrayGetItem",
+  "hash": "d38573768dc6286d6e7e88749944cf4bd93d1b6af0b9fcd0ba15400f153d636f",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($.arr, 999)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": []
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayGetItem($.arr, 999). Invalid arguments in States.ArrayGetItem, caused by: ArrayGetItem index 999 out of bounds for array of length 0"
+  }
+}

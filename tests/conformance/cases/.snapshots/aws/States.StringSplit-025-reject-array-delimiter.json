@@ -1,0 +1,29 @@
+{
+  "runner": "aws",
+  "id": "025-reject-array-delimiter",
+  "title": "rejects an array delimiter even when values look string-like",
+  "group": "States.StringSplit",
+  "hash": "7b2436277f654a0289a02417241b4d78b8934c8169e39abdc1f920f78892c114",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringSplit($.str, $.d)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "a,b",
+    "d": [
+      ","
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.StringSplit($.str, $.d). Invalid arguments in States.StringSplit"
+  }
+}

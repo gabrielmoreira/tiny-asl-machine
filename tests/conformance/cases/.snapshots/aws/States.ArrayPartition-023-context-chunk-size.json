@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "023-context-chunk-size",
+  "title": "reads chunk size from execution input context",
+  "group": "States.ArrayPartition",
+  "hash": "796b038c2e20cf699ccffcb0e95e1c90987a00058bdc875e00ecc4b846de3b17",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, $$.Execution.Input.chunkSize)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "chunkSize": 2
+  },
+  "result": {
+    "output": {
+      "value": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          5
+        ]
+      ]
+    }
+  }
+}

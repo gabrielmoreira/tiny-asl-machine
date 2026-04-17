@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "010-object-path-argument",
+  "title": "Reject object argument from input path",
+  "group": "States.ArrayLength",
+  "hash": "7665835a926536342f3eca52b0675e0fd7c32f1b1feab1823ab275a3c70d4bf8",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayLength($.obj)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "obj": {
+      "k": 1
+    }
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.ArrayLength($.obj). Invalid arguments in States.ArrayLength"
+  }
+}

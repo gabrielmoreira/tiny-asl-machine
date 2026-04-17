@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "001-undefined-path-access-throws-query-evaluation-error",
+  "title": "accessing a nonexistent path returns undefined and throws States.QueryEvaluationError",
+  "group": "Feature.JSONataErrors",
+  "hash": "11cfdcf6ad11260b523f96a9afeab2b9db537a1a291984771a0802716fd516f9",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $states.input.doesNotExist %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$states.input.doesNotExist' specified for the field 'Output' returned nothing (undefined)."
+  }
+}

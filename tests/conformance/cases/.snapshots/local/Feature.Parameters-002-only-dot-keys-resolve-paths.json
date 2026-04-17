@@ -1,0 +1,42 @@
+{
+  "runner": "local",
+  "id": "002-only-dot-keys-resolve-paths",
+  "title": "evaluates only keys ending in dot-dollar while preserving plain strings literally",
+  "group": "Feature.Parameters",
+  "hash": "e913d06143af45611710339e16f71667c355b61ecefc8dc12135546bf001ef7b",
+  "definition": {
+    "StartAt": "ResolveTemplate",
+    "States": {
+      "ResolveTemplate": {
+        "Type": "Pass",
+        "Parameters": {
+          "literal": "$.customer.name",
+          "resolved.$": "$.customer.name",
+          "nested": {
+            "literal": "$.flags.active",
+            "resolved.$": "$.flags.active"
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "customer": {
+      "name": "Grace"
+    },
+    "flags": {
+      "active": true
+    }
+  },
+  "result": {
+    "output": {
+      "literal": "$.customer.name",
+      "nested": {
+        "literal": "$.flags.active",
+        "resolved": true
+      },
+      "resolved": "Grace"
+    }
+  }
+}

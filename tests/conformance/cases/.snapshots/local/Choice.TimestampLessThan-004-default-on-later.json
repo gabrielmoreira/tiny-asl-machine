@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "004-default-on-later",
+  "title": "uses the default branch when the runtime timestamp is later than the rule timestamp",
+  "group": "Choice.TimestampLessThan",
+  "hash": "554f62ccb7b4f6c15e84e9172fd48129b44906dea22be5f12ece82fccbec1e5f",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampLessThan": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "2025-01-02T00:00:00.000Z"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

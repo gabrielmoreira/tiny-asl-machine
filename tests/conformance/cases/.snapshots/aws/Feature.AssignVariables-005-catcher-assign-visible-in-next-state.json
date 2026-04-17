@@ -1,0 +1,50 @@
+{
+  "runner": "aws",
+  "id": "005-catcher-assign-visible-in-next-state",
+  "title": "Catcher Assign values are visible in the next state after error handling",
+  "group": "Feature.AssignVariables",
+  "hash": "c455b1fac31eea8c543df36d7da881c78f96f00ed035748737077bdc8f2c3588",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "InvokeMissingService",
+    "States": {
+      "InvokeMissingService": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:s3:headBucket",
+        "Arguments": {
+          "Bucket": "tiny-asl-machine-observation-bucket-should-not-exist"
+        },
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Assign": {
+              "hasError": true
+            },
+            "Output": "{% $states.input %}",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Output": {
+          "hasError": "{% $hasError %}",
+          "requestId": "{% $states.input.requestId %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-assign-catch"
+  },
+  "result": {
+    "output": {
+      "hasError": true,
+      "requestId": "req-assign-catch"
+    }
+  }
+}

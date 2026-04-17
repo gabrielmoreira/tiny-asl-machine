@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "002-equal-default",
+  "title": "StringGreaterThan falls through to Default when the input equals the comparison string",
+  "group": "Choice.StringGreaterThan",
+  "hash": "40f176962cad99ce80174797e06d7de5ec23c28745d64136ff6b97295f921d47",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringGreaterThan": "bravo",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "bravo"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

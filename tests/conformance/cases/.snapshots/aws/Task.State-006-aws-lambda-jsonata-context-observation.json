@@ -1,0 +1,126 @@
+{
+  "runner": "aws",
+  "id": "006-aws-lambda-jsonata-context-observation",
+  "title": "projects JSONata $states.input and $states.context through a task callback payload",
+  "group": "Task.State",
+  "hash": "edce7d410107864cbc5a7238258f57d5b331ee31f50cd9c29a7d76789aa71499",
+  "definition": {
+    "Comment": "Project JSONata Step Functions runtime state through a task callback payload",
+    "QueryLanguage": "JSONata",
+    "StartAt": "Probe",
+    "States": {
+      "Probe": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+        "Arguments": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "const sfn = new aws.sfn.SFNClient({}); await sfn.send(new aws.sfn.SendTaskSuccessCommand({ taskToken, output: JSON.stringify({ payload, event, taskTokenVar: taskToken, contextRequestId: context.awsRequestId }) })); return { callbackSent: true };"
+            },
+            "payload": {
+              "input": "{% $states.input %}",
+              "context": "{% $states.context %}",
+              "inputString": "{% $string($states.input) %}",
+              "contextString": "{% $string($states.context) %}"
+            },
+            "taskToken": "{% $states.context.Task.Token %}"
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "hello": "world",
+    "nested": {
+      "answer": 42
+    }
+  },
+  "result": {
+    "output": {
+      "payload": {
+        "input": {
+          "hello": "world",
+          "nested": {
+            "answer": 42
+          }
+        },
+        "context": {
+          "Execution": {
+            "Id": "arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:execution:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-09b78b5e:exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-2416d0fd",
+            "Input": {
+              "hello": "world",
+              "nested": {
+                "answer": 42
+              }
+            },
+            "StartTime": "2026-04-16T21:12:02.894Z",
+            "Name": "exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-2416d0fd",
+            "RoleArn": "arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role",
+            "RedriveCount": 0
+          },
+          "StateMachine": {
+            "Id": "arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:stateMachine:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-09b78b5e",
+            "Name": "tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-09b78b5e"
+          },
+          "State": {
+            "Name": "Probe",
+            "EnteredTime": "2026-04-16T21:12:02.919Z",
+            "RetryCount": 0
+          },
+          "Task": {
+            "Token": "AQDAAAAAKgAAAAMAAAAAAAAAAZvDytKhlf2mdYLCm9AJtPVC8IamwRdegNA1Dm9SAFbTGSAnnFLd7kBZLgMk2BRRBIx8nWUehjIa6Qq5jW7s5TGkibLSfCP51RAnkRiXPZN8OlpWY9ZgMVEBHKZGh7oubODWpYQ0DCNf8tmpw25VMBnjnp+MWkvYAqlOIxpduk4=ZuwvKxsEUSFkyLTFRX8ouBik036Bni8RQrAYjajom2fCUlWKNkXdvsU42vf9qMt1+0dQhSDjH7qbSGps3kcxia/vPE9Wm0oUbahM5NOcbWr2PZvin9jkWD6QpHlEOI+C90+29u+Gz7+3GXxXwvKU8yyFM5j904cvq1JoLM4wxT6u/bSR3oBDQRegT3O3h6Kyo8DkT9nyKzymw0TJhMOcYFXoQaNRIaTSDbXmfW4xuZZhUS2YMHC1CCj481WuQ2wsVVBdDA0QKgKKOIGzaS8rbGR6kze3XUeOIfcr5OY5OyKH+ys5U4TQS45j5caDqB/cxycb4ntg4mI9p0ZzPuOp16tuJT1vIhZ9kRgWZZg0leElGq/FlOdoG/h+N5deVx7JzrUXcE5y14aXymS3MFXUYlv0k65JluPy6e7eOPjiEg/1OeHiMNYFVBx9u1VVw1Iy8jOJF2+pPtMvF0PAiDom+JCmuW7k6mEQO/FkD4wRQSw/oVluXFxrWgKVl9rTsuwIJkI/u74wdQi4M50p5pKE"
+          }
+        },
+        "inputString": "{\"hello\":\"world\",\"nested\":{\"answer\":42}}",
+        "contextString": "{\"Execution\":{\"Id\":\"arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:execution:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-09b78b5e:exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-2416d0fd\",\"Input\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"StartTime\":\"2026-04-16T21:12:02.894Z\",\"Name\":\"exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-2416d0fd\",\"RoleArn\":\"arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role\",\"RedriveCount\":0},\"StateMachine\":{\"Id\":\"arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:stateMachine:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-09b78b5e\",\"Name\":\"tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-09b78b5e\"},\"State\":{\"Name\":\"Probe\",\"EnteredTime\":\"2026-04-16T21:12:02.919Z\",\"RetryCount\":0},\"Task\":{\"Token\":\"AQDAAAAAKgAAAAMAAAAAAAAAAZvDytKhlf2mdYLCm9AJtPVC8IamwRdegNA1Dm9SAFbTGSAnnFLd7kBZLgMk2BRRBIx8nWUehjIa6Qq5jW7s5TGkibLSfCP51RAnkRiXPZN8OlpWY9ZgMVEBHKZGh7oubODWpYQ0DCNf8tmpw25VMBnjnp+MWkvYAqlOIxpduk4=ZuwvKxsEUSFkyLTFRX8ouBik036Bni8RQrAYjajom2fCUlWKNkXdvsU42vf9qMt1+0dQhSDjH7qbSGps3kcxia/vPE9Wm0oUbahM5NOcbWr2PZvin9jkWD6QpHlEOI+C90+29u+Gz7+3GXxXwvKU8yyFM5j904cvq1JoLM4wxT6u/bSR3oBDQRegT3O3h6Kyo8DkT9nyKzymw0TJhMOcYFXoQaNRIaTSDbXmfW4xuZZhUS2YMHC1CCj481WuQ2wsVVBdDA0QKgKKOIGzaS8rbGR6kze3XUeOIfcr5OY5OyKH+ys5U4TQS45j5caDqB/cxycb4ntg4mI9p0ZzPuOp16tuJT1vIhZ9kRgWZZg0leElGq/FlOdoG/h+N5deVx7JzrUXcE5y14aXymS3MFXUYlv0k65JluPy6e7eOPjiEg/1OeHiMNYFVBx9u1VVw1Iy8jOJF2+pPtMvF0PAiDom+JCmuW7k6mEQO/FkD4wRQSw/oVluXFxrWgKVl9rTsuwIJkI/u74wdQi4M50p5pKE\"}}"
+      },
+      "event": {
+        "config": {
+          "script": "const sfn = new aws.sfn.SFNClient({}); await sfn.send(new aws.sfn.SendTaskSuccessCommand({ taskToken, output: JSON.stringify({ payload, event, taskTokenVar: taskToken, contextRequestId: context.awsRequestId }) })); return { callbackSent: true };"
+        },
+        "payload": {
+          "input": {
+            "hello": "world",
+            "nested": {
+              "answer": 42
+            }
+          },
+          "context": {
+            "Execution": {
+              "Id": "arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:execution:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-09b78b5e:exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-2416d0fd",
+              "Input": {
+                "hello": "world",
+                "nested": {
+                  "answer": 42
+                }
+              },
+              "StartTime": "2026-04-16T21:12:02.894Z",
+              "Name": "exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-2416d0fd",
+              "RoleArn": "arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role",
+              "RedriveCount": 0
+            },
+            "StateMachine": {
+              "Id": "arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:stateMachine:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-09b78b5e",
+              "Name": "tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-09b78b5e"
+            },
+            "State": {
+              "Name": "Probe",
+              "EnteredTime": "2026-04-16T21:12:02.919Z",
+              "RetryCount": 0
+            },
+            "Task": {
+              "Token": "AQDAAAAAKgAAAAMAAAAAAAAAAZvDytKhlf2mdYLCm9AJtPVC8IamwRdegNA1Dm9SAFbTGSAnnFLd7kBZLgMk2BRRBIx8nWUehjIa6Qq5jW7s5TGkibLSfCP51RAnkRiXPZN8OlpWY9ZgMVEBHKZGh7oubODWpYQ0DCNf8tmpw25VMBnjnp+MWkvYAqlOIxpduk4=ZuwvKxsEUSFkyLTFRX8ouBik036Bni8RQrAYjajom2fCUlWKNkXdvsU42vf9qMt1+0dQhSDjH7qbSGps3kcxia/vPE9Wm0oUbahM5NOcbWr2PZvin9jkWD6QpHlEOI+C90+29u+Gz7+3GXxXwvKU8yyFM5j904cvq1JoLM4wxT6u/bSR3oBDQRegT3O3h6Kyo8DkT9nyKzymw0TJhMOcYFXoQaNRIaTSDbXmfW4xuZZhUS2YMHC1CCj481WuQ2wsVVBdDA0QKgKKOIGzaS8rbGR6kze3XUeOIfcr5OY5OyKH+ys5U4TQS45j5caDqB/cxycb4ntg4mI9p0ZzPuOp16tuJT1vIhZ9kRgWZZg0leElGq/FlOdoG/h+N5deVx7JzrUXcE5y14aXymS3MFXUYlv0k65JluPy6e7eOPjiEg/1OeHiMNYFVBx9u1VVw1Iy8jOJF2+pPtMvF0PAiDom+JCmuW7k6mEQO/FkD4wRQSw/oVluXFxrWgKVl9rTsuwIJkI/u74wdQi4M50p5pKE"
+            }
+          },
+          "inputString": "{\"hello\":\"world\",\"nested\":{\"answer\":42}}",
+          "contextString": "{\"Execution\":{\"Id\":\"arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:execution:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-09b78b5e:exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-2416d0fd\",\"Input\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"StartTime\":\"2026-04-16T21:12:02.894Z\",\"Name\":\"exec-conf-Task-State-006-aws-lambda-jsonata-context-observation-2416d0fd\",\"RoleArn\":\"arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role\",\"RedriveCount\":0},\"StateMachine\":{\"Id\":\"arn:aws:states:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:stateMachine:tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-09b78b5e\",\"Name\":\"tam-conf-Task-State-006-aws-lambda-jsonata-context-observation-09b78b5e\"},\"State\":{\"Name\":\"Probe\",\"EnteredTime\":\"2026-04-16T21:12:02.919Z\",\"RetryCount\":0},\"Task\":{\"Token\":\"AQDAAAAAKgAAAAMAAAAAAAAAAZvDytKhlf2mdYLCm9AJtPVC8IamwRdegNA1Dm9SAFbTGSAnnFLd7kBZLgMk2BRRBIx8nWUehjIa6Qq5jW7s5TGkibLSfCP51RAnkRiXPZN8OlpWY9ZgMVEBHKZGh7oubODWpYQ0DCNf8tmpw25VMBnjnp+MWkvYAqlOIxpduk4=ZuwvKxsEUSFkyLTFRX8ouBik036Bni8RQrAYjajom2fCUlWKNkXdvsU42vf9qMt1+0dQhSDjH7qbSGps3kcxia/vPE9Wm0oUbahM5NOcbWr2PZvin9jkWD6QpHlEOI+C90+29u+Gz7+3GXxXwvKU8yyFM5j904cvq1JoLM4wxT6u/bSR3oBDQRegT3O3h6Kyo8DkT9nyKzymw0TJhMOcYFXoQaNRIaTSDbXmfW4xuZZhUS2YMHC1CCj481WuQ2wsVVBdDA0QKgKKOIGzaS8rbGR6kze3XUeOIfcr5OY5OyKH+ys5U4TQS45j5caDqB/cxycb4ntg4mI9p0ZzPuOp16tuJT1vIhZ9kRgWZZg0leElGq/FlOdoG/h+N5deVx7JzrUXcE5y14aXymS3MFXUYlv0k65JluPy6e7eOPjiEg/1OeHiMNYFVBx9u1VVw1Iy8jOJF2+pPtMvF0PAiDom+JCmuW7k6mEQO/FkD4wRQSw/oVluXFxrWgKVl9rTsuwIJkI/u74wdQi4M50p5pKE\"}}"
+        },
+        "taskToken": "AQDAAAAAKgAAAAMAAAAAAAAAAZvDytKhlf2mdYLCm9AJtPVC8IamwRdegNA1Dm9SAFbTGSAnnFLd7kBZLgMk2BRRBIx8nWUehjIa6Qq5jW7s5TGkibLSfCP51RAnkRiXPZN8OlpWY9ZgMVEBHKZGh7oubODWpYQ0DCNf8tmpw25VMBnjnp+MWkvYAqlOIxpduk4=ZuwvKxsEUSFkyLTFRX8ouBik036Bni8RQrAYjajom2fCUlWKNkXdvsU42vf9qMt1+0dQhSDjH7qbSGps3kcxia/vPE9Wm0oUbahM5NOcbWr2PZvin9jkWD6QpHlEOI+C90+29u+Gz7+3GXxXwvKU8yyFM5j904cvq1JoLM4wxT6u/bSR3oBDQRegT3O3h6Kyo8DkT9nyKzymw0TJhMOcYFXoQaNRIaTSDbXmfW4xuZZhUS2YMHC1CCj481WuQ2wsVVBdDA0QKgKKOIGzaS8rbGR6kze3XUeOIfcr5OY5OyKH+ys5U4TQS45j5caDqB/cxycb4ntg4mI9p0ZzPuOp16tuJT1vIhZ9kRgWZZg0leElGq/FlOdoG/h+N5deVx7JzrUXcE5y14aXymS3MFXUYlv0k65JluPy6e7eOPjiEg/1OeHiMNYFVBx9u1VVw1Iy8jOJF2+pPtMvF0PAiDom+JCmuW7k6mEQO/FkD4wRQSw/oVluXFxrWgKVl9rTsuwIJkI/u74wdQi4M50p5pKE"
+      },
+      "taskTokenVar": "AQDAAAAAKgAAAAMAAAAAAAAAAZvDytKhlf2mdYLCm9AJtPVC8IamwRdegNA1Dm9SAFbTGSAnnFLd7kBZLgMk2BRRBIx8nWUehjIa6Qq5jW7s5TGkibLSfCP51RAnkRiXPZN8OlpWY9ZgMVEBHKZGh7oubODWpYQ0DCNf8tmpw25VMBnjnp+MWkvYAqlOIxpduk4=ZuwvKxsEUSFkyLTFRX8ouBik036Bni8RQrAYjajom2fCUlWKNkXdvsU42vf9qMt1+0dQhSDjH7qbSGps3kcxia/vPE9Wm0oUbahM5NOcbWr2PZvin9jkWD6QpHlEOI+C90+29u+Gz7+3GXxXwvKU8yyFM5j904cvq1JoLM4wxT6u/bSR3oBDQRegT3O3h6Kyo8DkT9nyKzymw0TJhMOcYFXoQaNRIaTSDbXmfW4xuZZhUS2YMHC1CCj481WuQ2wsVVBdDA0QKgKKOIGzaS8rbGR6kze3XUeOIfcr5OY5OyKH+ys5U4TQS45j5caDqB/cxycb4ntg4mI9p0ZzPuOp16tuJT1vIhZ9kRgWZZg0leElGq/FlOdoG/h+N5deVx7JzrUXcE5y14aXymS3MFXUYlv0k65JluPy6e7eOPjiEg/1OeHiMNYFVBx9u1VVw1Iy8jOJF2+pPtMvF0PAiDom+JCmuW7k6mEQO/FkD4wRQSw/oVluXFxrWgKVl9rTsuwIJkI/u74wdQi4M50p5pKE",
+      "contextRequestId": "f1db5aed-aded-4819-be55-bd60b934d478"
+    }
+  }
+}

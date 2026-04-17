@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "012-negative-round-to-zero",
+  "title": "rounding -0.4 to zero still fails validation",
+  "group": "States.ArrayPartition",
+  "hash": "c34189a0fbe9e0eb5391b0d20774c2116e55f87c688ec41b080a53a3dc64ffb8",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, -0.4)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayPartition($.arr, -0.4). Invalid arguments in States.ArrayPartition, caused by: ArrayPartition chunk size must be a positive integer"
+  }
+}

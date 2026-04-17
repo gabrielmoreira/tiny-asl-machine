@@ -1,0 +1,40 @@
+{
+  "runner": "aws",
+  "id": "018-serialize-mixed-probe-array",
+  "title": "serializes a mixed-value probe array",
+  "group": "States.JsonToString",
+  "hash": "91c384622e482a05dfaaecb5a25022dd782e2ed08f9c1f95274b8da642541f1a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.probe)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "probe": [
+      null,
+      "",
+      " ",
+      0,
+      1,
+      true,
+      false,
+      [
+        0,
+        1,
+        false
+      ]
+    ]
+  },
+  "result": {
+    "output": {
+      "value": "[null,\"\",\" \",0,1,true,false,[0,1,false]]"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "runner": "local",
+  "id": "002-retrier-ordering-falls-through",
+  "title": "observes retrier ordering when the first retrier does not match",
+  "group": "Feature.Retry",
+  "hash": "36c94356ecfc148c3d0b6c788a6846e0dfe73d66ced1b58e72f04b6d451348cd",
+  "definition": {
+    "StartAt": "InvokeUnimplementedService",
+    "States": {
+      "InvokeUnimplementedService": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:s3:headBucket",
+        "Parameters": {
+          "Bucket": "tiny-asl-machine-observation-bucket-should-not-exist"
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.Timeout"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 0,
+            "BackoffRate": 2
+          },
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 1,
+            "BackoffRate": 2
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.retriedError",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "at": "ordered-retry-catch"
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-retry-2"
+  },
+  "result": {
+    "output": {
+      "requestId": "req-retry-2",
+      "retriedError": {
+        "Error": "SyntheticRetryOrderingError",
+        "Cause": "local retry ordering observation failure"
+      },
+      "recovery": {
+        "at": "ordered-retry-catch"
+      }
+    }
+  }
+}

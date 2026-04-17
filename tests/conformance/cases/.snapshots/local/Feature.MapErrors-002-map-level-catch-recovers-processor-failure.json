@@ -1,0 +1,86 @@
+{
+  "runner": "local",
+  "id": "002-map-level-catch-recovers-processor-failure",
+  "title": "map-level Catch recovers a processor failure without leaking partial aggregate output",
+  "group": "Feature.MapErrors",
+  "hash": "c0829f44fda13ef6ab9f404b1b347222b1a3f7106c8ed584150bbcd7c39d6676",
+  "definition": {
+    "StartAt": "ProcessItems",
+    "States": {
+      "ProcessItems": {
+        "Type": "Map",
+        "ItemsPath": "$.items",
+        "ResultPath": "$.processed",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.mapError",
+            "Next": "Recovered"
+          }
+        ],
+        "Iterator": {
+          "StartAt": "DoWork",
+          "States": {
+            "DoWork": {
+              "Type": "Task",
+              "Resource": "arn:local:feature:map-errors:failure",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "recovered": true,
+          "at": "map-level-catch"
+        },
+        "ResultPath": "$.status",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "batchId": "batch-map-errors-2",
+    "items": [
+      {
+        "id": "ok-1"
+      },
+      {
+        "id": "broken",
+        "fail": true
+      },
+      {
+        "id": "ok-2"
+      }
+    ]
+  },
+  "result": {
+    "output": {
+      "batchId": "batch-map-errors-2",
+      "items": [
+        {
+          "id": "ok-1"
+        },
+        {
+          "id": "broken",
+          "fail": true
+        },
+        {
+          "id": "ok-2"
+        }
+      ],
+      "mapError": {
+        "Error": "SyntheticMapItemError",
+        "Cause": "processor failed for broken"
+      },
+      "status": {
+        "recovered": true,
+        "at": "map-level-catch"
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "004-negative-above",
+  "title": "matches negative numbers above the threshold",
+  "group": "Choice.NumericGreaterThanEquals",
+  "hash": "a6eb3f69c2fce31c329ac69ff4b10814ddcc7db521c5bbbe19aeba3985905b56",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericGreaterThanEquals": -2,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": -1
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "008-negative-half-step-rounding",
+  "title": "documents negative half-step rounding behavior",
+  "group": "States.MathAdd",
+  "hash": "72fd51b0e4087c0fc543eb40af2f44ebbafd3cf144ba1179d259c148aa1769ed",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(-1.5, 0)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": -1
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "004-default-on-later",
+  "title": "falls through to default when the variable timestamp is later than the rule timestamp",
+  "group": "Choice.TimestampLessThanEquals",
+  "hash": "cb49ba53d0deb039557278028e92d389557f2a8c4f7e52ba4b589dc6250c5165",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampLessThanEquals": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "2025-01-02T00:00:00.000Z"
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "runner": "aws",
+  "id": "001-reshapes-input-object",
+  "title": "builds a new payload template from dynamic and static fields",
+  "group": "Feature.Parameters",
+  "hash": "e2d4095596addae48d46ba2275adb59c28d2870305d281777d36ad729f67d303",
+  "definition": {
+    "StartAt": "Reshape",
+    "States": {
+      "Reshape": {
+        "Type": "Pass",
+        "Parameters": {
+          "request": {
+            "customerId.$": "$.customer.id",
+            "customerName.$": "$.customer.name"
+          },
+          "item": {
+            "sku.$": "$.item.sku",
+            "quantity.$": "$.item.quantity"
+          },
+          "priority": "high",
+          "expedite.$": "$.flags.expedite"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "customer": {
+      "id": "cust-1",
+      "name": "Ada"
+    },
+    "item": {
+      "sku": "sku-9",
+      "quantity": 3
+    },
+    "flags": {
+      "expedite": true
+    },
+    "ignored": "value"
+  },
+  "result": {
+    "output": {
+      "request": {
+        "customerId": "cust-1",
+        "customerName": "Ada"
+      },
+      "item": {
+        "quantity": 3,
+        "sku": "sku-9"
+      },
+      "priority": "high",
+      "expedite": true
+    }
+  }
+}

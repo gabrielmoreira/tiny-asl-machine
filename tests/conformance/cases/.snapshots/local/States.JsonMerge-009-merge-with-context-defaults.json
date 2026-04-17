@@ -1,0 +1,41 @@
+{
+  "runner": "local",
+  "id": "009-merge-with-context-defaults",
+  "title": "merges with a context-backed defaults object from execution input",
+  "group": "States.JsonMerge",
+  "hash": "61e60d62dab9002e093636d2de1f2006c783eae12d5a9a1b496dd332d74fb52a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $$.Execution.Input.defaults, false)",
+          "defaults.$": "$$.Execution.Input.defaults"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "value": 1
+    },
+    "defaults": {
+      "fallback": true,
+      "value": 2
+    }
+  },
+  "result": {
+    "output": {
+      "value": {
+        "value": 2,
+        "fallback": true
+      },
+      "defaults": {
+        "fallback": true,
+        "value": 2
+      }
+    }
+  }
+}

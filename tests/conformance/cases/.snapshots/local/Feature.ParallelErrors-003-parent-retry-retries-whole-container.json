@@ -1,0 +1,63 @@
+{
+  "runner": "local",
+  "id": "003-parent-retry-retries-whole-container",
+  "title": "parent parallel Retry retries the container state",
+  "group": "Feature.ParallelErrors",
+  "hash": "58075d041b0b3e7d845b8ff9a5d9cc9a669e50f5426ef83f655aaffbe6cf5644",
+  "definition": {
+    "StartAt": "FanOut",
+    "States": {
+      "FanOut": {
+        "Type": "Parallel",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 1,
+            "BackoffRate": 2
+          }
+        ],
+        "Branches": [
+          {
+            "StartAt": "StableBranch",
+            "States": {
+              "StableBranch": {
+                "Type": "Task",
+                "Resource": "local:feature:parallel-errors:stable-retry",
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "FlakyBranch",
+            "States": {
+              "FlakyBranch": {
+                "Type": "Task",
+                "Resource": "local:feature:parallel-errors:flaky-retry",
+                "End": true
+              }
+            }
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "parallel-error-3"
+  },
+  "result": {
+    "output": [
+      {
+        "branch": "stable",
+        "invocation": 2
+      },
+      {
+        "branch": "flaky",
+        "invocation": 2
+      }
+    ]
+  }
+}

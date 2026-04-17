@@ -1,0 +1,22 @@
+{
+  "runner": "aws",
+  "id": "003-negative-seconds-literal",
+  "title": "rejects a negative Seconds literal",
+  "group": "Feature.WaitValidation",
+  "hash": "6a6468c5eecb914a5818fd1a466562e544bd48784cc0313891b16d7a5a92f384",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "Seconds": -1,
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Minimum value is 0"
+  }
+}

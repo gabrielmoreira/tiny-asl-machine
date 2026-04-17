@@ -1,0 +1,33 @@
+{
+  "runner": "aws",
+  "id": "024-context-arguments",
+  "title": "reads all arguments from execution input context",
+  "group": "States.ArrayRange",
+  "hash": "82eeb3f41c96ed86f45e135234a5e619c65ab4e22552ea8e889d80fd19d685b1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange($$.Execution.Input.start, $$.Execution.Input.end, $$.Execution.Input.step)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "start": 2,
+    "end": 6,
+    "step": 2
+  },
+  "result": {
+    "output": {
+      "value": [
+        2,
+        4,
+        6
+      ]
+    }
+  }
+}

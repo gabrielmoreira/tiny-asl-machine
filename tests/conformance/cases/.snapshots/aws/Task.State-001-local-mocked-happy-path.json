@@ -1,0 +1,40 @@
+{
+  "runner": "aws",
+  "id": "001-local-mocked-happy-path",
+  "title": "invokes a task and returns its result payload",
+  "group": "Task.State",
+  "hash": "8be2427ec6d5e6a03c98c55d3e26c5554549ceaad08f496f1ad72ad6ee0395f0",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "return { ok: true, echoed: payload };"
+            },
+            "payload.$": "$"
+          }
+        },
+        "OutputPath": "$.Payload",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "orderId": "ord-123",
+    "amount": 42
+  },
+  "result": {
+    "output": {
+      "ok": true,
+      "echoed": {
+        "orderId": "ord-123",
+        "amount": 42
+      }
+    }
+  }
+}

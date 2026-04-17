@@ -1,0 +1,29 @@
+{
+  "runner": "aws",
+  "id": "001-succeed-output-jsonata",
+  "title": "evaluates Succeed.Output when the machine query language is JSONata",
+  "group": "Feature.SucceedFailJsonata",
+  "hash": "f2050aeb5ab0377d74951f89cfce6918d0c618e74957f5805c455104d688064e",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "SuccessState",
+    "States": {
+      "SuccessState": {
+        "Type": "Succeed",
+        "Output": {
+          "status": "ok",
+          "requestId": "{% $states.input.requestId %}"
+        }
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-succeed-jsonata"
+  },
+  "result": {
+    "output": {
+      "status": "ok",
+      "requestId": "req-succeed-jsonata"
+    }
+  }
+}

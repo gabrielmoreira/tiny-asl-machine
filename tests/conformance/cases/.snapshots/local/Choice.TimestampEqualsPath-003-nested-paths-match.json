@@ -1,0 +1,48 @@
+{
+  "runner": "local",
+  "id": "003-nested-paths-match",
+  "title": "matches when nested timestamp paths resolve to the same value",
+  "group": "Choice.TimestampEqualsPath",
+  "hash": "a6b4d4651db80d51ae86a60d517ef50df606d769365881f9b82f4ada2beeb0ae",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.window.start",
+            "TimestampEqualsPath": "$.window.expectedStart",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "window": {
+      "start": "2025-01-01T12:00:00.000Z",
+      "expectedStart": "2025-01-01T12:00:00.000Z"
+    }
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

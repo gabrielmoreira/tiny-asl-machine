@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "010-reject-string-start-bound",
+  "title": "rejects a string start bound",
+  "group": "States.MathRandom",
+  "hash": "393d80f87811c8251c096d7cef3e508c44d629e86c30ff7ba09de7a4858177ea",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom('a', 10)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathRandom('a', 10). Invalid arguments in States.MathRandom"
+  }
+}

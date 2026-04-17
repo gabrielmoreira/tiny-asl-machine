@@ -1,0 +1,50 @@
+{
+  "runner": "local",
+  "id": "008-jsonl-materializes-line-delimited-records",
+  "title": "ItemReader JSONL materializes one item per non-empty line",
+  "group": "Observation.ItemReader",
+  "hash": "decdd5d6a96cbaa5e9262c94e39b5c2dca507ed4f23c40482a3fc39fe78fa795",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "JSONL"
+          },
+          "Parameters": {
+            "Bucket": "<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+            "Key": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/jsonl/records.jsonl"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": [
+      {
+        "id": "x"
+      },
+      {
+        "id": "y"
+      }
+    ]
+  }
+}

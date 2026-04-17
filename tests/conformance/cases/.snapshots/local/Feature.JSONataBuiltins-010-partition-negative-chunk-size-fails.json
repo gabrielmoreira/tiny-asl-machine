@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "010-partition-negative-chunk-size-fails",
+  "title": "$partition rejects a negative chunk size",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "edbf910b77036dd55f22afd3f3a58c688293929125cafc283ae87ab635d643e0",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $partition($states.input.arr, $states.input.size) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ],
+    "size": -1
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $partition($states.input.arr, $states.input.size). D3137: Second argument must be zero or greater"
+  }
+}

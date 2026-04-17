@@ -1,0 +1,48 @@
+{
+  "runner": "local",
+  "id": "007-object-right-default",
+  "title": "falls through to Default when the comparison path resolves to an object instead of a number",
+  "group": "Choice.NumericEqualsPath",
+  "hash": "65c423b03641860f9852ae9e158cbdea39bdefc4858ba19aae5b0e6fd2eccaf0",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericEqualsPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 7,
+    "right": {
+      "value": 7
+    }
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

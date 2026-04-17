@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "013-fail-illegal-base64-characters",
+  "title": "fails on illegal Base64 characters",
+  "group": "States.Base64Decode",
+  "hash": "2ab93a4435bb90436964d0d995bfc63cba735cd9a4556c19b105aa9c3ebc7536",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode('!!!invalid!!!')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Base64Decode('!!!invalid!!!'). Invalid arguments in States.Base64Decode, caused by: Invalid Base64 input"
+  }
+}

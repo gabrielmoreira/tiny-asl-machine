@@ -1,0 +1,52 @@
+{
+  "runner": "aws",
+  "id": "003-can-read-current-and-context-data",
+  "title": "combines current-input paths with execution-context paths in one payload template",
+  "group": "Feature.Parameters",
+  "hash": "d6f4def92efba874771c8296ac9bcce114f39c0d8bddc18c0559b9da38e28065",
+  "definition": {
+    "StartAt": "ComposeTemplate",
+    "States": {
+      "ComposeTemplate": {
+        "Type": "Pass",
+        "Parameters": {
+          "payload.$": "$.payload",
+          "requestId.$": "$$.Execution.Input.requestId",
+          "original.$": "$$.Execution.Input",
+          "metadata": {
+            "source": "context"
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-55",
+    "payload": {
+      "orderId": "ord-1",
+      "total": 42
+    },
+    "region": "us-east-1"
+  },
+  "result": {
+    "output": {
+      "metadata": {
+        "source": "context"
+      },
+      "original": {
+        "requestId": "req-55",
+        "payload": {
+          "orderId": "ord-1",
+          "total": 42
+        },
+        "region": "us-east-1"
+      },
+      "payload": {
+        "orderId": "ord-1",
+        "total": 42
+      },
+      "requestId": "req-55"
+    }
+  }
+}

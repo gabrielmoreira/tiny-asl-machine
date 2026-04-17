@@ -1,0 +1,29 @@
+{
+  "runner": "aws",
+  "id": "014-uuid-beside-state-input",
+  "title": "composes UUID beside ordinary state input",
+  "group": "States.UUID",
+  "hash": "00530b85f63db72a31f52a2cecfde5f477475223a8e3b4f30b589cde97369e94",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "prefix.$": "$.prefix",
+          "generated.$": "States.UUID()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "prefix": "id"
+  },
+  "result": {
+    "output": {
+      "generated": "f706fd6c-e049-4cd2-8b08-3843ffe20094",
+      "prefix": "id"
+    }
+  }
+}

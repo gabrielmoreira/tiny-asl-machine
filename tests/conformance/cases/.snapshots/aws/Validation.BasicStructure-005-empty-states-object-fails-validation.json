@@ -1,0 +1,16 @@
+{
+  "runner": "aws",
+  "id": "005-empty-states-object-fails-validation",
+  "title": "fails validation when States is empty",
+  "group": "Validation.BasicStructure",
+  "hash": "504c8710ef38c979812e979becea6a7c3741f540ed88a2ba3ff8f6376e610143",
+  "definition": {
+    "StartAt": "First",
+    "States": {}
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Value cannot be empty; Missing 'Next' target: First; Workflow has no terminal state"
+  }
+}

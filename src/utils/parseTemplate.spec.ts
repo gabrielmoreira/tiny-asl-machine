@@ -1,5 +1,5 @@
 import { StringTemplateParser } from './parseStringTemplate';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vite-plus/test';
 
 describe('StringTemplateParser', () => {
   describe('basic templates', () => {
@@ -116,6 +116,33 @@ describe('StringTemplateParser', () => {
       // When / Then
       expect(() => new StringTemplateParser(template).parseTemplate()).toThrowError(
         /Invalid template: unexpected end of string/
+      );
+    });
+
+    it('reports a missing opening brace for an unexpected closing brace', () => {
+      // Given
+      const template = "'oops }'";
+      // When / Then
+      expect(() => new StringTemplateParser(template).parseTemplate()).toThrowError(
+        /matching '\{' not found for '\}'/
+      );
+    });
+
+    it('reports a missing closing brace for an unmatched opening brace', () => {
+      // Given
+      const template = "'oops {'";
+      // When / Then
+      expect(() => new StringTemplateParser(template).parseTemplate()).toThrowError(
+        /matching '\}' not found for '\{'/
+      );
+    });
+
+    it('reports a missing closing brace for doubled brace ambiguity', () => {
+      // Given
+      const template = "'oops {{}}'";
+      // When / Then
+      expect(() => new StringTemplateParser(template).parseTemplate()).toThrowError(
+        /matching '\}' not found for '\{'/
       );
     });
   });

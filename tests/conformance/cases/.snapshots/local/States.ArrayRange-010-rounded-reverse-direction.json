@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "010-rounded-reverse-direction",
+  "title": "rounding can reverse direction and still produce an empty range",
+  "group": "States.ArrayRange",
+  "hash": "2e44a0261bad916686604ee3d26d5de14e39d2b813705076fe339980e124a6a0",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(1.6, 1.4, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": []
+    }
+  }
+}

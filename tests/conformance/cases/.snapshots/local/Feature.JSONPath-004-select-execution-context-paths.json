@@ -1,0 +1,31 @@
+{
+  "runner": "local",
+  "id": "004-select-execution-context-paths",
+  "title": "selects values from execution input and execution metadata context",
+  "group": "Feature.JSONPath",
+  "hash": "fe5aa2b81107618621fbff44188d9be7892e05577426afb9400b615a397fdfd0",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "executionInputCustomerId.$": "$$.Execution.Input.order.customerId",
+          "executionId.$": "$$.Execution.Id"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "order": {
+      "customerId": "cust-9"
+    }
+  },
+  "result": {
+    "output": {
+      "executionInputCustomerId": "cust-9",
+      "executionId": "execution-628ed4c6-0c82-4c88-a612-93ba5fd0458f"
+    }
+  }
+}

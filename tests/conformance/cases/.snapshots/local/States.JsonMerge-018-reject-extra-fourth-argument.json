@@ -1,0 +1,28 @@
+{
+  "runner": "local",
+  "id": "018-reject-extra-fourth-argument",
+  "title": "rejects an extra fourth argument",
+  "group": "States.JsonMerge",
+  "hash": "35794050da48014f89f4a03831e86b3d4b69518c7431c82aa0072c6b5e14e42f",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false, $.extra)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {},
+    "b": {},
+    "extra": 1
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.JsonMerge expects 3 argument(s) but received 4."
+  }
+}

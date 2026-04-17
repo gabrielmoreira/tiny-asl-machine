@@ -1,0 +1,22 @@
+{
+  "runner": "aws",
+  "id": "004-non-integer-seconds-literal",
+  "title": "rejects a non-integer Seconds literal",
+  "group": "Feature.WaitValidation",
+  "hash": "db9746dd163024332358eb1402be6af659250117abe2753c6ff1980265d0b576",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "Seconds": 1.5,
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Expected value of type Integer"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "runner": "aws",
+  "id": "002-equal-default",
+  "title": "takes the default branch when the input equals the rule value",
+  "group": "Choice.NumericLessThan",
+  "hash": "d950f4530a8d1ccd66271cb89468af0761caee953811fc6d96dd333d5a51581b",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "NumericLessThan": 10,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 10
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

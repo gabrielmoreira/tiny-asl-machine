@@ -1,0 +1,46 @@
+{
+  "runner": "aws",
+  "id": "001-left-greater-integer",
+  "title": "matches when the left numeric path resolves to a larger integer",
+  "group": "Choice.NumericGreaterThanPath",
+  "hash": "d4191181295252230d49178bd74e1c9258bab3db52b582cf39291502e40403d9",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.left",
+            "NumericGreaterThanPath": "$.right",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "left": 9,
+    "right": 8
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

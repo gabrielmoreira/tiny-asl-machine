@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "013-ignore-path-fake-seed",
+  "title": "still returns a UUID when given a path-based fake seed argument",
+  "group": "States.UUID",
+  "hash": "ca052bc4743fdceedf84a833c0ff387441a63c3799f59923b12492d9a9c48022",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.UUID($.seed)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "seed": 42
+  },
+  "result": {
+    "output": {
+      "value": "62baf6d3-a74c-4389-ae65-7944e766a544"
+    }
+  }
+}

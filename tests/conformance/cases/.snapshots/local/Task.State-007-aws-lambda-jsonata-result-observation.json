@@ -1,0 +1,122 @@
+{
+  "runner": "local",
+  "id": "007-aws-lambda-jsonata-result-observation",
+  "title": "projects JSONata $states.result metadata and payload through optimized lambda invoke",
+  "group": "Task.State",
+  "hash": "d2d8654da2e72dcfe959210c9f0948ca4f4ce7819971a074491000de31e61d57",
+  "definition": {
+    "Comment": "Project JSONata Step Functions task result through optimized Lambda invoke",
+    "QueryLanguage": "JSONata",
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Arguments": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "return { fromLambda: true, echoed: payload, requestId: context.awsRequestId };"
+            },
+            "payload": "{% $states.input %}"
+          }
+        },
+        "Output": {
+          "rawResult": "{% $states.result %}",
+          "resultString": "{% $string($states.result) %}",
+          "payload": "{% $states.result.Payload %}",
+          "payloadString": "{% $string($states.result.Payload) %}",
+          "statusCode": "{% $states.result.StatusCode %}",
+          "executedVersion": "{% $states.result.ExecutedVersion %}",
+          "context": "{% $states.context %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "hello": "world",
+    "nested": {
+      "answer": 42
+    }
+  },
+  "result": {
+    "output": {
+      "rawResult": {
+        "ExecutedVersion": "$LATEST",
+        "Payload": {
+          "fromLambda": true,
+          "echoed": {
+            "hello": "world",
+            "nested": {
+              "answer": 42
+            }
+          },
+          "requestId": "req-local-123"
+        },
+        "SdkHttpMetadata": {
+          "HttpHeaders": {
+            "X-Amz-Executed-Version": "$LATEST",
+            "Content-Type": "application/json"
+          },
+          "HttpStatusCode": 200
+        },
+        "SdkResponseMetadata": {
+          "RequestId": "req-local-123"
+        },
+        "StatusCode": 200
+      },
+      "resultString": "{\"ExecutedVersion\":\"$LATEST\",\"Payload\":{\"fromLambda\":true,\"echoed\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"requestId\":\"req-local-123\"},\"SdkHttpMetadata\":{\"HttpHeaders\":{\"X-Amz-Executed-Version\":\"$LATEST\",\"Content-Type\":\"application/json\"},\"HttpStatusCode\":200},\"SdkResponseMetadata\":{\"RequestId\":\"req-local-123\"},\"StatusCode\":200}",
+      "payload": {
+        "fromLambda": true,
+        "echoed": {
+          "hello": "world",
+          "nested": {
+            "answer": 42
+          }
+        },
+        "requestId": "req-local-123"
+      },
+      "payloadString": "{\"fromLambda\":true,\"echoed\":{\"hello\":\"world\",\"nested\":{\"answer\":42}},\"requestId\":\"req-local-123\"}",
+      "statusCode": 200,
+      "executedVersion": "$LATEST",
+      "context": {
+        "Resources": {},
+        "Runtime": {},
+        "StateMachine": {
+          "Id": "machine-f54135ed-0a8b-4dd8-a790-aea2a400c8f0",
+          "Name": "machine",
+          "QueryLanguage": "JSONata"
+        },
+        "Execution": {
+          "StartTime": "2026-04-16T21:12:10.058Z",
+          "Id": "execution-52b77d86-dc49-4fc9-9240-420d8baaa96c",
+          "Name": "execution",
+          "RoleArn": "machine-role",
+          "Input": {
+            "hello": "world",
+            "nested": {
+              "answer": 42
+            }
+          },
+          "RedriveCount": 0
+        },
+        "VariableScopes": [
+          {}
+        ],
+        "State": {
+          "Name": "Invoke",
+          "EnteredTime": "2026-04-16T21:12:10.058Z",
+          "RetryCount": 0
+        },
+        "Task": {
+          "Token": "TaskToken-559de5b1-578b-448e-bb6d-bd34c65fc0c9"
+        },
+        "StateEntryVariables": {},
+        "Transition": {
+          "End": true
+        }
+      }
+    }
+  }
+}

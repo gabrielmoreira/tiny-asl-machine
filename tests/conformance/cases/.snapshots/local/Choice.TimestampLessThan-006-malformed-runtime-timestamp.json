@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "006-malformed-runtime-timestamp",
+  "title": "treats a malformed runtime timestamp string as a non-match for less-than comparison",
+  "group": "Choice.TimestampLessThan",
+  "hash": "d16734073e2b1d5439feb0366dcf135792b3d3c930a07b959ea7252466687c5b",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampLessThan": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "not-a-timestamp"
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

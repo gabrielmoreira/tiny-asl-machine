@@ -1,0 +1,29 @@
+{
+  "runner": "local",
+  "id": "017-reject-array-input",
+  "title": "rejects array input instead of a string",
+  "group": "States.StringToJson",
+  "hash": "410a36b47c17a04a08d66a96ee056c1d2ef36583c809b0cd61365a6c93694e11",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": [
+      1,
+      2
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.StringToJson($.json). Invalid arguments in States.StringToJson, caused by: States.StringToJson expected a string, got object"
+  }
+}

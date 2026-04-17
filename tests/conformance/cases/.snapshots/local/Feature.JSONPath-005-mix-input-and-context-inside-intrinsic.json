@@ -1,0 +1,28 @@
+{
+  "runner": "local",
+  "id": "005-mix-input-and-context-inside-intrinsic",
+  "title": "mixes input and context paths inside an intrinsic call",
+  "group": "Feature.JSONPath",
+  "hash": "dbf0bcaf7b93e0dfef067bd2d69e9b855ab284090a96b0761c7b023d04eb5e47",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('{}:{}', $.requestId, $$.Execution.Input.suffix)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-42",
+    "suffix": "blue"
+  },
+  "result": {
+    "output": {
+      "value": "req-42:blue"
+    }
+  }
+}

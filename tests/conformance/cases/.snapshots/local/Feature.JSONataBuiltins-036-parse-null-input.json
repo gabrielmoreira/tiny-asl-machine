@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "036-parse-null-input",
+  "title": "$parse with null input follows the AWS-observed coercion or failure semantics",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "c6a94ce19882a1e6e31f32c274e4b5bd7aab0f2c3ed3d168c9c13eb14b07e0aa",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $parse($states.input.json) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": null
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $parse($states.input.json). [object Object]"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "001-greater-match",
+  "title": "StringGreaterThan selects the matched branch when the input sorts after the comparison string",
+  "group": "Choice.StringGreaterThan",
+  "hash": "c68c7bba554e86d6f9a8d33e3978e959880c3df6b2f4dbf962ef5ba9a957a6a8",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringGreaterThan": "bravo",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": "charlie"
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

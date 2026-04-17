@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "001-fail-errorpath-and-causepath-jsonpath",
+  "title": "JSONPath Fail can read ErrorPath and CausePath from input",
+  "group": "Feature.FailPaths",
+  "hash": "bf44c226aebeb4d27038e216c9e395d8b1b4e07fcd29813c80ba5f1a8ceaf696",
+  "definition": {
+    "StartAt": "FailState",
+    "States": {
+      "FailState": {
+        "Type": "Fail",
+        "ErrorPath": "$.Error",
+        "CausePath": "$.Cause"
+      }
+    }
+  },
+  "input": {
+    "Error": "PathDerivedError",
+    "Cause": "path derived cause"
+  },
+  "result": {
+    "error": "PathDerivedError",
+    "cause": "path derived cause"
+  }
+}

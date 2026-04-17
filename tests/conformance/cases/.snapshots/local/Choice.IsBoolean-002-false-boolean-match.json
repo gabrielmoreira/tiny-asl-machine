@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "002-false-boolean-match",
+  "title": "matches a false boolean value",
+  "group": "Choice.IsBoolean",
+  "hash": "274bfcba9dd164cb0b4e6b874b41090256a4c3e19a126a9727995a4eded394d7",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "IsBoolean": true,
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": false
+  },
+  "result": {
+    "output": {
+      "selected": "matched"
+    }
+  }
+}

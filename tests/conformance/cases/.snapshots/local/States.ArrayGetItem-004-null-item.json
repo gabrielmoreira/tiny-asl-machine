@@ -1,0 +1,29 @@
+{
+  "runner": "local",
+  "id": "004-null-item",
+  "title": "Return null item unchanged",
+  "group": "States.ArrayGetItem",
+  "hash": "fb864666dab0d91186f72e714d38c08841261acd0a78e5ac60c759a6cb03a8ce",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($.arr, 0)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      null
+    ]
+  },
+  "result": {
+    "output": {
+      "value": null
+    }
+  }
+}

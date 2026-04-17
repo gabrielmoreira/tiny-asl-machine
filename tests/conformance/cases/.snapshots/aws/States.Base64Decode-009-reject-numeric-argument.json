@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "009-reject-numeric-argument",
+  "title": "rejects numeric argument",
+  "group": "States.Base64Decode",
+  "hash": "9cc4973230855e2f12e7af42137f3056ef1b569fa3bc6072e9715f9ebc91fd3d",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode(123)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.Base64Decode(123). Invalid arguments in States.Base64Decode"
+  }
+}

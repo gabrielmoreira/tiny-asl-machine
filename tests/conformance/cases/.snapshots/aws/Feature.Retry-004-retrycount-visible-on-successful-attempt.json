@@ -1,0 +1,232 @@
+{
+  "runner": "aws",
+  "id": "004-retrycount-visible-on-successful-attempt",
+  "title": "observes State.RetryCount on the successful retry attempt",
+  "group": "Feature.Retry",
+  "hash": "ad54dff34ff3781d675b73188fb48c3ff8aa7f9659b6c777349b2a3399737e74",
+  "definition": {
+    "StartAt": "InvokeLambdaLikeTask",
+    "States": {
+      "InvokeLambdaLikeTask": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture",
+          "Payload": {
+            "config": {
+              "script": "if (payload.retryCount < 2) throw new Error(`retry-count-${payload.retryCount}`); return { observedRetryCount: payload.retryCount };"
+            },
+            "payload": {
+              "retryCount.$": "$$.State.RetryCount"
+            }
+          }
+        },
+        "ResultSelector": {
+          "observedRetryCount.$": "$.Payload.observedRetryCount"
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 2,
+            "BackoffRate": 2
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "observedRetryCount": 2
+    },
+    "meta": {
+      "history": [
+        {
+          "id": 1,
+          "type": "ExecutionStarted",
+          "previousEventId": 0,
+          "timestamp": "2026-04-15T00:05:24.257Z",
+          "details": {
+            "executionStartedEventDetails": {
+              "input": "{}",
+              "inputDetails": {
+                "truncated": false
+              },
+              "roleArn": "arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "type": "TaskStateEntered",
+          "previousEventId": 0,
+          "timestamp": "2026-04-15T00:05:24.282Z",
+          "details": {
+            "stateEnteredEventDetails": {
+              "name": "InvokeLambdaLikeTask",
+              "input": "{}",
+              "inputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "type": "TaskScheduled",
+          "previousEventId": 2,
+          "timestamp": "2026-04-15T00:05:24.282Z",
+          "details": {
+            "taskScheduledEventDetails": {
+              "resourceType": "lambda",
+              "resource": "invoke",
+              "region": "<REDACTED_VAR:REGION>",
+              "parameters": "{\"FunctionName\":\"arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture\",\"Payload\":{\"config\":{\"script\":\"if (payload.retryCount < 2) throw new Error(`retry-count-${payload.retryCount}`); return { observedRetryCount: payload.retryCount };\"},\"payload\":{\"retryCount\":0}}}"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "type": "TaskStarted",
+          "previousEventId": 3,
+          "timestamp": "2026-04-15T00:05:24.312Z",
+          "details": {
+            "taskStartedEventDetails": {
+              "resourceType": "lambda",
+              "resource": "invoke"
+            }
+          }
+        },
+        {
+          "id": 5,
+          "type": "TaskFailed",
+          "previousEventId": 4,
+          "timestamp": "2026-04-15T00:05:25.170Z",
+          "details": {
+            "taskFailedEventDetails": {
+              "resourceType": "lambda",
+              "resource": "invoke",
+              "error": "Error",
+              "cause": "{\"errorType\":\"Error\",\"errorMessage\":\"retry-count-0\",\"trace\":[\"Error: retry-count-0\",\"    at eval (eval at handler (file:///var/task/index.mjs:44:25), <anonymous>:4:35)\",\"    at BufferedInvokeProcessor.handler (file:///var/task/index.mjs:55:16)\",\"    at BufferedInvokeProcessor.processInvoke (file:///var/runtime/index.mjs:1092:33)\",\"    at file:///var/runtime/index.mjs:1178:98\",\"    at InvokeStoreSingle.run (file:///var/runtime/index.mjs:83:12)\",\"    at _Runtime.runWithInvokeContext (file:///var/runtime/index.mjs:1191:24)\",\"    at async _Runtime.processSingleConcurrent (file:///var/runtime/index.mjs:1178:7)\",\"    at async _Runtime.start (file:///var/runtime/index.mjs:1165:7)\",\"    at async ignition (file:///var/runtime/index.mjs:1634:5)\"]}"
+            }
+          }
+        },
+        {
+          "id": 6,
+          "type": "TaskScheduled",
+          "previousEventId": 5,
+          "timestamp": "2026-04-15T00:05:26.232Z",
+          "details": {
+            "taskScheduledEventDetails": {
+              "resourceType": "lambda",
+              "resource": "invoke",
+              "region": "<REDACTED_VAR:REGION>",
+              "parameters": "{\"FunctionName\":\"arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture\",\"Payload\":{\"config\":{\"script\":\"if (payload.retryCount < 2) throw new Error(`retry-count-${payload.retryCount}`); return { observedRetryCount: payload.retryCount };\"},\"payload\":{\"retryCount\":1}}}"
+            }
+          }
+        },
+        {
+          "id": 7,
+          "type": "TaskStarted",
+          "previousEventId": 6,
+          "timestamp": "2026-04-15T00:05:26.273Z",
+          "details": {
+            "taskStartedEventDetails": {
+              "resourceType": "lambda",
+              "resource": "invoke"
+            }
+          }
+        },
+        {
+          "id": 8,
+          "type": "TaskFailed",
+          "previousEventId": 7,
+          "timestamp": "2026-04-15T00:05:26.757Z",
+          "details": {
+            "taskFailedEventDetails": {
+              "resourceType": "lambda",
+              "resource": "invoke",
+              "error": "Error",
+              "cause": "{\"errorType\":\"Error\",\"errorMessage\":\"retry-count-1\",\"trace\":[\"Error: retry-count-1\",\"    at eval (eval at handler (file:///var/task/index.mjs:44:25), <anonymous>:4:35)\",\"    at BufferedInvokeProcessor.handler (file:///var/task/index.mjs:55:16)\",\"    at BufferedInvokeProcessor.processInvoke (file:///var/runtime/index.mjs:1092:33)\",\"    at file:///var/runtime/index.mjs:1178:98\",\"    at InvokeStoreSingle.run (file:///var/runtime/index.mjs:83:12)\",\"    at _Runtime.runWithInvokeContext (file:///var/runtime/index.mjs:1191:24)\",\"    at async _Runtime.processSingleConcurrent (file:///var/runtime/index.mjs:1178:7)\",\"    at async _Runtime.start (file:///var/runtime/index.mjs:1165:7)\",\"    at async ignition (file:///var/runtime/index.mjs:1634:5)\"]}"
+            }
+          }
+        },
+        {
+          "id": 9,
+          "type": "TaskScheduled",
+          "previousEventId": 8,
+          "timestamp": "2026-04-15T00:05:28.814Z",
+          "details": {
+            "taskScheduledEventDetails": {
+              "resourceType": "lambda",
+              "resource": "invoke",
+              "region": "<REDACTED_VAR:REGION>",
+              "parameters": "{\"FunctionName\":\"arn:aws:lambda:<REDACTED_VAR:REGION>:<REDACTED_VAR:ACCOUNT_ID>:function:tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-lambda-fixture\",\"Payload\":{\"config\":{\"script\":\"if (payload.retryCount < 2) throw new Error(`retry-count-${payload.retryCount}`); return { observedRetryCount: payload.retryCount };\"},\"payload\":{\"retryCount\":2}}}"
+            }
+          }
+        },
+        {
+          "id": 10,
+          "type": "TaskStarted",
+          "previousEventId": 9,
+          "timestamp": "2026-04-15T00:05:28.864Z",
+          "details": {
+            "taskStartedEventDetails": {
+              "resourceType": "lambda",
+              "resource": "invoke"
+            }
+          }
+        },
+        {
+          "id": 11,
+          "type": "TaskSucceeded",
+          "previousEventId": 10,
+          "timestamp": "2026-04-15T00:05:28.910Z",
+          "details": {
+            "taskSucceededEventDetails": {
+              "resourceType": "lambda",
+              "resource": "invoke",
+              "output": "{\"ExecutedVersion\":\"$LATEST\",\"Payload\":{\"observedRetryCount\":2},\"SdkHttpMetadata\":{\"AllHttpHeaders\":{\"X-Amz-Executed-Version\":[\"$LATEST\"],\"x-amzn-Remapped-Content-Length\":[\"0\"],\"Connection\":[\"keep-alive\"],\"x-amzn-RequestId\":[\"c01c4ab7-378b-4ed4-a9e8-2dd955cf9ff3\"],\"Content-Length\":[\"24\"],\"Date\":[\"Wed, 15 Apr 2026 00:05:28 GMT\"],\"X-Amzn-Trace-Id\":[\"Root=1-69ded648-20b932da1ae57aa0550c8707;Parent=4ea500ac1fb2c714;Sampled=0;Lineage=1:0d230a94:0\"],\"Content-Type\":[\"application/json\"]},\"HttpHeaders\":{\"Connection\":\"keep-alive\",\"Content-Length\":\"24\",\"Content-Type\":\"application/json\",\"Date\":\"Wed, 15 Apr 2026 00:05:28 GMT\",\"X-Amz-Executed-Version\":\"$LATEST\",\"x-amzn-Remapped-Content-Length\":\"0\",\"x-amzn-RequestId\":\"c01c4ab7-378b-4ed4-a9e8-2dd955cf9ff3\",\"X-Amzn-Trace-Id\":\"Root=1-69ded648-20b932da1ae57aa0550c8707;Parent=4ea500ac1fb2c714;Sampled=0;Lineage=1:0d230a94:0\"},\"HttpStatusCode\":200},\"SdkResponseMetadata\":{\"RequestId\":\"c01c4ab7-378b-4ed4-a9e8-2dd955cf9ff3\"},\"StatusCode\":200}",
+              "outputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        },
+        {
+          "id": 12,
+          "type": "TaskStateExited",
+          "previousEventId": 11,
+          "timestamp": "2026-04-15T00:05:28.931Z",
+          "details": {
+            "stateExitedEventDetails": {
+              "name": "InvokeLambdaLikeTask",
+              "output": "{\"observedRetryCount\":2}",
+              "outputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        },
+        {
+          "id": 13,
+          "type": "ExecutionSucceeded",
+          "previousEventId": 12,
+          "timestamp": "2026-04-15T00:05:28.958Z",
+          "details": {
+            "executionSucceededEventDetails": {
+              "output": "{\"observedRetryCount\":2}",
+              "outputDetails": {
+                "truncated": false
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

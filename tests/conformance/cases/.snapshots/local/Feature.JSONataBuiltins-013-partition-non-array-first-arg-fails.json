@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "013-partition-non-array-first-arg-fails",
+  "title": "$partition rejects a non-array first argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "47974528a24b2db6ff85a0d1179767afd855057df6a958c8aca0f6967f5f08cc",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $partition($states.input.arr, 2) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": "not-array"
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $partition($states.input.arr, 2). Argument 1 of function \"partition\" does not match function signature"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "runner": "local",
+  "id": "001-no-default-no-choices-match",
+  "title": "fails with States.Runtime when no Choice rule matches and there is no Default",
+  "group": "Feature.ChoiceValidation",
+  "hash": "04795d82ceb8f9a895d266fafad97575a276148b41ec3381a059e61d83b32f50",
+  "definition": {
+    "StartAt": "Dispatch",
+    "States": {
+      "Dispatch": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.status",
+            "StringEquals": "READY",
+            "Next": "Ready"
+          }
+        ]
+      },
+      "Ready": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "status": "PENDING"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

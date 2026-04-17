@@ -1,0 +1,39 @@
+{
+  "runner": "aws",
+  "id": "001-repeated-numbers",
+  "title": "Deduplicate repeated numbers",
+  "group": "States.ArrayUnique",
+  "hash": "7feaff92e775d6520b8f92575a9e3873772ac22fe48efae6ed0e0b62a36c4772",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3,
+      3,
+      3,
+      4
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        1,
+        2,
+        3,
+        4
+      ]
+    }
+  }
+}

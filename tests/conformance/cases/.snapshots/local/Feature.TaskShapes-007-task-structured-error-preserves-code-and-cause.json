@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "007-task-structured-error-preserves-code-and-cause",
+  "title": "ExecutionError preserves its explicit code and message as task failure output",
+  "group": "Feature.TaskShapes",
+  "hash": "2136b4ba0b3d7283ea809588347b2357a5c1cdc5c2d256e65dbabf2c1efe1e00",
+  "definition": {
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:task-shapes:structured-error",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "customerId": "cust-9"
+  },
+  "result": {
+    "error": "CustomerNotFound",
+    "cause": "customer cust-9 missing"
+  }
+}

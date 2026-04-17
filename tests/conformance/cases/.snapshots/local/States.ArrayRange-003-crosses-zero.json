@@ -1,0 +1,29 @@
+{
+  "runner": "local",
+  "id": "003-crosses-zero",
+  "title": "crosses zero in a mixed-sign positive-step range",
+  "group": "States.ArrayRange",
+  "hash": "0d89fd22c12d070d4b76151c6dcdd0805599ff96ff0d1507e213eddceec7dc0e",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(-2, 2, 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        -2,
+        0,
+        2
+      ]
+    }
+  }
+}

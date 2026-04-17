@@ -1,0 +1,47 @@
+{
+  "runner": "aws",
+  "id": "006-array-default",
+  "title": "StringLessThanEquals does not match an array runtime value against a string comparator",
+  "group": "Choice.StringLessThanEquals",
+  "hash": "872dae7b8f900f05cb80507d296f8dae5f49f0fb35918f57f987702754767068",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringLessThanEquals": "bravo",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": [
+      "alpha"
+    ]
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

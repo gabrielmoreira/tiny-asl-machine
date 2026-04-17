@@ -1,0 +1,40 @@
+{
+  "runner": "local",
+  "id": "009-retry-attempts-are-tracked-per-matched-retrier",
+  "title": "retry attempts are tracked per matched retrier rather than globally across different retriers",
+  "group": "Feature.Retry",
+  "hash": "ac18a6c1ba9ded755e7df64e1e434b574bb66c4e3d66da858f98f44008e1541a",
+  "definition": {
+    "StartAt": "FlakyTask",
+    "States": {
+      "FlakyTask": {
+        "Type": "Task",
+        "Resource": "arn:local:retry:per-retrier-accounting",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "States.Timeout"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 1
+          },
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 1
+          }
+        ],
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "ok": true,
+      "attempts": 3
+    }
+  }
+}

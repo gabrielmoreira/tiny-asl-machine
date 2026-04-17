@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "019-encode-single-space",
+  "title": "encodes single space without trimming",
+  "group": "States.Base64Encode",
+  "hash": "582e9a89097f794b96588ed3332e5e12f0255d8c67ba930469a4cb17c88067fc",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode(' ')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "IA=="
+    }
+  }
+}

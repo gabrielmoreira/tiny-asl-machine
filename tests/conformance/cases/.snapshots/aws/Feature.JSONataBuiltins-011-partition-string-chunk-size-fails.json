@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "011-partition-string-chunk-size-fails",
+  "title": "$partition rejects a string chunk size",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "52e1a4a5a97b4a6a3f8535cc2101079ac1f8bc87eda3111ab7d88e890c43acbb",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $partition($states.input.arr, $states.input.size) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ],
+    "size": "2"
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$partition($states.input.arr, $states.input.size)' specified for the field 'Output' threw an error during evaluation. T0410: Argument 2 of function \"partition\" does not match function signature"
+  }
+}

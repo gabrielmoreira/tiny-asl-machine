@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "023-reject-blank-algorithm-string",
+  "title": "rejects blank algorithm string",
+  "group": "States.Hash",
+  "hash": "b7bfe53ab8a2898455058a2f8542a6b164bcfc2cde6572f3ba9a20b461e04f7b",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash('data', '')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.Hash('data', ''). Invalid arguments in States.Hash, caused by: Unsupported hash algorithm: "
+  }
+}

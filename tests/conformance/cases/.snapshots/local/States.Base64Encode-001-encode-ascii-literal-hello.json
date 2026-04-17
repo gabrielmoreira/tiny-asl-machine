@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "001-encode-ascii-literal-hello",
+  "title": "encodes ASCII literal hello",
+  "group": "States.Base64Encode",
+  "hash": "c00e1f0b0e57dfa43f76aefb05399f06e14ab6d98c2280b61bdb3147c04750ea",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode('hello')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "aGVsbG8="
+    }
+  }
+}

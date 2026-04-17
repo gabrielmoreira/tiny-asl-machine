@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "009-nested-primitive-array",
+  "title": "Search nested intrinsic-produced primitive array",
+  "group": "States.ArrayContains",
+  "hash": "238c31c1cceeabbe2ce0f9bae34fb1478b3085acbea41eb638baa1036f8aebc3",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains(States.Array(1, 2, 3), 2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": true
+    }
+  }
+}

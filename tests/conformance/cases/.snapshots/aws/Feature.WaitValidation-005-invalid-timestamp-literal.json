@@ -1,0 +1,22 @@
+{
+  "runner": "aws",
+  "id": "005-invalid-timestamp-literal",
+  "title": "rejects an invalid Timestamp literal string",
+  "group": "Feature.WaitValidation",
+  "hash": "175ff3f91609e34963cbd3ffed84d6defe64c5080b805381e8b769df47023344",
+  "definition": {
+    "StartAt": "WaitHere",
+    "States": {
+      "WaitHere": {
+        "Type": "Wait",
+        "Timestamp": "not-a-timestamp",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "String does not match RFC3339 timestamp"
+  }
+}

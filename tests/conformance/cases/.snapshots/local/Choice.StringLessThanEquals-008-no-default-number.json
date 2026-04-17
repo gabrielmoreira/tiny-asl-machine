@@ -1,0 +1,36 @@
+{
+  "runner": "local",
+  "id": "008-no-default-number",
+  "title": "StringLessThanEquals fails with States.Runtime without Default for a non-matching numeric runtime value",
+  "group": "Choice.StringLessThanEquals",
+  "hash": "de1adde1bae778317b81e6299720faf3ee6936b849810ef73b6d0e50702d29a5",
+  "definition": {
+    "StartAt": "Compare",
+    "States": {
+      "Compare": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringLessThanEquals": "bravo",
+            "Next": "Matched"
+          }
+        ]
+      },
+      "Matched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": 10
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Failed to transition out of the state. The state does not point to a next state."
+  }
+}

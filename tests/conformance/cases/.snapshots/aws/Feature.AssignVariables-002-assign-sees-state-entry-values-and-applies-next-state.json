@@ -1,0 +1,43 @@
+{
+  "runner": "aws",
+  "id": "002-assign-sees-state-entry-values-and-applies-next-state",
+  "title": "Assign expressions see state-entry variable values and new values appear only in the next state",
+  "group": "Feature.AssignVariables",
+  "hash": "9f942e727e23130bb2a6c67527aff29fa5ad6eaf1e7cccd5921694f2a76ef74b",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "SeedX",
+    "States": {
+      "SeedX": {
+        "Type": "Pass",
+        "Assign": {
+          "x": 5
+        },
+        "Next": "ReassignX"
+      },
+      "ReassignX": {
+        "Type": "Pass",
+        "Assign": {
+          "x": 42,
+          "newOrOld": "{% $x %}"
+        },
+        "Next": "ObserveAssignedValues"
+      },
+      "ObserveAssignedValues": {
+        "Type": "Pass",
+        "Output": {
+          "x": "{% $x %}",
+          "newOrOld": "{% $newOrOld %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "x": 42,
+      "newOrOld": 5
+    }
+  }
+}

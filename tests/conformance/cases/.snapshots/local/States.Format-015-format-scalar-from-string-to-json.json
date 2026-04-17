@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "015-format-scalar-from-string-to-json",
+  "title": "formats a scalar produced by nested StringToJson",
+  "group": "States.Format",
+  "hash": "d177561a0afe74f9f2d4cb0d2b5f1aae5b4452d80fbb5f40d17f4592c0f7b2dc",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Format('{}', States.StringToJson($.json))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "\"x\""
+  },
+  "result": {
+    "output": {
+      "value": "x"
+    }
+  }
+}

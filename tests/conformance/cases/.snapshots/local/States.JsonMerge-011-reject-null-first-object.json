@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "011-reject-null-first-object",
+  "title": "rejects null as the first object argument",
+  "group": "States.JsonMerge",
+  "hash": "9cbed9aa5a6487ea5773382c9b62c8ce7ff9dc012c87bc251f486f42e50927ed",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": null,
+    "b": {}
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.JsonMerge($.a, $.b, false). Invalid arguments in States.JsonMerge, caused by: JsonMerge expected a JSON object as first argument"
+  }
+}

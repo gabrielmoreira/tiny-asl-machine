@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "007-random-same-seed-produces-equal-values",
+  "title": "$random(seed) returns equal values for the same seed within the same state",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "f39f0c105904b9f1785ecb0dc46608a68540d2c8d9ad66dc001268747025e167",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": {
+          "r1": "{% $random(77) %}",
+          "r2": "{% $random(77) %}",
+          "equal": "{% $random(77) = $random(77) %}"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "r1": 0.7240700207191966,
+      "r2": 0.7240700207191966,
+      "equal": true
+    }
+  }
+}

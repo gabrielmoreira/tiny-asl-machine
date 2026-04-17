@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "007-malformed-runtime-timestamp",
+  "title": "catalogs malformed runtime timestamp input as a non-match",
+  "group": "Choice.TimestampLessThanEquals",
+  "hash": "6d2ffb4f7a1be26d2ec500f6baf3c150567e8ae1a133db012b4121069724b91d",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.timestamp",
+            "TimestampLessThanEquals": "2025-01-01T12:00:00.000Z",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "timestamp": "not-a-timestamp"
+  },
+  "result": {
+    "output": {
+      "selected": "defaulted"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "runner": "local",
+  "id": "012-object-extra-field",
+  "title": "Reject near-match object with extra field",
+  "group": "States.ArrayContains",
+  "hash": "09e65a5d668265be9ee1b57c2bcd57bdc467e94ea2db525abdc01631516929a5",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, $.target)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      {
+        "a": 1
+      }
+    ],
+    "target": {
+      "a": 1,
+      "extra": null
+    }
+  },
+  "result": {
+    "output": {
+      "value": false
+    }
+  }
+}

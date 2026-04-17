@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "016-reject-literal-string-argument",
+  "title": "rejects a literal string argument that is not a path or intrinsic result",
+  "group": "States.JsonToString",
+  "hash": "a2722e2ecdb375b0a63dc6db608cc42e581bf30ae214b2dc467d5994acf826ca",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString('x')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "\"x\""
+    }
+  }
+}

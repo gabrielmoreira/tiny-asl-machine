@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "006-equal-bounds-negative-step",
+  "title": "equal bounds with negative step also produce a singleton result",
+  "group": "States.ArrayRange",
+  "hash": "cea4efe5afe30cd3db76965f5ebde9d9780bb43127c8f2fb832225d765a3eb34",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayRange(3, 3, -1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": [
+        3
+      ]
+    }
+  }
+}

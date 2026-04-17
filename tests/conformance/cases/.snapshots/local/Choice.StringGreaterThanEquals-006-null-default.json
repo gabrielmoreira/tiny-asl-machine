@@ -1,0 +1,45 @@
+{
+  "runner": "local",
+  "id": "006-null-default",
+  "title": "StringGreaterThanEquals does not match a null runtime value against a string comparator",
+  "group": "Choice.StringGreaterThanEquals",
+  "hash": "b479faefa8238296b2973ec4f8aa2746105d8f3b6006557112cedbda2db3545d",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringGreaterThanEquals": "bravo",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "default"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "value": null
+  },
+  "result": {
+    "output": {
+      "selected": "default"
+    }
+  }
+}

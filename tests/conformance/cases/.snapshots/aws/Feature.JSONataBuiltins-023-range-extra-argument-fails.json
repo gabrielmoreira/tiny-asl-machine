@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "023-range-extra-argument-fails",
+  "title": "$range rejects an extra fourth argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "af800d8f4947fd4a60d85e98f81c6761a0ffaeea8d84a2ff99b94b35a98bcb6d",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $range(1, 5, 1, 99) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$range(1, 5, 1, 99)' specified for the field 'Output' threw an error during evaluation. T0410: Argument 4 of function \"range\" does not match function signature"
+  }
+}

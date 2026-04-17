@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "004-reject-identical-bounds",
+  "title": "fails when start and end bounds are identical",
+  "group": "States.MathRandom",
+  "hash": "00abe00fece7d0292a1823bb94fee9e812ec8ca5ce45dc407dad88e77573dbdf",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathRandom(1, 1). Invalid arguments in States.MathRandom"
+  }
+}

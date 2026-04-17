@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "014-reject-undefined-identifier-text",
+  "title": "rejects undefined identifier text",
+  "group": "States.StringToJson",
+  "hash": "625bfc2e86513074b7b746c28189125874db9e80685f2f838641756eab731db4",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": "undefined"
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.StringToJson($.json). Invalid arguments in States.StringToJson, caused by: \"undefined\" is not valid JSON"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "runner": "local",
+  "id": "002-overwrite-colliding-keys-right-object",
+  "title": "overwrites colliding keys with the right object",
+  "group": "States.JsonMerge",
+  "hash": "1d74ed614d2e402efaf7afe12ab9dfdde3cbd99672cb5a4e397cbaae72278121",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonMerge($.a, $.b, false)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": {
+      "x": 1,
+      "y": 2
+    },
+    "b": {
+      "y": 3,
+      "z": 4
+    }
+  },
+  "result": {
+    "output": {
+      "value": {
+        "x": 1,
+        "y": 3,
+        "z": 4
+      }
+    }
+  }
+}

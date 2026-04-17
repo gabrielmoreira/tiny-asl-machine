@@ -1,0 +1,42 @@
+{
+  "runner": "local",
+  "id": "003-missing-variable-runtime",
+  "title": "fails with States.Runtime when the selected variable is missing",
+  "group": "Choice.StringEquals",
+  "hash": "261e886fe6e2b6639144b3b07a3af11bea18220052170eb21fb52d894e3fe35d",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.value",
+            "StringEquals": "hello",
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "matched"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "defaulted"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid path '$.value': The choice state's condition path references an invalid value."
+  }
+}

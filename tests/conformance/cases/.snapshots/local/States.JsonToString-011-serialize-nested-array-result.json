@@ -1,0 +1,28 @@
+{
+  "runner": "local",
+  "id": "011-serialize-nested-array-result",
+  "title": "serializes a nested Array intrinsic result",
+  "group": "States.JsonToString",
+  "hash": "23b6f0f103e5383ef7b60cde78eb75f59034dec6df48995f1b508009bd028598",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString(States.Array($.a, $.b))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "a": 1,
+    "b": 2
+  },
+  "result": {
+    "output": {
+      "value": "[1,2]"
+    }
+  }
+}

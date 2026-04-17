@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "003-unreachable-state-fails-validation",
+  "title": "fails validation when a state is unreachable from StartAt",
+  "group": "Validation.Structure",
+  "hash": "c6dde212327a2ba763a03c4c8ab617663f2fb8bdd0ba0bc46411a3aee45775f7",
+  "definition": {
+    "StartAt": "First",
+    "States": {
+      "First": {
+        "Type": "Pass",
+        "End": true
+      },
+      "Unreachable": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "State \"Unreachable\" is not reachable."
+  }
+}

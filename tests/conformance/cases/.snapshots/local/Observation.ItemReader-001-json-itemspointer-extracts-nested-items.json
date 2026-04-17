@@ -1,0 +1,51 @@
+{
+  "runner": "local",
+  "id": "001-json-itemspointer-extracts-nested-items",
+  "title": "ItemReader JSON + ItemsPointer extracts the nested array items from S3 JSON input",
+  "group": "Observation.ItemReader",
+  "hash": "65d0991987dc8bcf95c08852ebf27db5ecb2cb4b6d17d3f5d825bb38cb143dd3",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:getObject",
+          "ReaderConfig": {
+            "InputType": "JSON",
+            "ItemsPointer": "/data/items"
+          },
+          "Parameters": {
+            "Bucket": "<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+            "Key": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/json/nested-items.json"
+          }
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": [
+      {
+        "id": "a"
+      },
+      {
+        "id": "b"
+      }
+    ]
+  }
+}

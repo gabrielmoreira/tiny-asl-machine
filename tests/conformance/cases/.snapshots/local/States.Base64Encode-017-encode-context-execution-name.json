@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "017-encode-context-execution-name",
+  "title": "encodes AWS execution name from context",
+  "group": "States.Base64Encode",
+  "hash": "333e30cf9f462d9bdd09d8d93c805e3b5477a9473011f0937318a3cdcb4cc626",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode($$.Execution.Name)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": "ZXhlY3V0aW9u"
+    }
+  }
+}

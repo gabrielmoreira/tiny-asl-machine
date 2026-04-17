@@ -1,0 +1,29 @@
+{
+  "runner": "local",
+  "id": "009-parse-json-with-surrounding-whitespace",
+  "title": "parses surrounding whitespace around a JSON document",
+  "group": "States.StringToJson",
+  "hash": "112b772cdba5992ed3c3c0b149e785cf7f47aabec967b6e66d6ba05ab1b165c8",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.StringToJson($.json)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "json": " {\"a\":1} "
+  },
+  "result": {
+    "output": {
+      "value": {
+        "a": 1
+      }
+    }
+  }
+}

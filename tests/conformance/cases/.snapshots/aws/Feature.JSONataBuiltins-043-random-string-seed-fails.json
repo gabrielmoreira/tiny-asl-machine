@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "043-random-string-seed-fails",
+  "title": "$random rejects a string seed",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "ecd6de318b718373c4cd08679817d3905f62e2d71cb31ef4a725e0262772cd87",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $random(\"seed\") %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$random(\"seed\")' specified for the field 'Output' threw an error during evaluation. T0410: Argument 1 of function \"random\" does not match function signature"
+  }
+}

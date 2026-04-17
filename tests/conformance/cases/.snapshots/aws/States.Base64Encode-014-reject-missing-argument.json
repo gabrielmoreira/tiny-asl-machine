@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "014-reject-missing-argument",
+  "title": "rejects missing argument",
+  "group": "States.Base64Encode",
+  "hash": "7d52f1c7c6c2afcf5da13293617761d08e02a2d08c4281d37166af888a5d0938",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode()"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.Base64Encode(). Invalid arguments in States.Base64Encode"
+  }
+}

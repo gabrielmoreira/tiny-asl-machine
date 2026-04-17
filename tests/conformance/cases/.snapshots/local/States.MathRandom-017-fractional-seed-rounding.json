@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "017-fractional-seed-rounding",
+  "title": "documents fractional seed rounding behavior",
+  "group": "States.MathRandom",
+  "hash": "5e5bff698a215f72841e82ccb521711bbc77057de588fc4d04d11858ae2a5a41",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1, 10, 2.6)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 3
+    }
+  }
+}

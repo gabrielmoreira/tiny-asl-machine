@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "018-range-rounded-zero-step-fails",
+  "title": "$range rejects a step that effectively rounds toward zero",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "109f6fc3287df4c40511fa5e2b354b1ef5f6e98258169026e3d8b3314ef7f8b4",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $range(1, 10, 0.49) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "An error occurred while executing the state 'Do' (entered at the event id #2). The JSONata expression '$range(1, 10, 0.49)' specified for the field 'Output' returned nothing (undefined)."
+  }
+}

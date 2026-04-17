@@ -1,0 +1,23 @@
+{
+  "runner": "local",
+  "id": "046-random-extra-argument-fails",
+  "title": "$random rejects an extra second argument",
+  "group": "Feature.JSONataBuiltins",
+  "hash": "a16328507ecd634f8f7e0b889c0bc2312314d857c89e706003d8558fbcbf4b19",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $random(77, 88) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $random(77, 88). [object Object]"
+  }
+}

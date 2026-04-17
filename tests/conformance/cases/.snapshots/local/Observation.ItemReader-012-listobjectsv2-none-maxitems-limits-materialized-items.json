@@ -1,0 +1,53 @@
+{
+  "runner": "local",
+  "id": "012-listobjectsv2-none-maxitems-limits-materialized-items",
+  "title": "ItemReader ListObjectsV2 with Transformation NONE respects MaxItems",
+  "group": "Observation.ItemReader",
+  "hash": "39c15b8fe841bed45c623e1dcb4fceae046dc1e06f357b607620adc99de92411",
+  "definition": {
+    "StartAt": "ReadItems",
+    "States": {
+      "ReadItems": {
+        "Type": "Map",
+        "ItemReader": {
+          "Resource": "arn:aws:states:::s3:listObjectsV2",
+          "ReaderConfig": {
+            "Transformation": "NONE",
+            "MaxItems": 1
+          },
+          "Parameters": {
+            "Bucket": "<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+            "Prefix": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/list-none/"
+          }
+        },
+        "ItemSelector": {
+          "Source.$": "$$.Map.Item.Source",
+          "Key.$": "$$.Map.Item.Value.Key"
+        },
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "Echo",
+          "States": {
+            "Echo": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": [
+      {
+        "Source": "s3://<REDACTED_VAR:HARNESS_ARTIFACT_BUCKET>",
+        "Key": "itemreader-fixtures/<REDACTED_VAR:WORKSPACE_HASH>/list-none/a.json"
+      }
+    ]
+  }
+}

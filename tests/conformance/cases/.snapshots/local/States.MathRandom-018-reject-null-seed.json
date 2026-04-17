@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "018-reject-null-seed",
+  "title": "rejects a null seed",
+  "group": "States.MathRandom",
+  "hash": "2bd807a9a0d415f617ed280f02803be916fd9fe3389e7c970c90e44ed600b5d7",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1, 10, null)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.MathRandom(1, 10, null). Invalid arguments in States.MathRandom, caused by: States.MathRandom expected a number, got object"
+  }
+}

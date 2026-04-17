@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "009-hash-japanese-text-sha-256",
+  "title": "hashes Japanese text with SHA-256",
+  "group": "States.Hash",
+  "hash": "c0c1363fb783994fbf699514a3a11d621b26d4aa675d9c022e8181bc84b89fca",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash($.s, 'SHA-256')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "こんにちは"
+  },
+  "result": {
+    "output": {
+      "value": "125aeadf27b0459b8760c13a3d80912dfa8a81a68261906f60d87f4a0268646c"
+    }
+  }
+}

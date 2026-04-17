@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "003-serialize-string-primitive",
+  "title": "serializes a string primitive",
+  "group": "States.JsonToString",
+  "hash": "0b618a010a8ee26fc6d384c2f5baa09ddfa5fa3b8decc62a12d38d0dd9b12dbf",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.JsonToString($.str)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "hello"
+  },
+  "result": {
+    "output": {
+      "value": "\"hello\""
+    }
+  }
+}

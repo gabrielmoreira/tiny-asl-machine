@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "001-add-positive-integers",
+  "title": "adds two positive integers",
+  "group": "States.MathAdd",
+  "hash": "71aa54ab0e6afc193d5048fe4d3bed1e6e08d72a1cfe2ae2083a7fe7351ce81a",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(5, 3)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 8
+    }
+  }
+}

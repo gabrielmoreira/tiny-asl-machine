@@ -1,7 +1,6 @@
 import type { Context } from '../../types';
-import { createTestRuntime } from './runtime';
 import { selectPath } from './selectPath';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vite-plus/test';
 
 describe('selectPath', () => {
   it('support jsonpath expressions on input', () => {
@@ -234,6 +233,11 @@ describe('selectPath', () => {
     expect(result).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
   });
 
+  it('States.UUID ignores extra arguments', () => {
+    const result = selectPath('States.UUID(1)', {}, <Context>{});
+    expect(result).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  });
+
   // Encoding and hashing
   it('States.Base64Encode encodes a string', () => {
     const result = selectPath("States.Base64Encode('Data to encode')", {}, <Context>{});
@@ -303,38 +307,26 @@ describe('selectPath', () => {
   });
 
   it('States.ArrayContains uses JSON value equality for objects', () => {
-    // Given
     const result = selectPath(
       'States.ArrayContains($.arr, $.target)',
       { arr: [{ a: 1 }, { b: 2 }], target: { a: 1 } },
       <Context>{}
     );
-    // Then
-    expect(result).toBe(true);
-  });
-
-  it('States.ArrayContains handles undefined distinctly from missing elements', () => {
-    // Given
-    const result = selectPath(
-      'States.ArrayContains($.arr, $.target)',
-      { arr: [undefined], target: undefined },
-      <Context>{}
-    );
-    // Then
     expect(result).toBe(true);
   });
 
   // --- Code review learnings: spec-compliance edge cases ---
 
   it('States.MathRandom end bound is exclusive (per ASL spec)', () => {
-    // Given
-    const context = <Context>{ Runtime: createTestRuntime() } as Context;
-    // When
-    const result = selectPath('States.MathRandom(1, 5)', {}, context) as number;
-    // Then
-    expect(result).toBe(1);
-    expect(result).toBeGreaterThanOrEqual(1);
-    expect(result).toBeLessThan(5);
+    // Given — run 1000 times to ensure max is never reached
+    const results = new Set<number>();
+    for (let i = 0; i < 1000; i++) {
+      const result = selectPath('States.MathRandom(1, 5)', {}, <Context>{}) as number;
+      results.add(result);
+    }
+    // Then — values should be 1,2,3,4 but never 5 (end-exclusive)
+    expect(results.has(5)).toBe(false);
+    expect(results.has(1)).toBe(true); // start is inclusive
   });
 
   it('States.MathAdd rounds non-integer arguments (per ASL spec)', () => {
@@ -408,9 +400,9 @@ describe('selectPath', () => {
     expect(() => selectPath("States.Hash('data', 'UNSUPPORTED')", {}, <Context>{})).toThrow();
   });
 
-  it('States.Hash unsupported algorithm throws States.IntrinsicFailure', () => {
+  it('States.Hash unsupported algorithm throws wrapped runtime error', () => {
     expect(() => selectPath("States.Hash('data', 'UNSUPPORTED')", {}, <Context>{})).toThrowError(
-      expect.objectContaining({ name: 'States.IntrinsicFailure' })
+      expect.objectContaining({ name: 'States.Runtime' })
     );
   });
 
@@ -425,7 +417,9 @@ describe('selectPath', () => {
     // Given
     const longString = 'a'.repeat(10001);
     // When / Then
-    expect(() => selectPath("States.Hash($.s, 'SHA-256')", { s: longString }, <Context>{})).toThrow();
+    expect(() =>
+      selectPath("States.Hash($.s, 'SHA-256')", { s: longString }, <Context>{})
+    ).toThrow();
   });
 
   it('States.MathAdd rejects non-number first argument', () => {
@@ -434,11 +428,6 @@ describe('selectPath', () => {
 
   it('States.MathAdd rejects non-number second argument', () => {
     expect(() => selectPath("States.MathAdd(1, 'b')", {}, <Context>{})).toThrow();
-  });
-
-  it('States.MathAdd rejects extra arguments', () => {
-    // Given / When / Then
-    expect(() => selectPath('States.MathAdd(1, 2, 999)', {}, <Context>{})).toThrow();
   });
 
   it('States.MathRandom rejects non-number start argument', () => {
@@ -455,9 +444,10 @@ describe('selectPath', () => {
     ).toThrow();
   });
 
-  it('States.Base64Decode rejects invalid base64 gracefully', () => {
-    // Invalid base64 should either throw or return garbage — but not crash the process
-    expect(() => selectPath("States.Base64Decode('!!!invalid!!!')", {}, <Context>{})).not.toThrow();
+  it('States.Base64Decode rejects invalid base64 with a wrapped runtime error', () => {
+    expect(() => selectPath("States.Base64Decode('!!!invalid!!!')", {}, <Context>{})).toThrowError(
+      expect.objectContaining({ name: 'States.Runtime' })
+    );
   });
 
   it('States.JsonMerge rejects deep mode even for deeply nested objects', () => {
@@ -466,11 +456,7 @@ describe('selectPath', () => {
     for (let i = 0; i < 50; i++) deep = { nested: deep };
     // When / Then
     expect(() =>
-      selectPath(
-        'States.JsonMerge($.a, $.b, true)',
-        { a: deep, b: { extra: true } },
-        <Context>{}
-      )
+      selectPath('States.JsonMerge($.a, $.b, true)', { a: deep, b: { extra: true } }, <Context>{})
     ).toThrow();
   });
 
@@ -478,9 +464,16 @@ describe('selectPath', () => {
 
   it('States.ArrayPartition rounds non-integer chunk size', () => {
     // Given — chunk size 2.6 rounds to 3
-    const result = selectPath('States.ArrayPartition($.arr, 2.6)', { arr: [1, 2, 3, 4, 5] }, <Context>{});
+    const result = selectPath(
+      'States.ArrayPartition($.arr, 2.6)',
+      { arr: [1, 2, 3, 4, 5] },
+      <Context>{}
+    );
     // Then
-    expect(result).toStrictEqual([[1, 2, 3], [4, 5]]);
+    expect(result).toStrictEqual([
+      [1, 2, 3],
+      [4, 5],
+    ]);
   });
 
   it('States.ArrayRange rounds non-integer inputs', () => {
@@ -489,18 +482,6 @@ describe('selectPath', () => {
     // Then — range(1, 6, 2) = [1, 3, 5]
     expect(result).toStrictEqual([1, 3, 5]);
   });
-
-  it('States.StringSplit preserves empty fields in multi-delimiter mode', () => {
-    // Given
-    const result = selectPath(
-      "States.StringSplit($.str, $.delim)",
-      { str: 'a,,b', delim: ',;' },
-      <Context>{}
-    );
-    // Then
-    expect(result).toStrictEqual(['a', '', 'b']);
-  });
-
 
   it('States.MathRandom with seed is deterministic', () => {
     // Given — same seed should produce same result

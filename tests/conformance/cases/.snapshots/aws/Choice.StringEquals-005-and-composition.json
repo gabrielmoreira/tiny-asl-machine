@@ -1,0 +1,54 @@
+{
+  "runner": "aws",
+  "id": "005-and-composition",
+  "title": "participates in an And composition with another string rule",
+  "group": "Choice.StringEquals",
+  "hash": "c91ed95b2630365cd9c2ff18e4b2addff22061c8941d412e90d662e6d8765cb8",
+  "definition": {
+    "StartAt": "Check",
+    "States": {
+      "Check": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "And": [
+              {
+                "Variable": "$.status",
+                "StringEquals": "READY"
+              },
+              {
+                "Variable": "$.region",
+                "StringEquals": "us-east-1"
+              }
+            ],
+            "Next": "Matched0"
+          }
+        ],
+        "Default": "NotMatched"
+      },
+      "Matched0": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "ready-in-region"
+        },
+        "End": true
+      },
+      "NotMatched": {
+        "Type": "Pass",
+        "Result": {
+          "selected": "fallback"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "status": "READY",
+    "region": "us-east-1"
+  },
+  "result": {
+    "output": {
+      "selected": "ready-in-region"
+    }
+  }
+}

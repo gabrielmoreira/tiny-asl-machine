@@ -1,0 +1,26 @@
+{
+  "runner": "local",
+  "id": "002-arithmetic-type-error-throws-query-evaluation-error",
+  "title": "adding a string and a number in JSONata throws States.QueryEvaluationError",
+  "group": "Feature.JSONataErrors",
+  "hash": "f78198bddc73417631a8057a870ae70d2d4ad88b166bb37e47f122eb5d814a2e",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Do",
+    "States": {
+      "Do": {
+        "Type": "Pass",
+        "Output": "{% $states.input.str + $states.input.num %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "str": "hello",
+    "num": 5
+  },
+  "result": {
+    "error": "States.QueryEvaluationError",
+    "cause": "Failed to evaluate JSONata expression: $states.input.str + $states.input.num. [object Object]"
+  }
+}

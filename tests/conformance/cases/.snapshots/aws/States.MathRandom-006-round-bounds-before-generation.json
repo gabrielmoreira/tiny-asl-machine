@@ -1,0 +1,25 @@
+{
+  "runner": "aws",
+  "id": "006-round-bounds-before-generation",
+  "title": "rounds both bounds before generation",
+  "group": "States.MathRandom",
+  "hash": "f9772a219ccde8ba1a51381810e6ae580deb11a2c6b0d37943abda15aa1ae9cb",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathRandom(1.4, 5.6)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": 4
+    }
+  }
+}

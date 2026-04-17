@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "022-decode-format-wrapped-base64",
+  "title": "decodes Base64 text wrapped by States.Format",
+  "group": "States.Base64Decode",
+  "hash": "65a61f7feb00dd0a25e72fe2c29d828e13ec33a215feb38ade9c3c053fe7d3e5",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Decode(States.Format('{}', $.b64))"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "b64": "aGVsbG8="
+  },
+  "result": {
+    "output": {
+      "value": "hello"
+    }
+  }
+}

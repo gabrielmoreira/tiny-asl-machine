@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "014-fractional-index",
+  "title": "Reject fractional index",
+  "group": "States.ArrayGetItem",
+  "hash": "79a2357b5f8070e1b7b8a96fafcfd0973c1b9ab0ea077434744a50addb50ec66",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($.arr, 1.2)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      10,
+      20,
+      30
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayGetItem($.arr, 1.2). Invalid arguments in States.ArrayGetItem, caused by: ArrayGetItem index 1.2 out of bounds for array of length 3"
+  }
+}

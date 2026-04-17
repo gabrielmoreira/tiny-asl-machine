@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "010-hash-string-with-nul-md5",
+  "title": "hashes string containing NUL with MD5",
+  "group": "States.Hash",
+  "hash": "c6c3b2c80b32a2a19d9492243c21bf03586951f2ccd9bc9dc803cca0dc76def7",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Hash($.s, 'MD5')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "abc\u0000def"
+  },
+  "result": {
+    "output": {
+      "value": "a5e4d5963ae44c1f4bfb37b1a3d55a3c"
+    }
+  }
+}

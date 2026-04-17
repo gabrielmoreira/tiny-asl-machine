@@ -1,0 +1,32 @@
+{
+  "runner": "local",
+  "id": "018-null-undefined-like",
+  "title": "Document mixed null-and-undefined-like array values",
+  "group": "States.ArrayUnique",
+  "hash": "5f09aec6c916e6392c256104198054577d597b76859eb7a55fa9987c887491d6",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      null,
+      null
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        null
+      ]
+    }
+  }
+}

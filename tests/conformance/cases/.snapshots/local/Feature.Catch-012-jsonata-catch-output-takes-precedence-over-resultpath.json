@@ -1,0 +1,41 @@
+{
+  "runner": "local",
+  "id": "012-jsonata-catch-output-takes-precedence-over-resultpath",
+  "title": "JSONata Catch Output takes precedence over an invalid ResultPath field if both are present",
+  "group": "Feature.Catch",
+  "hash": "a280832249c4262459ab2bbf0cd2437cd3aa78115ab25ca55696ecb6ee7bd9b4",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "Invoke",
+    "States": {
+      "Invoke": {
+        "Type": "Task",
+        "Resource": "local:feature:catch:inject-error",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "ValidationError"
+            ],
+            "Output": "{% {\"from\": \"output\", \"error\": $states.errorOutput.Error} %}",
+            "ResultPath": "not-a-path",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-jsonata-catch-precedence"
+  },
+  "result": {
+    "output": {
+      "from": "output",
+      "error": "ValidationError"
+    }
+  }
+}

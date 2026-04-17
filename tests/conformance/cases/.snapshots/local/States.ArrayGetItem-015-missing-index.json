@@ -1,0 +1,30 @@
+{
+  "runner": "local",
+  "id": "015-missing-index",
+  "title": "Reject missing index argument",
+  "group": "States.ArrayGetItem",
+  "hash": "1fe9a5de0716a6e819ad2270aa927b3ed2b6e0db7f0f90196ad939fc09b4d216",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      10,
+      20,
+      30
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "Invalid intrinsic invocation: States.ArrayGetItem expects 2 argument(s) but received 1."
+  }
+}

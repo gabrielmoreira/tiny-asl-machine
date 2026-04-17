@@ -1,0 +1,24 @@
+{
+  "runner": "aws",
+  "id": "017-reject-string-first-operand",
+  "title": "rejects a string first operand",
+  "group": "States.MathAdd",
+  "hash": "de0fd7dfca58dae89c04fceff5d9b197acfaca5ea74ddb1371a0e8daae8e08bb",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd('a', 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.MathAdd('a', 1). Invalid arguments in States.MathAdd"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "runner": "aws",
+  "id": "002-middle-string-item",
+  "title": "Return middle item from string array",
+  "group": "States.ArrayGetItem",
+  "hash": "c3b052597418e1531dd6333a0de56bcf500580a9cfb91788a6fdb7acefbe6001",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayGetItem($.arr, 1)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  "result": {
+    "output": {
+      "value": "b"
+    }
+  }
+}

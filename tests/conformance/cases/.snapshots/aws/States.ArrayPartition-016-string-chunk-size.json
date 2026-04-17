@@ -1,0 +1,30 @@
+{
+  "runner": "aws",
+  "id": "016-string-chunk-size",
+  "title": "rejects a string chunk size",
+  "group": "States.ArrayPartition",
+  "hash": "a2235879d7afe730fe120b459422eaf925d8830761fc84db3019391d99f5bc03",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, '2')"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": {
+    "error": "States.Runtime",
+    "cause": "An error occurred while executing the state 'Evaluate' (entered at the event id #2). There was an error while evaluating the intrinsic function: States.ArrayPartition($.arr, '2'). Invalid arguments in States.ArrayPartition"
+  }
+}

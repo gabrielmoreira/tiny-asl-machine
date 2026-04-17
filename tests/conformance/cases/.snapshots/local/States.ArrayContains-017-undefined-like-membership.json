@@ -1,0 +1,24 @@
+{
+  "runner": "local",
+  "id": "017-undefined-like-membership",
+  "title": "Document undefined-like membership scenario",
+  "group": "States.ArrayContains",
+  "hash": "318579e6ef03764307f85d56311585be393a3e1a5b4272556c1115a93dd51cfd",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayContains($.arr, $.target)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "States.Runtime",
+    "cause": "There was an error while evaluating the intrinsic function: States.ArrayContains($.arr, $.target). Invalid arguments in States.ArrayContains, caused by: States.ArrayContains expected an array, got undefined"
+  }
+}

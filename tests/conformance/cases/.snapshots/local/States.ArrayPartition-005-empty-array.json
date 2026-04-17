@@ -1,0 +1,27 @@
+{
+  "runner": "local",
+  "id": "005-empty-array",
+  "title": "empty array stays empty",
+  "group": "States.ArrayPartition",
+  "hash": "f293f7e0bc7165fc291b0f9fb896614cf422c4ecc1a86f48cf1888bd113c67e1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayPartition($.arr, 3)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": []
+  },
+  "result": {
+    "output": {
+      "value": []
+    }
+  }
+}

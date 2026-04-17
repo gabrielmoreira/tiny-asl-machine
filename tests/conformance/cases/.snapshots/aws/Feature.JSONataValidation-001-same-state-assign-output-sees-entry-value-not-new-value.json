@@ -1,0 +1,32 @@
+{
+  "runner": "aws",
+  "id": "001-same-state-assign-output-sees-entry-value-not-new-value",
+  "title": "same-state JSONata Output sees the state-entry variable value, not the freshly assigned one",
+  "group": "Feature.JSONataValidation",
+  "hash": "ebad8d6c551c724badb98a65d497fb7ac75d8ab730b2ca90778c3078749b6a6b",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "SeedOuter",
+    "States": {
+      "SeedOuter": {
+        "Type": "Pass",
+        "Assign": {
+          "x": "outer"
+        },
+        "Next": "ReassignAndObserve"
+      },
+      "ReassignAndObserve": {
+        "Type": "Pass",
+        "Assign": {
+          "x": "fresh"
+        },
+        "Output": "{% $x %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": "outer"
+  }
+}

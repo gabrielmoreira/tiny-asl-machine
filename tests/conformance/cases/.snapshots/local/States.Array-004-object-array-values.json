@@ -1,0 +1,41 @@
+{
+  "runner": "local",
+  "id": "004-object-array-values",
+  "title": "Preserve object and array values from paths",
+  "group": "States.Array",
+  "hash": "165711362c5ab173bc6e56fedcae0f08f98c0224fddaf708e3ce87fb573d44b1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Array($.obj, $.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "obj": {
+      "k": 1
+    },
+    "arr": [
+      1,
+      2
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        {
+          "k": 1
+        },
+        [
+          1,
+          2
+        ]
+      ]
+    }
+  }
+}

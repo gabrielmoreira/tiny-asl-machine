@@ -1,0 +1,28 @@
+{
+  "runner": "aws",
+  "id": "003-state-level-querylanguage-overrides-machine-default",
+  "title": "allows a Wait state to override the machine query language to JSONata",
+  "group": "Feature.WaitJsonata",
+  "hash": "ba1047819df89b269257055046c54ec974de68d527683340a807f88d43faf432",
+  "definition": {
+    "QueryLanguage": "JSONPath",
+    "StartAt": "JsonataWait",
+    "States": {
+      "JsonataWait": {
+        "Type": "Wait",
+        "QueryLanguage": "JSONata",
+        "Seconds": "{% 0 %}",
+        "Output": {
+          "mode": "jsonata"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "mode": "jsonata"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "runner": "local",
+  "id": "001-reshapes-raw-result",
+  "title": "ResultSelector reshapes the raw state result into a new object",
+  "group": "Feature.ResultSelector",
+  "hash": "80eb9f584a95759ae1b1504bfd685315d0f764c8d33d6e45a5c24135c01d13b9",
+  "definition": {
+    "StartAt": "ShapeResult",
+    "States": {
+      "ShapeResult": {
+        "Type": "Task",
+        "Resource": "arn:local:result-selector:shape-result",
+        "ResultSelector": {
+          "job": {
+            "id.$": "$.identity.id",
+            "durationMs.$": "$.metrics.durationMs"
+          },
+          "firstFlag.$": "$.flags[0]",
+          "source": "result-selector"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-1"
+  },
+  "result": {
+    "output": {
+      "job": {
+        "id": "job-7",
+        "durationMs": 12
+      },
+      "source": "result-selector",
+      "firstFlag": "hot"
+    }
+  }
+}

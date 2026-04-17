@@ -1,0 +1,44 @@
+{
+  "runner": "local",
+  "id": "010-nested-objects",
+  "title": "Deduplicate nested objects with the same structure",
+  "group": "States.ArrayUnique",
+  "hash": "8a99a4724b86f7b27a24e0815c31d50d5b71e99a40c0c9d8bcd4d78881b0bfe1",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.ArrayUnique($.arr)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "arr": [
+      {
+        "nested": {
+          "x": 1
+        }
+      },
+      {
+        "nested": {
+          "x": 1
+        }
+      }
+    ]
+  },
+  "result": {
+    "output": {
+      "value": [
+        {
+          "nested": {
+            "x": 1
+          }
+        }
+      ]
+    }
+  }
+}

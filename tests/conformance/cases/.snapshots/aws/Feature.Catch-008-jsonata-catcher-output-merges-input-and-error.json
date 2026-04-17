@@ -1,0 +1,52 @@
+{
+  "runner": "aws",
+  "id": "008-jsonata-catcher-output-merges-input-and-error",
+  "title": "JSONata catcher Output can merge $states.input with $states.errorOutput",
+  "group": "Feature.Catch",
+  "hash": "6b1608a9234282f48bdd1a5248526f3220c845e5511d2af0af0d02df61c5c26d",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "InvokeMissingService",
+    "States": {
+      "InvokeMissingService": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:s3:headBucket",
+        "Arguments": {
+          "Bucket": "tiny-asl-machine-observation-bucket-should-not-exist"
+        },
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Output": "{% $merge([$states.input, {\"error-info\": $states.errorOutput}]) %}",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Output": "{% $merge([$states.input, {\"recovery\": {\"recovered\": true}}]) %}",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "req-jsonata-catch",
+    "keep": "value"
+  },
+  "result": {
+    "output": {
+      "requestId": "req-jsonata-catch",
+      "keep": "value",
+      "error-info": {
+        "Error": "States.TaskFailed",
+        "Cause": "The principal states.amazonaws.com is not authorized to assume the provided role. (role: arn:aws:iam::<REDACTED_VAR:ACCOUNT_ID>:role/tiny-asl-machine-aws-<REDACTED_VAR:WORKSPACE_HASH>-sfn-role)"
+      },
+      "recovery": {
+        "recovered": true
+      }
+    }
+  }
+}

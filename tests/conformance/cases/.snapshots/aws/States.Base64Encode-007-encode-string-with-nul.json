@@ -1,0 +1,27 @@
+{
+  "runner": "aws",
+  "id": "007-encode-string-with-nul",
+  "title": "encodes string containing NUL",
+  "group": "States.Base64Encode",
+  "hash": "51af25bce9912fa1fb6901d1efc4bda2eb49487d42abe2b13d7577dd9b5d0170",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.Base64Encode($.s)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "s": "abc\u0000def"
+  },
+  "result": {
+    "output": {
+      "value": "YWJjAGRlZg=="
+    }
+  }
+}

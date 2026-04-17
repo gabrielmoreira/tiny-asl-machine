@@ -1,0 +1,75 @@
+{
+  "runner": "aws",
+  "id": "002-parent-catch-recovers-branch-failure",
+  "title": "parent parallel Catch recovers a branch failure",
+  "group": "Feature.ParallelErrors",
+  "hash": "405899f8992960c08b1af2cd8090134c892b0fb41b10f0c826ca530f1a2be303",
+  "definition": {
+    "StartAt": "FanOut",
+    "States": {
+      "FanOut": {
+        "Type": "Parallel",
+        "Branches": [
+          {
+            "StartAt": "HealthyBranch",
+            "States": {
+              "HealthyBranch": {
+                "Type": "Pass",
+                "Result": {
+                  "branch": "healthy",
+                  "status": "ok"
+                },
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "FailingBranch",
+            "States": {
+              "FailingBranch": {
+                "Type": "Fail",
+                "Error": "BranchFailure",
+                "Cause": "parallel branch exploded"
+              }
+            }
+          }
+        ],
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "BranchFailure"
+            ],
+            "ResultPath": "$.parallelError",
+            "Next": "Recovered"
+          }
+        ],
+        "End": true
+      },
+      "Recovered": {
+        "Type": "Pass",
+        "Result": {
+          "recoveredBy": "parallel-catch"
+        },
+        "ResultPath": "$.recovery",
+        "End": true
+      }
+    }
+  },
+  "input": {
+    "requestId": "parallel-error-2",
+    "original": true
+  },
+  "result": {
+    "output": {
+      "requestId": "parallel-error-2",
+      "original": true,
+      "parallelError": {
+        "Error": "BranchFailure",
+        "Cause": "parallel branch exploded"
+      },
+      "recovery": {
+        "recoveredBy": "parallel-catch"
+      }
+    }
+  }
+}

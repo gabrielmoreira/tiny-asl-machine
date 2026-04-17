@@ -1,0 +1,25 @@
+{
+  "runner": "local",
+  "id": "003-add-negative-integers",
+  "title": "adds two negative integers",
+  "group": "States.MathAdd",
+  "hash": "fa7261b4f88d9344b14eb5882322ea314c1ad13cc7ea6900884c39d574811eac",
+  "definition": {
+    "StartAt": "Evaluate",
+    "States": {
+      "Evaluate": {
+        "Type": "Pass",
+        "Parameters": {
+          "value.$": "States.MathAdd(-5, -3)"
+        },
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "output": {
+      "value": -8
+    }
+  }
+}

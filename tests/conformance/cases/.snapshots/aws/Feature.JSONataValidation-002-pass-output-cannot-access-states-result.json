@@ -1,0 +1,23 @@
+{
+  "runner": "aws",
+  "id": "002-pass-output-cannot-access-states-result",
+  "title": "Pass state Output cannot access $states.result",
+  "group": "Feature.JSONataValidation",
+  "hash": "bc0d71764c3da0dd407d756108e3eb12c849d969b4e564c5e46946e4b1cd83a4",
+  "definition": {
+    "QueryLanguage": "JSONata",
+    "StartAt": "InvalidPass",
+    "States": {
+      "InvalidPass": {
+        "Type": "Pass",
+        "Output": "{% $states.result %}",
+        "End": true
+      }
+    }
+  },
+  "input": {},
+  "result": {
+    "error": "VALIDATION_FAILED",
+    "cause": "Field '$states.result' does not exist."
+  }
+}
