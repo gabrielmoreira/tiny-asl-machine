@@ -75,7 +75,7 @@
     "@aws-sdk/client-sts": "^3.1031.0",
     "@types/debug": "^4.1.12",
     "@types/jsonpath": "^0.2.4",
-    "@types/node": "^25.6.0",
+    "@types/node": "^26.6.1",
     "@types/yazl": "^3.3.0",
     "@typescript/native-preview": "7.0.0-dev.20260503.1",
     "liqe": "^3.8.5",
