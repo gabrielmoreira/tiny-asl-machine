@@ -78,8 +78,9 @@ function jsonFile(path) {
 function writeJson(path, value) {
   writeFileSync(path, JSON.stringify(value, null, 2) + '\n');
 }
+// Native realpath expands Windows short-name aliases; relative also respects filesystem case rules.
 function isWithin(parent, path) {
-  const difference = relative(realpathSync(parent), realpathSync(path));
+  const difference = relative(realpathSync.native(parent), realpathSync.native(path));
   return (
     difference === '' ||
     (!isAbsolute(difference) && difference !== '..' && !difference.startsWith('..' + sep))
@@ -392,14 +393,14 @@ function prepareConsumers() {
 const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
 const { realpathSync } = require('node:fs');
-const { join } = require('node:path');
+const { join, relative } = require('node:path');
 const fixture = require('./fixtures.json');
 module.exports = async function check(api, mode, entrypoint) {
   for (const name of ['run', 'runState', 'createDefaultRuntime', 'createTestRuntime']) {
     assert.equal(typeof api[name], 'function', mode + ': missing public API ' + name);
   }
   const expectedEntry = join(__dirname, 'node_modules/tiny-asl-machine/lib', mode === 'require' ? 'index.js' : 'index.mjs');
-  assert.equal(realpathSync(entrypoint), realpathSync(expectedEntry), mode + ': wrong export target');
+  assert.equal(relative(realpathSync.native(entrypoint), realpathSync.native(expectedEntry)), '', mode + ': wrong export target');
   const runtime = api.createTestRuntime();
   assert.equal(runtime.now(), '2025-01-01T00:00:00.000Z');
   await runtime.sleep(1250);
@@ -566,7 +567,7 @@ async function main(selection) {
           );
         }
       }
-      compilerRoot = realpathSync(join(sourceRoot, 'node_modules/typescript'));
+      compilerRoot = realpathSync.native(join(sourceRoot, 'node_modules/typescript'));
       const compilerManifest = jsonFile(join(compilerRoot, 'package.json'));
       assert.match(
         compilerManifest.version,
@@ -586,7 +587,7 @@ async function main(selection) {
         'The compiler manifest must identify the matching native platform package'
       );
       const compilerRequire = createRequire(join(compilerRoot, 'package.json'));
-      const nativeManifestPath = realpathSync(
+      const nativeManifestPath = realpathSync.native(
         compilerRequire.resolve(nativeCompilerName + '/package.json')
       );
       assert.equal(
@@ -760,7 +761,9 @@ async function main(selection) {
 
   if (
     !(await stage('manifest', async () => {
-      const installedRoot = realpathSync(join(consumerRoot, 'node_modules/tiny-asl-machine'));
+      const installedRoot = realpathSync.native(
+        join(consumerRoot, 'node_modules/tiny-asl-machine')
+      );
       assert.ok(
         isWithin(consumerRoot, installedRoot),
         'Consumer must use an installed package, not a source link'
@@ -858,11 +861,11 @@ async function main(selection) {
         .map(line => line.trim())
         .filter(path => isAbsolute(path) && existsSync(path));
       assert.ok(files.length > 0, 'Compiler did not report any checked files');
-      const installedDeclarations = realpathSync(
+      const installedDeclarations = realpathSync.native(
         join(consumerRoot, 'node_modules/tiny-asl-machine/lib/index.d.ts')
       );
       assert.ok(
-        files.some(path => realpathSync(path) === installedDeclarations),
+        files.some(path => relative(realpathSync.native(path), installedDeclarations) === ''),
         'Compiler did not check the installed public declarations'
       );
       assert.ok(
