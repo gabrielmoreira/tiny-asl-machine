@@ -1,27 +1,38 @@
 name: Node.js CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
-    branches: '*'
+    branches: [main]
+  workflow_call:
+
+permissions:
+  contents: read
+
+# PR updates cancel stale checks; reusable release checks use a unique run ID.
+concurrency:
+  group: node-ci-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   quality:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
 
     strategy:
+      fail-fast: false
       matrix:
         node-version: ['^22.22.1', '^24.11.0', '26.x']
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       # Read pnpm's version from package.json before setup-node resolves its store cache.
       - name: Set up pnpm
-        uses: pnpm/action-setup@v6.1.0
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
@@ -37,5 +48,35 @@ jobs:
         run: pnpm run typecheck
       - name: Test without AWS
         run: pnpm run test:ci
+      - name: Test immutable release policy
+        run: pnpm run test:release
       - name: Build published package
         run: pnpm run build
+
+  package-consumer:
+    name: Package consumer (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up development tools
+        uses: jdx/mise-action@7a4e45a543138629540c9a1616d08632b893e492 # v5.0.1
+        with:
+          version: 2026.10.0
+          cache: false
+      - name: Install exact consumer Node.js floor
+        run: mise install node@22.0.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build published package
+        run: pnpm run build
+      - name: Test packed package on the consumer floor
+        run: pnpm run test:package

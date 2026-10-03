@@ -179,10 +179,7 @@ Confirm:
 Run broader quality again:
 
 ```sh
-pnpm run format:check
-pnpm run lint
-pnpm run typecheck
-pnpm run test:ci
+pnpm run verify
 ```
 
 This is the deterministic local-only test gate used by CI. Run `pnpm test` or the focused AWS-backed conformance command as well when the change needs AWS parity evidence; CI does not require credentials.
@@ -210,9 +207,13 @@ Run the build after quality and before submitting a pull request. CI runs it on 
 
 ```sh
 pnpm run build
+mise install node@22.0.0
+pnpm run test:package
 ```
 
 Preserve the package contract: CommonJS `lib/index.js`, ESM shim `lib/index.mjs`, `lib/index.d.ts` and root `types/`, ES2024 output, no `type: module`, and Node.js >=22 consumers (the oldest maintained LTS line). A newer development toolchain is not permission to change these outputs or the consumer runtime floor; `@types/node` tracks that floor, not the development runtime.
+
+The consumer smoke installs the real package outside the checkout and checks its CJS, ESM, and declarations on the exact supported runtime floor. See `CONTRIBUTING.md` for the GitHub Release workflow and npm trusted-publisher setup.
 
 ---
 

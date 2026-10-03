@@ -80,14 +80,12 @@ pnpm test
 ### CI-equivalent gates without AWS
 
 ```sh
-pnpm run format:check
-pnpm run lint
-pnpm run typecheck
-pnpm run test:ci
-pnpm run build
+pnpm run verify
+mise install node@22.0.0
+pnpm run test:package
 ```
 
-CI runs these gates on Linux, Windows, and macOS across the supported development Node.js majors. `test:ci` explicitly disables AWS, even when credentials or a deployed harness are available.
+CI runs the quality gates on Linux, Windows, and macOS across the development Node.js matrix. Separate consumer jobs install a real packed tarball and exercise CJS, ESM, and strict TypeScript consumers on both the development runtime and exactly Node.js 22.0.0. `test:ci` explicitly disables AWS.
 
 The build must preserve CommonJS `lib/index.js`, the ESM shim `lib/index.mjs`, declarations in `lib/index.d.ts` and root `types/`, and ES2024 output for the Node.js >=22 consumer floor. `@types/node` stays on the consumer-floor major so typechecking rejects newer Node.js APIs. Do not add `type: module` to the package. Raise the consumer runtime floor only as a deliberate breaking change, not as a side effect of a tooling upgrade.
 
@@ -96,6 +94,28 @@ The build must preserve CommonJS `lib/index.js`, the ESM shim `lib/index.mjs`, d
 Install the workspace's recommended VS Code extensions for Oxc/Vite+ and the TypeScript 7 native language service. The official TypeScript extension still uses the ID `TypeScriptTeam.native-preview`; it reads the stable workspace `typescript` package, not `@typescript/native-preview`.
 
 The workspace settings select pnpm for the Scripts panel and `vite.config.ts` for formatting. When refreshing Git hook setup, keep `--no-agent` in the prepare script so installation does not rewrite the project's hand-maintained `AGENTS.md`.
+
+### Releases
+
+Merge conventional commits into `main`. `feat:` requests a minor, `fix:` a patch, and `!` or a `BREAKING CHANGE:` footer a major. Ordinary `chore:` and `docs:` changes do not release. Both version analysis and notes use the `conventionalcommits` preset, so breaking headers work without a footer. Release versions belong to Git tags and the tarball, not version-bump commits.
+
+After all reusable CI jobs pass, the Prepare release workflow calculates the next version, builds and tests its tarball, and creates a **draft** GitHub Release with notes and that verified asset. Review and publish the draft in GitHub Releases to trigger npm publishing. Do not change its tag or replace its asset. A stable release tag must be on `main`; prereleases are not published by this workflow.
+
+`publish.yml` installs and tests the attached tarball again, then publishes those exact bytes to npm using OIDC and provenance, without an npm token or package lifecycle hooks. It subsequently installs the exact registry version and exercises the same consumers. Rerunning a failed publishing job is safe only when npm already contains the identical tarball; different bytes or a downgrade of `latest` are rejected.
+
+**One-time npm setup:** in the `tiny-asl-machine` package settings, configure a GitHub Actions trusted publisher for owner `gabrielmoreira`, repository `tiny-asl-machine`, workflow filename `publish.yml`, no environment name, and allow direct `npm publish`. Do this before publishing the first draft. See [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/). No `NPM_TOKEN` or PAT is needed. A human publishes the draft because GitHub Releases created with `GITHUB_TOKEN` do not trigger other workflows.
+
+Use the Prepare release workflow's manual dispatch with `dry_run: true` to preview the version and notes without creating a tag or draft. `release:baseline` seeds the verified npm 1.0.0 commit as a local `v1.0.0` tag when absent; semantic-release pushes it only during a real release. This avoids trying to republish npm 1.0.0. The first release after the Node.js floor change is 2.0.0.
+
+To exercise release preparation locally without creating a GitHub Release or publishing:
+
+```sh
+mise install node@22.0.0
+pnpm run verify
+node scripts/prepare-release.mjs 2.0.0
+```
+
+The preparation script restores `package.json` and leaves the verified asset under `.local/release/`. `test:package --tarball <path>` checks a supplied tarball; `test:package --version <exact version>` checks an already-published version. Failure logs are retained in an isolated OS temporary directory; successful consumers are removed.
 
 ### Conformance with local + AWS, warning if AWS is unavailable
 

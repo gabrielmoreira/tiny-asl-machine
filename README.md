@@ -10,6 +10,8 @@ A lightweight TypeScript interpreter for AWS Step Functions' Amazon States Langu
 
 ## Install
 
+Requires Node.js 22 or newer.
+
 ```bash
 npm install tiny-asl-machine
 pnpm add tiny-asl-machine

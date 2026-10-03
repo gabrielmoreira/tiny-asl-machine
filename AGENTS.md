@@ -92,6 +92,7 @@ pnpm run test:conformance
 - Use pnpm for dependencies and `pnpm run <script>` for project tasks. The scripts resolve project-local tools; a global `vp` installation is not required.
 - Vite+ owns formatting, linting, staged checks, and tests in `vite.config.ts`. Import test APIs from `vite-plus/test`; do not add a separate `vitest.config.ts` or standalone Vitest dependency.
 - Stable TypeScript 7 provides the native `tsc` used for typechecking and compilation. Do not restore `@typescript/native-preview`, `tsgo` scripts, or the old JavaScript compiler path under `node_modules/typescript/bin/tsc`.
-- The full CI-equivalent gates are `pnpm run format:check`, `pnpm run lint`, `pnpm run typecheck`, `pnpm run test:ci`, and `pnpm run build`. `test:ci` is local-only and must not require AWS credentials. AWS remains the behavioral reference when parity is ambiguous.
+- Run `pnpm run verify`, install `mise install node@22.0.0`, and run `pnpm run test:package` before delivery. CI also exercises the packed CJS/ESM/type contracts on the exact consumer floor. AWS remains the behavioral reference when parity is ambiguous.
 - Preserve the published package: CommonJS `lib/index.js`, ESM shim `lib/index.mjs`, `lib/index.d.ts` plus root `types/`, ES2024 output, no `type: module`, and Node.js >=22 consumers. Keep `@types/node` on the consumer-floor major.
 - This file is hand-maintained. Keep `--no-agent` in the prepare script's `vp config` invocation so tool setup cannot overwrite project guidance.
+- GitHub Releases own publishing: semantic-release prepares verified drafts, and a human publishing a draft triggers `publish.yml` to publish its canonical tarball to npm via OIDC. See `CONTRIBUTING.md` for setup and recovery; never publish during local verification.
