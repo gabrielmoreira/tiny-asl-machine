@@ -97,6 +97,29 @@ describe('evaluateJsonataTemplateFields', () => {
     });
   });
 
+  it('preserves prototype-named keys in nested JSONata output as JSON data', async () => {
+    const result = await evaluateJsonataTemplateFields(
+      '{% {"items": [{"__proto__": {"owned": true}, "constructor": "data"}]} %}',
+      { input: {}, context: awsContext }
+    );
+
+    expect(result).toStrictEqual(
+      JSON.parse('{"items":[{"__proto__":{"owned":true},"constructor":"data"}]}')
+    );
+  });
+
+  it('normalizes bound JSON objects without mutating the input', async () => {
+    const input = Object.assign(Object.create(null), { value: { keep: 7 } });
+    const result = await evaluateJsonataTemplateFields('{% $states.input %}', {
+      input,
+      context: awsContext,
+    });
+
+    expect(result).toStrictEqual({ value: { keep: 7 } });
+    expect(Object.getPrototypeOf(input)).toBeNull();
+    expect(input).toHaveProperty('value.keep', 7);
+  });
+
   it('throws States.QueryEvaluationError when the expression evaluates to undefined', async () => {
     await expect(
       evaluateJsonataTemplateFields('{% $states.input.missing %}', {
