@@ -3,18 +3,20 @@
     "preserveConstEnums": true,
     "esModuleInterop": true,
     "allowJs": false,
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    "outDir": "lib",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
-    "rootDir": "src",
     "skipLibCheck": true,
-    "target": "ES2020",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "target": "ES2024",
+    "lib": ["ES2024"],
     "types": ["node"],
+    "allowImportingTsExtensions": true,
     "isolatedModules": true,
-    "declaration": true,
-    "declarationMap": true
+    "noEmit": true
   },
-  "include": ["./src/**/*"],
-  "exclude": ["coverage", "node_modules", "lib", "coverage/**/*", "src/**/*.spec.ts"]
+  "include": ["./src/**/*", "./tests/**/*", "./scripts/**/*", "./types/**/*", "./vite.config.ts"],
+  "exclude": ["coverage", "node_modules", "lib"]
 }

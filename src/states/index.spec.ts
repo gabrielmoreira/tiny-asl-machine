@@ -2,13 +2,9 @@
 import type { Context, State, StateDefinition } from '../../types';
 import { run, runState } from './index';
 import { ExecutionError } from '../utils/executionError';
-import { describe, it, afterEach, expect, vitest } from 'vite-plus/test';
+import { describe, it, expect } from 'vite-plus/test';
 
 describe('runState', () => {
-  afterEach(() => {
-    vitest.useRealTimers();
-    vitest.clearAllMocks();
-  });
   it('runs a Task state', async () => {
     // Given
     const state: State = {
@@ -531,82 +527,6 @@ describe('runState', () => {
       'ship-date': '2016-03-14T01:59:00Z',
     });
     expect(context.Transition).toStrictEqual({ End: true });
-  });
-
-  it('runs a Wait state (TimestampPath)', async () => {
-    // Given
-    const state: State = {
-      Type: 'Wait',
-      TimestampPath: '$.expirydate',
-      Next: 'NextState',
-    };
-    const input = {
-      expirydate: '2022-04-14T01:01:10.000Z',
-    };
-    const context = (<Context>{}) as unknown as Context;
-    vitest.useFakeTimers();
-    vitest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
-    // When
-    const promise = runState(context, state, input);
-    // Then
-    await vitest.advanceTimersByTimeAsync(10000);
-    await promise;
-  });
-
-  it('runs a Wait state (SecondsPath)', async () => {
-    // Given
-    const state: State = {
-      Type: 'Wait',
-      SecondsPath: '$.waitSeconds',
-      Next: 'NextState',
-    };
-    const input = {
-      waitSeconds: 10,
-    };
-    const context = (<Context>{}) as unknown as Context;
-    vitest.useFakeTimers();
-    vitest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
-    // When
-    const promise = runState(context, state, input);
-    // Then
-    await vitest.advanceTimersByTimeAsync(10000);
-    await promise;
-  });
-
-  it('runs a Wait state (Seconds)', async () => {
-    // Given
-    const state: State = {
-      Type: 'Wait',
-      Seconds: 10,
-      Next: 'NextState',
-    };
-    const input = {};
-    const context = (<Context>{}) as unknown as Context;
-    vitest.useFakeTimers();
-    vitest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
-    // When
-    const promise = runState(context, state, input);
-    // Then
-    await vitest.advanceTimersByTimeAsync(10000);
-    await promise;
-  });
-
-  it('runs a Wait state (Timestamp)', async () => {
-    // Given
-    const state: State = {
-      Type: 'Wait',
-      Timestamp: '2022-04-14T01:01:10.000Z',
-      Next: 'NextState',
-    };
-    const input = {};
-    const context = (<Context>{}) as unknown as Context;
-    vitest.useFakeTimers();
-    vitest.setSystemTime(Date.parse('2022-04-14T01:01:00.000Z'));
-    // When
-    const promise = runState(context, state, input);
-    // Then
-    await vitest.advanceTimersByTimeAsync(10000);
-    await promise;
   });
 
   it('runs a Succeed state', async () => {

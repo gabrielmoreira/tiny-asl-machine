@@ -47,7 +47,7 @@ Every logical change starts with a failing test or a failing quality signal.
 Examples:
 
 - runtime behavior change → add or update a focused test first
-- type-system change → reproduce with `tsc` / `oxlint` / type fixtures first
+- type-system change → reproduce with `pnpm run typecheck` / `pnpm run lint` / type fixtures first
 - AWS parity question → add an AWS-observable conformance case first when possible
 
 ### AWS as behavioral reference
@@ -64,9 +64,9 @@ Quality should be run before and after meaningful changes.
 Current quality tools in this repository are:
 
 - conformance tests (`pnpm run test:conformance`)
-- TypeScript compile (`pnpm run typecheck`)
-- Oxlint (`pnpm run lint`)
-- Oxfmt (`pnpm run format:check`)
+- native TypeScript 7 typechecking (`pnpm run typecheck`)
+- Vite+ Oxlint (`pnpm run lint`)
+- Vite+ Oxfmt (`pnpm run format:check`)
 
 ### Explicit type safety
 
@@ -182,8 +182,10 @@ Run broader quality again:
 pnpm run format:check
 pnpm run lint
 pnpm run typecheck
-pnpm test
+pnpm run test:ci
 ```
+
+This is the deterministic local-only test gate used by CI. Run `pnpm test` or the focused AWS-backed conformance command as well when the change needs AWS parity evidence; CI does not require credentials.
 
 ### Phase 8 — Review and Consistency Check
 
@@ -202,21 +204,23 @@ Validate consistency.
 - is behavior aligned?
 - if not, is the difference understood and documented?
 
-### Phase 9 — Build (only when needed)
+### Phase 9 — Build the Published Package
 
-Build is separate from quality.
-
-Run when needed:
+Run the build after quality and before submitting a pull request. CI runs it on every OS/Node.js matrix entry:
 
 ```sh
 pnpm run build
 ```
+
+Preserve the package contract: CommonJS `lib/index.js`, ESM shim `lib/index.mjs`, `lib/index.d.ts` and root `types/`, ES2024 output, no `type: module`, and Node.js >=22 consumers (the oldest maintained LTS line). A newer development toolchain is not permission to change these outputs or the consumer runtime floor; `@types/node` tracks that floor, not the development runtime.
 
 ---
 
 ## Practical Commands
 
 ## Install
+
+Follow the development prerequisites in `CONTRIBUTING.md`. Use pnpm for dependencies and the scripts in `package.json` for project-local tools. `vite.config.ts` is the shared format/lint/staged/test configuration; the native TypeScript compiler is invoked through `tsc`, not the removed JavaScript compiler path or a preview compiler package.
 
 ```sh
 pnpm install
@@ -238,7 +242,7 @@ pnpm run lint
 pnpm run lint:fix
 ```
 
-### TypeScript compile
+### TypeScript typecheck
 
 ```sh
 pnpm run typecheck
@@ -248,6 +252,12 @@ pnpm run typecheck
 
 ```sh
 pnpm run test:local
+```
+
+### Non-interactive CI tests without AWS
+
+```sh
+pnpm run test:ci
 ```
 
 ### Default test run (auto-enables AWS when available)
@@ -406,10 +416,10 @@ What this does:
 - `types/` — ASL and runtime type surface
 - `tests/conformance/cases/` — behavior catalog / conformance specification
 - `tests/conformance/support/` — harness helpers for local/AWS execution
-- `scripts/aws-setup.mjs` — create/update AWS harness resources
-- `scripts/aws-teardown.mjs` — remove AWS harness resources
-- `scripts/run-vitest.mjs` — wrapper that controls local/AWS conformance mode
-- `.local/aws/harness-manifest.json` — generated AWS harness metadata
+- `scripts/aws-create-deployment-config.ts` / `scripts/aws-deploy-stack.ts` / `scripts/aws-remove-stack.ts`: CloudFormation harness lifecycle
+- `scripts/run-vitest.ts`: project-local Vite+ test wrapper controlling local/AWS conformance mode
+- `vite.config.ts`: shared formatting, linting, staged-check, and test configuration
+- `.local/aws/deployment-config.json`: generated local AWS harness metadata
 
 ---
 

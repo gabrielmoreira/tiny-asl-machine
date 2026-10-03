@@ -114,6 +114,43 @@ function registerSFJsonataFunctions(compiled: ReturnType<typeof jsonata>, contex
   );
 }
 
+function normalizeJsonataResult(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    let normalized: unknown[] | undefined;
+    for (let index = 0; index < value.length; index++) {
+      const item = normalizeJsonataResult(value[index]);
+      if (item !== value[index]) {
+        normalized ??= value.slice();
+        normalized[index] = item;
+      }
+    }
+    return normalized ?? value;
+  }
+
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+
+  // JSONata 2.2 builds null-prototype objects; expose ordinary JSON without mutating bindings.
+  let normalized: Record<string, unknown> | undefined =
+    Object.getPrototypeOf(value) === null ? {} : undefined;
+  for (const [key, item] of Object.entries(value)) {
+    const result = normalizeJsonataResult(item);
+    if (!normalized && result !== item) {
+      normalized = { ...value };
+    }
+    if (normalized) {
+      Object.defineProperty(normalized, key, {
+        value: result,
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      });
+    }
+  }
+  return normalized ?? value;
+}
+
 async function evaluateJsonataString(
   template: string,
   states: {
@@ -144,7 +181,7 @@ async function evaluateJsonataString(
       );
     }
 
-    return value;
+    return normalizeJsonataResult(value);
   } catch (error) {
     if (error instanceof ExecutionError) {
       throw error;

@@ -1,11 +1,10 @@
 /* eslint-env node */
 
 import { spawn } from 'node:child_process';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { getDeploymentEnv, getDeploymentConfig } from './deployment-config.ts';
 
-const pnpmCommand = 'pnpm';
-const vitestCommandArgs = ['exec', 'vp', 'test'];
+const vitePlusCliPath = fileURLToPath(import.meta.resolve('vite-plus/bin'));
 
 export type RunVitestPlanOptions = {
   suite: string;
@@ -26,7 +25,6 @@ export type RunVitestPlan = {
 
 function main() {
   const rawArgs = process.argv.slice(2);
-  const hasDashDash = rawArgs.includes('--');
   const forwardedArgs: string[] = [];
   let suite = 'all';
   let awsMode = 'auto';
@@ -79,22 +77,18 @@ function main() {
     process.exit(plan.exitCode);
   }
 
-  const child = spawn(
-    pnpmCommand,
-    [...vitestCommandArgs, ...(hasDashDash ? ['--'] : []), ...plan.forwardedArgs],
-    {
-      cwd: deploymentConfig.repoRoot,
-      stdio: 'inherit',
-      shell: process.platform === 'win32',
-      env: {
-        ...process.env,
-        ...getDeploymentEnv(),
-        CONFORMANCE_LOCAL: plan.localEnabled ? '1' : '0',
-        CONFORMANCE_AWS: plan.awsEnabled ? '1' : '0',
-        ...(plan.caseQuery ? { CONFORMANCE_CASE_QUERY: plan.caseQuery } : {}),
-      },
-    }
-  );
+  const child = spawn(process.execPath, [vitePlusCliPath, 'test', ...plan.forwardedArgs], {
+    cwd: deploymentConfig.repoRoot,
+    stdio: 'inherit',
+    shell: false,
+    env: {
+      ...process.env,
+      ...getDeploymentEnv(),
+      CONFORMANCE_LOCAL: plan.localEnabled ? '1' : '0',
+      CONFORMANCE_AWS: plan.awsEnabled ? '1' : '0',
+      ...(plan.caseQuery ? { CONFORMANCE_CASE_QUERY: plan.caseQuery } : {}),
+    },
+  });
 
   child.on('exit', code => {
     process.exit(code ?? 1);

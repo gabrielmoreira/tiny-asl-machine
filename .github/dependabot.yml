@@ -8,6 +8,11 @@ updates:
       interval: 'weekly'
       day: 'monday'
     open-pull-requests-limit: 10
+    # @types/node tracks the published Node.js engines floor, not the development runtime.
+    ignore:
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+    # Keep major upgrades separate for runtime and published-package compatibility review.
     groups:
       # Group all non-major dev dependencies together
       dev-dependencies:

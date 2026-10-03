@@ -25,9 +25,15 @@ Contributions should follow this model:
 
 ## Prerequisites
 
-- Node.js >= 20
-- pnpm >= 10
-- optional AWS credentials if you need AWS-backed conformance
+- Use the development tools pinned in `mise.toml` (`mise install`).
+- Without mise, use Node.js 22 (>=22.22.1), 24 (>=24.11.0), or 26, and the pnpm version declared in `package.json`'s `packageManager` field.
+- AWS credentials are optional and only needed for AWS-backed conformance.
+
+The published library supports Node.js >=22.0.0 consumers, the oldest maintained Node.js LTS line. Development needs the newer 22.x patch floor above because Vite+ and staged checks require it; see the [upstream staged-check requirements](https://github.com/voidzero-dev/vite-plus/blob/main/docs/guide/commit-hooks.md).
+
+Use pnpm for dependency management and the scripts in `package.json` for project tasks. Those scripts use project-local Vite+ for formatting, linting, and tests, and the stable TypeScript 7 native `tsc` for typechecking and package compilation. Tool versions live in the manifests rather than in this guide.
+
+`vite.config.ts` holds format, lint, staged-check, and test configuration. Keep tests importing from `vite-plus/test`; do not add a separate Vitest configuration or native-preview compiler dependency.
 
 Install dependencies:
 
@@ -53,7 +59,7 @@ pnpm run lint
 pnpm run lint:fix
 ```
 
-### TypeScript compile
+### TypeScript typecheck
 
 ```sh
 pnpm run typecheck
@@ -70,6 +76,26 @@ pnpm run test:local
 ```sh
 pnpm test
 ```
+
+### CI-equivalent gates without AWS
+
+```sh
+pnpm run format:check
+pnpm run lint
+pnpm run typecheck
+pnpm run test:ci
+pnpm run build
+```
+
+CI runs these gates on Linux, Windows, and macOS across the supported development Node.js majors. `test:ci` explicitly disables AWS, even when credentials or a deployed harness are available.
+
+The build must preserve CommonJS `lib/index.js`, the ESM shim `lib/index.mjs`, declarations in `lib/index.d.ts` and root `types/`, and ES2024 output for the Node.js >=22 consumer floor. `@types/node` stays on the consumer-floor major so typechecking rejects newer Node.js APIs. Do not add `type: module` to the package. Raise the consumer runtime floor only as a deliberate breaking change, not as a side effect of a tooling upgrade.
+
+### Editor integration
+
+Install the workspace's recommended VS Code extensions for Oxc/Vite+ and the TypeScript 7 native language service. The official TypeScript extension still uses the ID `TypeScriptTeam.native-preview`; it reads the stable workspace `typescript` package, not `@typescript/native-preview`.
+
+The workspace settings select pnpm for the Scripts panel and `vite.config.ts` for formatting. When refreshing Git hook setup, keep `--no-agent` in the prepare script so installation does not rewrite the project's hand-maintained `AGENTS.md`.
 
 ### Conformance with local + AWS, warning if AWS is unavailable
 
