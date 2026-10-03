@@ -25,3 +25,24 @@ export function publicationAction(version, latest, integrity, existingIntegrity)
   }
   return 'publish';
 }
+
+export function nextReleaseTag(tags) {
+  const versions = [];
+  for (const tag of tags) {
+    try {
+      versions.push(releaseVersion(tag));
+    } catch {
+      // Non-stable or malformed tags never become the release baseline.
+    }
+  }
+  if (versions.length === 0) return null;
+  return 'v' + versions.reduce((a, b) => (semver.gt(a, b) ? a : b));
+}
+
+export function releaseState({ tag, release, npmHasVersion }) {
+  if (!tag) return 'proceed';
+  if (release && !release.draft) return 'proceed';
+  if (release && release.draft) return 'pending';
+  if (npmHasVersion) return 'proceed';
+  return 'orphan';
+}

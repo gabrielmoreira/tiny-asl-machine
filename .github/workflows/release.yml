@@ -9,6 +9,10 @@ on:
         description: Preview the next release without creating a tag or draft release
         type: boolean
         default: true
+      repair_tag:
+        description: Recreate the missing draft release for an orphaned tag, e.g. v2.0.0
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -45,7 +49,43 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Prepare existing release baseline
         run: pnpm run release:baseline
+      - name: Check release state
+        id: state
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/release-guard.mjs
+      - name: Wait for the pending draft release
+        if: steps.state.outputs.mode == 'pending'
+        run: >
+          echo "An unpublished draft release for ${{ steps.state.outputs.tag }} exists.
+          Publish it before preparing the next release."
+      - name: Recreate the orphaned draft release
+        if: steps.state.outputs.mode == 'orphan' && inputs.repair_tag != ''
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ORPHAN_TAG: ${{ steps.state.outputs.tag }}
+          REPAIR_TAG: ${{ inputs.repair_tag }}
+        run: |
+          if [ "$REPAIR_TAG" != "$ORPHAN_TAG" ]; then
+            echo "::error::The orphaned tag is $ORPHAN_TAG, not $REPAIR_TAG"
+            exit 1
+          fi
+          git worktree add --detach .local/repair "$REPAIR_TAG"
+          cd .local/repair
+          pnpm install --frozen-lockfile
+          node scripts/prepare-release.mjs "${REPAIR_TAG#v}"
+          gh release create "$REPAIR_TAG" --draft --title "$REPAIR_TAG" --generate-notes \
+            --repo "$GITHUB_REPOSITORY" \
+            ".local/release/tiny-asl-machine-${REPAIR_TAG#v}.tgz#Verified npm package"
+      - name: Stop on the orphaned release tag
+        if: steps.state.outputs.mode == 'orphan' && inputs.repair_tag == ''
+        run: |
+          echo "::error::Tag ${{ steps.state.outputs.tag }} has no GitHub Release and no npm version. Rerun this workflow with repair_tag=${{ steps.state.outputs.tag }} to recreate its draft."
+          exit 1
       - name: Prepare draft release
+        if: steps.state.outputs.mode == 'proceed'
         env:
           GITHUB_TOKEN: ${{ github.token }}
           RELEASE_EVENT: ${{ github.event_name }}

@@ -3,7 +3,12 @@ import { test } from 'node:test';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import releaseConfig from '../release.config.mjs';
-import { publicationAction, releaseVersion } from '../scripts/release-policy.mjs';
+import {
+  nextReleaseTag,
+  publicationAction,
+  releaseState,
+  releaseVersion,
+} from '../scripts/release-policy.mjs';
 
 test('only exact stable v-prefixed release tags can publish', () => {
   assert.equal(releaseVersion('v2.0.0'), '2.0.0');
@@ -24,6 +29,26 @@ test('reruns may verify an existing immutable version but never replace it', () 
     () => publicationAction('2.0.0', '2.1.0', 'sha512-new', 'sha512-other'),
     /different tarball/
   );
+});
+
+test('the next release tag is the newest stable tag', () => {
+  assert.equal(nextReleaseTag(['v1.0.0', 'v0.9.0', 'v2.0.0']), 'v2.0.0');
+  assert.equal(nextReleaseTag(['v2.0.0-beta.1', 'v1.0.0', 'not-a-tag']), 'v1.0.0');
+  assert.equal(nextReleaseTag([]), null);
+});
+
+test('an orphaned tag is detected instead of silently skipping the release', () => {
+  assert.equal(releaseState({ tag: null, release: null, npmHasVersion: false }), 'proceed');
+  assert.equal(
+    releaseState({ tag: 'v2.0.0', release: { draft: false }, npmHasVersion: false }),
+    'proceed'
+  );
+  assert.equal(releaseState({ tag: 'v1.0.0', release: null, npmHasVersion: true }), 'proceed');
+  assert.equal(
+    releaseState({ tag: 'v2.0.0', release: { draft: true }, npmHasVersion: false }),
+    'pending'
+  );
+  assert.equal(releaseState({ tag: 'v2.0.0', release: null, npmHasVersion: false }), 'orphan');
 });
 
 test('breaking headers trigger a major release even without a footer', async () => {
