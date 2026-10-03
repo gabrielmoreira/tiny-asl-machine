@@ -72,8 +72,9 @@ jobs:
             echo "::error::The orphaned tag is $ORPHAN_TAG, not $REPAIR_TAG"
             exit 1
           fi
-          git worktree add --detach .local/repair "$REPAIR_TAG"
-          cd .local/repair
+          REPAIR_ROOT="$RUNNER_TEMP/release-repair"
+          git worktree add --detach "$REPAIR_ROOT" "$REPAIR_TAG"
+          cd "$REPAIR_ROOT"
           pnpm install --frozen-lockfile
           node scripts/prepare-release.mjs "${REPAIR_TAG#v}"
           gh release create "$REPAIR_TAG" --draft --title "$REPAIR_TAG" --generate-notes \
