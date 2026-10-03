@@ -105,6 +105,8 @@ Before preparing a draft, the workflow checks the release state from Git tags, G
 
 `publish.yml` installs and tests the attached tarball again, then publishes those exact bytes to npm using OIDC and provenance, without an npm token or package lifecycle hooks. It subsequently installs the exact registry version and exercises the same consumers. Rerunning a failed publishing job is safe only when npm already contains the identical tarball; different bytes or a downgrade of `latest` are rejected.
 
+The registry check after publishing waits for npm to serve the new version, bounded to a few minutes, because npm processes a fresh version for a short time before it installs. The wait length is overridable locally with `REGISTRY_WAIT_ATTEMPTS` and `REGISTRY_WAIT_DELAY_MS`.
+
 **One-time npm setup:** in the `tiny-asl-machine` package settings, configure a GitHub Actions trusted publisher for owner `gabrielmoreira`, repository `tiny-asl-machine`, workflow filename `publish.yml`, no environment name, and allow direct `npm publish`. Do this before publishing the first draft. See [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/). No `NPM_TOKEN` or PAT is needed. A human publishes the draft because GitHub Releases created with `GITHUB_TOKEN` do not trigger other workflows.
 
 Use the Prepare release workflow's manual dispatch with `dry_run: true` to preview the version and notes without creating a tag or draft. `release:baseline` seeds the verified npm 1.0.0 commit as a local `v1.0.0` tag when absent; semantic-release pushes it only during a real release. This avoids trying to republish npm 1.0.0. The first release after the Node.js floor change is 2.0.0.
