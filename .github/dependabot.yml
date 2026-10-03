@@ -12,6 +12,10 @@ updates:
     ignore:
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
+      # Preset 10 requires writer 9; the current release-notes generator uses writer 8.
+      # Upgrade this together with semantic-release once its generator supports writer 9.
+      - dependency-name: 'conventional-changelog-conventionalcommits'
+        update-types: ['version-update:semver-major']
     # Keep major upgrades separate for runtime and published-package compatibility review.
     groups:
       # Group all non-major dev dependencies together
