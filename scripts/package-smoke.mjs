@@ -269,6 +269,23 @@ function inventory(root, prefix = '') {
     })
     .sort();
 }
+
+// npm processes a new version for a few minutes after publish; a metadata poll
+// is cheaper than a failed install. Bounded, and overridable for local checks.
+async function waitForRegistryVersion(version) {
+  const attempts = Number(process.env.REGISTRY_WAIT_ATTEMPTS || 12);
+  const delayMs = Number(process.env.REGISTRY_WAIT_DELAY_MS || 10_000);
+  for (let attempt = 1; ; attempt++) {
+    const response = await fetch(`${registry}tiny-asl-machine/${encodeURIComponent(version)}`, {
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (response.ok) return;
+    if (response.status !== 404 || attempt >= attempts) {
+      throw new Error(`npm tiny-asl-machine@${version} unavailable (HTTP ${response.status})`);
+    }
+    await new Promise(resolve => setTimeout(resolve, delayMs));
+  }
+}
 function assertRuntimeResult(stdout, nodeVersion, mode, cases) {
   const result = JSON.parse(stdout.trim());
   assert.equal(result.node, nodeVersion, 'Consumer ran on the wrong Node version');
@@ -692,6 +709,7 @@ async function main(selection) {
     !(await stage('package', async () => {
       if (selection.mode === 'registry') {
         dependency = selection.version;
+        await waitForRegistryVersion(selection.version);
         return { mode: selection.mode, version: selection.version, registry };
       }
       let tarball = selection.tarball;
